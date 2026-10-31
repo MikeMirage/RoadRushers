@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Group, ShaderLib } from 'three';
+import { Group, ShaderLib, Raycaster, Vector3 } from 'three';
 import { ENVIRONMENT_THEMES, normalizeEnvironment, solarPosition, sunDirection, themePreset } from '../src/environment-config.js';
 import { buildEnvironment } from '../src/environments.js';
 import { groundMaterial } from '../src/biome-shaders.js';
@@ -35,6 +35,16 @@ test('every theme builds finite native geometry, with dedicated landscape materi
 test('procedural terrain injects GLSL with explicit uniforms into the installed Three.js shader',()=>{
   const material=groundMaterial(themePreset('grandprix')),shader={uniforms:{},vertexShader:ShaderLib.standard.vertexShader,fragmentShader:ShaderLib.standard.fragmentShader};material.onBeforeCompile(shader);
   assert.ok(shader.uniforms.iTime);assert.ok(shader.vertexShader.includes('rrWorld='));assert.ok(shader.fragmentShader.includes('rrFbm'));assert.equal(/float\s+patch\b/.test(shader.fragmentShader),false);material.dispose();
+});
+test('dune triangles stay below the driving surface around the entire circuit',()=>{
+  const circuit=new Circuit(TRACKS[0]),group=new Group();buildEnvironment(group,circuit,themePreset('sahara'));group.updateMatrixWorld(true);
+  const terrain=[];group.traverse(o=>{if(o.isMesh&&o.material.name==='biome-ground')terrain.push(o);});
+  const ray=new Raycaster(),down=new Vector3(0,-1,0);
+  for(let i=0;i<100;i++)for(const side of [-1,0,1]){
+    const u=i/100,p=circuit.at(u,side*circuit.widthAt(u)*.48);ray.set(new Vector3(p.x,100,p.z),down);
+    for(const hit of ray.intersectObjects(terrain,false))assert.ok(hit.point.y<p.y+.015,`dune intersects road at ${u}`);
+  }
+  const gs=new Set(),ms=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)ms.add(o.material);});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());
 });
 test('width transitions carry their width forward and share physics/rendering values',()=>{
   const c=new Circuit(kitConfig(['width-14','straight','width-10']));assert.equal(c.widthAt(0),10);assert.equal(c.widthAt(1),10);

@@ -1,0 +1,14 @@
+RoadRushers environment asset library
+
+Third-party models and PBR texture images: Poly Haven
+License: CC0 1.0 Universal (public domain dedication)
+https://creativecommons.org/publicdomain/zero/1.0/
+https://polyhaven.com/license
+
+Commercial use, modification and redistribution are permitted. Attribution is
+not required. Source credits are retained as a courtesy and for provenance.
+
+Individual source pages, download URLs, hashes and transformation metadata are
+recorded in manifest.json and art/source/polyhaven/provenance.json.
+
+The RoadRushers integration and original GLSL remain under the project license.

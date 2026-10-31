@@ -12,7 +12,7 @@ Desde la configuración se eligen circuito, superficie, clima, entorno, anchura,
 - Pasar un dedo de una mitad a otra cambia la dirección. Sacarlo de la mitad inferior libera su control.
 - Pausar, girar la pantalla, perder la captura o cancelar el gesto libera los controles.
 
-Las zonas son transparentes y no tienen botones dibujados. Durante la cuenta atrás aparece una indicación breve; en gameplay quedan tiempo, vuelta, posición en carrera y pausa. La pausa permite reiniciar o volver al configurador. El mismo diseño funciona en vertical y horizontal. El teclado conserva flechas/A-D y frenada combinada.
+Las zonas son transparentes y no tienen botones dibujados. Durante la cuenta atrás aparece una indicación breve; en gameplay quedan tiempo, vuelta, minimapa, posición en carrera y pausa. El minimapa se sitúa bajo el cronómetro, en la esquina superior izquierda, con fondo translúcido y sin capturar toques. En pantallas bajas se reduce y muestra solo el trazado y las posiciones. La pausa permite reiniciar o volver al configurador. El mismo diseño funciona en vertical y horizontal. El teclado conserva flechas/A-D y frenada combinada.
 
 `src/input.js` centraliza teclado y multitouch. Sus tests comprueban límites de las zonas, dos dedos, cruces, cancelaciones y liberación de captura. Los tests de configuración comprueban acceso a todos los coches, conservación de condiciones y separación de los guardados de progresión.
 

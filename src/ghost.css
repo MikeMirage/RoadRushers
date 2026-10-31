@@ -1,0 +1,4 @@
+.ghost-status:not([hidden]){display:block;margin-top:3px;color:#8be1ee;font-size:7px;font-weight:600;letter-spacing:.35px;white-space:nowrap}
+@media(max-width:760px),(max-width:1000px) and (max-height:500px),(pointer:coarse){
+  .ghost-status:not([hidden]){font-size:6px;letter-spacing:.1px;margin-top:1px}
+}

@@ -1,0 +1,2112 @@
+{
+  "version": 1,
+  "provider": "Poly Haven",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://polyhaven.com/license",
+  "sourceProvenance": "art/source/polyhaven/provenance.json",
+  "assets": [
+    {
+      "id": "asphalt_pit_lane",
+      "name": "Asfalto de pit lane",
+      "family": "Circuito",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/asphalt_pit_lane",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/asphalt_pit_lane/color.webp",
+        "normal": "/assets/environment/materials/asphalt_pit_lane/normal.webp",
+        "arm": "/assets/environment/materials/asphalt_pit_lane/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/asphalt_pit_lane/arm.webp",
+          "bytes": 255008,
+          "sha256": "cc0dc51ce0ee62a3862d3141cede4d824e9bc832fcf4d0bae41cfa2f19d42584"
+        },
+        {
+          "url": "/assets/environment/materials/asphalt_pit_lane/color.webp",
+          "bytes": 440022,
+          "sha256": "87b7283e3ba5fcdbecc19e36b66f1b1a90d70d894ec497a2190782c0cbc1de25"
+        },
+        {
+          "url": "/assets/environment/materials/asphalt_pit_lane/normal.webp",
+          "bytes": 596906,
+          "sha256": "7aea603d18ac560a64e70f03d525ffffeadaab720c05e1379588c66cbba0fa9c"
+        }
+      ],
+      "bytes": 1291936
+    },
+    {
+      "id": "asphalt_track",
+      "name": "Asfalto de circuito",
+      "family": "Circuito",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/asphalt_track",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/asphalt_track/color.webp",
+        "normal": "/assets/environment/materials/asphalt_track/normal.webp",
+        "arm": "/assets/environment/materials/asphalt_track/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/asphalt_track/arm.webp",
+          "bytes": 134262,
+          "sha256": "1f69a4e6bc6a8e4ff2c91028feba5d4809f4b19e418c56d12164f26724c6a6a1"
+        },
+        {
+          "url": "/assets/environment/materials/asphalt_track/color.webp",
+          "bytes": 338338,
+          "sha256": "87248362bab23fdd070896ec9fd27c39489debfc8beec72d8f644e48467aef92"
+        },
+        {
+          "url": "/assets/environment/materials/asphalt_track/normal.webp",
+          "bytes": 431694,
+          "sha256": "a3c8979a03259ec901be720520298dfeb06ad3adb5b85213392ae3bded4a886d"
+        }
+      ],
+      "bytes": 904294
+    },
+    {
+      "id": "boulder_01",
+      "name": "Bolo de roca",
+      "family": "Rocas",
+      "biomes": [
+        "pyrenees",
+        "norway",
+        "grandprix"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/boulder_01",
+      "license": "CC0-1.0",
+      "sourceTriangles": 66122,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/boulder_01/lod0.gltf",
+          "triangles": 3500,
+          "dimensions": [
+            1.2721,
+            1.0038,
+            1.8303
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2320
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/boulder_01/lod1.gltf",
+          "triangles": 1166,
+          "dimensions": [
+            1.2721,
+            1.0038,
+            1.8303
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2317
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/boulder_01/boulder_01_arm_1k.webp",
+          "bytes": 1147558,
+          "sha256": "bdbb487a665eb1deecb758ffbcc8f1982ccc278620ff2c68de9eb0b947e432c7"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/boulder_01_diff_1k.webp",
+          "bytes": 492854,
+          "sha256": "4e5b939ffa526ea640e3a43c6b83370ebf04c47270185af391f79f98e45ea3a3"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/boulder_01_nor_gl_1k.webp",
+          "bytes": 1935056,
+          "sha256": "9096e622b1fa59548e2ec3699e5bf5fbf8fd1a4f93500d16cd095e11574ae033"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/lod0.bin",
+          "bytes": 111528,
+          "sha256": "822e06584436d8435dbc5b4456f53e0fc4dc74c0e1043b9893ff3863cd639d9e"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/lod0.gltf",
+          "bytes": 1907,
+          "sha256": "0c94cfa5defa3a5f746d35d51d924de57f0e8236534e7864a7578a728f6e96d4"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/lod1.bin",
+          "bytes": 46004,
+          "sha256": "cce2f264968b75fb7292b4d0d47214af80c7f81f44b1d8a56aa4fea765328438"
+        },
+        {
+          "url": "/assets/environment/models/boulder_01/lod1.gltf",
+          "bytes": 1904,
+          "sha256": "0c95ca175616a73a3009dc23a15f801979e7b3310b53ea253035acc3801b8034"
+        }
+      ],
+      "bytes": 3736811,
+      "preview": "/assets/environment/previews/boulder_01.webp"
+    },
+    {
+      "id": "brown_mud_03",
+      "name": "Barro húmedo",
+      "family": "Selva",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/brown_mud_03",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/brown_mud_03/color.webp",
+        "normal": "/assets/environment/materials/brown_mud_03/normal.webp",
+        "arm": "/assets/environment/materials/brown_mud_03/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/brown_mud_03/arm.webp",
+          "bytes": 437972,
+          "sha256": "a464daf972bd47fabf7c6f73310b6de4f32b7f33fef68ab63fd633f69f304d74"
+        },
+        {
+          "url": "/assets/environment/materials/brown_mud_03/color.webp",
+          "bytes": 312758,
+          "sha256": "61badc8694e838a3f4dfe98ebd8f7dfefeb76e953c1607592aadee10a9daa903"
+        },
+        {
+          "url": "/assets/environment/materials/brown_mud_03/normal.webp",
+          "bytes": 641692,
+          "sha256": "f850e605c534824afffb9befbb7d5c2bd145f4d0c0e1d2d6d94aca09f3a05fe6"
+        }
+      ],
+      "bytes": 1392422
+    },
+    {
+      "id": "brushed_concrete",
+      "name": "Hormigón cepillado",
+      "family": "Circuito",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/brushed_concrete",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/brushed_concrete/color.webp",
+        "normal": "/assets/environment/materials/brushed_concrete/normal.webp",
+        "arm": "/assets/environment/materials/brushed_concrete/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/brushed_concrete/arm.webp",
+          "bytes": 383844,
+          "sha256": "e34d4dac749473ca657c5a9ef455cc4ea47cff1c541507611f2291760c24ff1a"
+        },
+        {
+          "url": "/assets/environment/materials/brushed_concrete/color.webp",
+          "bytes": 352230,
+          "sha256": "b6f850a7bed242f6ec8d750396ef0b232c0ecc4337fbc3213dbfdc26999400dc"
+        },
+        {
+          "url": "/assets/environment/materials/brushed_concrete/normal.webp",
+          "bytes": 440786,
+          "sha256": "5dc74c11dcfb4d1a877b21146b943319208a416dd97b4ddff9f592192d96bc0f"
+        }
+      ],
+      "bytes": 1176860
+    },
+    {
+      "id": "coast_rocks_02",
+      "name": "Roca costera",
+      "family": "Rocas",
+      "biomes": [
+        "amalfi",
+        "norway"
+      ],
+      "targetTriangles": 4500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/coast_rocks_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 1260423,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/coast_rocks_02/lod0.gltf",
+          "triangles": 4500,
+          "dimensions": [
+            45.9647,
+            3.1714,
+            49.4648
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2335
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/coast_rocks_02/lod1.gltf",
+          "triangles": 1500,
+          "dimensions": [
+            45.9647,
+            3.1714,
+            49.4648
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2332
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/coast_rocks_02/coast_rocks_02_arm_1k.webp",
+          "bytes": 1305698,
+          "sha256": "66bee4c0007e52ce848c07f5fe569e12785db6bb16e1a1cbbc399ebe8cdcb63f"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/coast_rocks_02_diff_1k.webp",
+          "bytes": 438420,
+          "sha256": "9856c15f935b7dbc1a75e4497aae29541c8256e782bd3a9c11a4ce8091813f0c"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/coast_rocks_02_nor_gl_1k.webp",
+          "bytes": 1667146,
+          "sha256": "971b193a60b0fbaf609d583226ad435959b7e9cd74ce47e9b0cafb7543190984"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/lod0.bin",
+          "bytes": 147544,
+          "sha256": "fe79d25b502c8091714ceeb34b61d3dedae8b5300d5caea4ada30312265fdcc1"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/lod0.gltf",
+          "bytes": 1922,
+          "sha256": "96a420c10a0112c40da9122907e67c9008f6167a1f023e1205799f48d21a3821"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/lod1.bin",
+          "bytes": 65192,
+          "sha256": "f51ed5b7ae9be4e37613ba0071e0f2ca63e1fc00fb7c42cad3eeca13d0f40a48"
+        },
+        {
+          "url": "/assets/environment/models/coast_rocks_02/lod1.gltf",
+          "bytes": 1919,
+          "sha256": "8ee2d9b6a965431391d351eeafeb4d62a25ad164b7a6fa1124329575d0903fe1"
+        }
+      ],
+      "bytes": 3627841,
+      "preview": "/assets/environment/previews/coast_rocks_02.webp"
+    },
+    {
+      "id": "coast_sand_02",
+      "name": "Arena costera",
+      "family": "Costa",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/coast_sand_02",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/coast_sand_02/color.webp",
+        "normal": "/assets/environment/materials/coast_sand_02/normal.webp",
+        "arm": "/assets/environment/materials/coast_sand_02/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/coast_sand_02/arm.webp",
+          "bytes": 280114,
+          "sha256": "efbe9ee4bebdcc250c66f6a8c7970c08bffe0d502d9b6f7d6218d6c636f58b87"
+        },
+        {
+          "url": "/assets/environment/materials/coast_sand_02/color.webp",
+          "bytes": 404816,
+          "sha256": "0a87aedad69183b01a87ad34891b1abed50ae5bdb6d298479b32b1d25ea3a481"
+        },
+        {
+          "url": "/assets/environment/materials/coast_sand_02/normal.webp",
+          "bytes": 561144,
+          "sha256": "091f1a2a8811012286ac912d7252b5337f2f9878f9734ec9e0d671eb68ab7944"
+        }
+      ],
+      "bytes": 1246074
+    },
+    {
+      "id": "concrete_panels",
+      "name": "Paneles de viaducto",
+      "family": "Arquitectura",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/concrete_panels",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/concrete_panels/color.webp",
+        "normal": "/assets/environment/materials/concrete_panels/normal.webp",
+        "arm": "/assets/environment/materials/concrete_panels/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/concrete_panels/arm.webp",
+          "bytes": 88744,
+          "sha256": "ed600765cfc12a1ba5ab1bdad0befd685e59987267316f716a9f35e468010b35"
+        },
+        {
+          "url": "/assets/environment/materials/concrete_panels/color.webp",
+          "bytes": 206546,
+          "sha256": "5db6126a9f63167fc1ba92e42e7207d5a0adc66dcd6da830d0c8877902676776"
+        },
+        {
+          "url": "/assets/environment/materials/concrete_panels/normal.webp",
+          "bytes": 346736,
+          "sha256": "6d13c461dada5a870a152b9aa4019a4482e1e1d789e8eb9689e3f677044c6fc6"
+        }
+      ],
+      "bytes": 642026
+    },
+    {
+      "id": "concrete_road_barrier",
+      "name": "Barrera Jersey de hormigón",
+      "family": "Circuito",
+      "biomes": [
+        "grandprix",
+        "tokyo",
+        "bund"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/concrete_road_barrier",
+      "license": "CC0-1.0",
+      "sourceTriangles": 60928,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/concrete_road_barrier/lod0.gltf",
+          "triangles": 3500,
+          "dimensions": [
+            1.5454,
+            0.831,
+            0.6387
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2406
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/concrete_road_barrier/lod1.gltf",
+          "triangles": 1166,
+          "dimensions": [
+            1.5454,
+            0.831,
+            0.6387
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2400
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/concrete_road_barrier_arm_1k.webp",
+          "bytes": 1108488,
+          "sha256": "692379ea6194af9754c42d5f6d0136628050096cc853cacab1d917dab2468932"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/concrete_road_barrier_diff_1k.webp",
+          "bytes": 393156,
+          "sha256": "5a37da322c4a5f86d0b73fdc4b4be805f5edaf9daec6d82ae01cc3f76905aa81"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/concrete_road_barrier_nor_gl_1k.webp",
+          "bytes": 1665922,
+          "sha256": "b44cfe9ccb5768abf0027befa8c77cbeaf69a3bfa35025e2d8a567cafac49051"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/lod0.bin",
+          "bytes": 89160,
+          "sha256": "edbc93c875936ca60ae7abec27e980d4409bb19dd45c31c8f8b721e5f717bdab"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/lod0.gltf",
+          "bytes": 1993,
+          "sha256": "4de90659e56535d7a1e2e941770bb9af9067ceadebcd00b65d76aaa6faff4ec9"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/lod1.bin",
+          "bytes": 33396,
+          "sha256": "791c44cc45b26f4a09fc78ae809d5f73f004d548156aa0541dbae8076754b2fa"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier/lod1.gltf",
+          "bytes": 1987,
+          "sha256": "2b17046f4f27d8cf2844f6cb7f53d15f1e3d13ad72b133bc09507e04a56849b8"
+        }
+      ],
+      "bytes": 3294102,
+      "preview": "/assets/environment/previews/concrete_road_barrier.webp"
+    },
+    {
+      "id": "concrete_road_barrier_02",
+      "name": "Barrera de hormigón pintada",
+      "family": "Circuito",
+      "biomes": [
+        "grandprix",
+        "tokyo",
+        "bund"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/concrete_road_barrier_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 23822,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod0.gltf",
+          "triangles": 3498,
+          "dimensions": [
+            1.5654,
+            1.112,
+            0.4421
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2453
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod1.gltf",
+          "triangles": 1166,
+          "dimensions": [
+            1.5654,
+            1.112,
+            0.4421
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2444
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/concrete_road_barrier_02_arm_1k.webp",
+          "bytes": 1217866,
+          "sha256": "ca5aec265f72f630de14833037bce9f6d0ba82e954daeab53a3e9d43abc795f7"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/concrete_road_barrier_02_diff_1k.webp",
+          "bytes": 377582,
+          "sha256": "c657c2f92c30205528345ee91fec9062c9efa21999ecdbbfeb3b81d402401b12"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/concrete_road_barrier_02_nor_gl_1k.webp",
+          "bytes": 1581784,
+          "sha256": "973d3ef8f9ff0557eea6b9da2fef8487b14368a9eda91ddec84c4fd765b259c7"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod0.bin",
+          "bytes": 86460,
+          "sha256": "c81c430b1f1624ab9e91d33e45993e8d34b81891354688584398ea2ca29b8320"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod0.gltf",
+          "bytes": 2040,
+          "sha256": "acea8eb28334c46a1805358f2c69a5ffcd59e8e2063d7346dfe5b9e6d8d22c38"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod1.bin",
+          "bytes": 31892,
+          "sha256": "de2aece75f491acb80aa1b1ee976f709eeb353da505ff57af4b5b18889978e98"
+        },
+        {
+          "url": "/assets/environment/models/concrete_road_barrier_02/lod1.gltf",
+          "bytes": 2031,
+          "sha256": "2434336798b6e183af4cecdf4d3a34ceec268932009b2d1a2f7091fef40ca080"
+        }
+      ],
+      "bytes": 3299655,
+      "preview": "/assets/environment/previews/concrete_road_barrier_02.webp"
+    },
+    {
+      "id": "dark_rock_02",
+      "name": "Roca volcánica oscura",
+      "family": "Selva",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/dark_rock_02",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/dark_rock_02/color.webp",
+        "normal": "/assets/environment/materials/dark_rock_02/normal.webp",
+        "arm": "/assets/environment/materials/dark_rock_02/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/dark_rock_02/arm.webp",
+          "bytes": 244720,
+          "sha256": "5266d2ba2c51c149b1c54fe48b52503a7a92b7739deaf213c485b70825878c18"
+        },
+        {
+          "url": "/assets/environment/materials/dark_rock_02/color.webp",
+          "bytes": 136230,
+          "sha256": "15969163ba4773076257b272b30c8063387fab7fa09a38a42c0cc6be015d7066"
+        },
+        {
+          "url": "/assets/environment/materials/dark_rock_02/normal.webp",
+          "bytes": 517864,
+          "sha256": "6e43fc5073cfdf1c3bad9a9e98b2cedf2f95678f871675781c78ee50fcbd7081"
+        }
+      ],
+      "bytes": 898814
+    },
+    {
+      "id": "fern_02",
+      "name": "Helechos de sotobosque",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "reunion"
+      ],
+      "targetTriangles": 4500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/fern_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 6232,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/fern_02/lod0.gltf",
+          "triangles": 784,
+          "dimensions": [
+            0.5519,
+            0.2868,
+            0.6134
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2310
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/fern_02/lod1.gltf",
+          "triangles": 784,
+          "dimensions": [
+            0.5519,
+            0.2868,
+            0.6134
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2310
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/fern_02/fern_02_arm_1k.webp",
+          "bytes": 395716,
+          "sha256": "d4f9e87a3f6be6551e8ae9dbfd0c101cee916c27c252890b6481ad5a25df5bf6"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/fern_02_diff_1k.webp",
+          "bytes": 108380,
+          "sha256": "384492d3832b1662a716a3694fadadd1e0cf3029a548f16516fad65b7084e571"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/fern_02_nor_gl_1k.webp",
+          "bytes": 614644,
+          "sha256": "1b0c291b8084e96fdb5d49720e3cae0d3feaec0b46e429992f88a29f1f360922"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/lod0.bin",
+          "bytes": 22112,
+          "sha256": "7ebd27e6f38099e2ce014fd8f81bf9e4696f372a7ef31c037ab5b4c3eb60e410"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/lod0.gltf",
+          "bytes": 1894,
+          "sha256": "cc4797cac54d74cee17a1070564a739f9d3cc3c1d68690b78f757b7e7aa9c9cc"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/lod1.bin",
+          "bytes": 22112,
+          "sha256": "7ebd27e6f38099e2ce014fd8f81bf9e4696f372a7ef31c037ab5b4c3eb60e410"
+        },
+        {
+          "url": "/assets/environment/models/fern_02/lod1.gltf",
+          "bytes": 1894,
+          "sha256": "6bd80dabf6c576df589807fc7370cb158e45cbc2b3780abd7c1f7307ae746382"
+        }
+      ],
+      "bytes": 1166752,
+      "preview": "/assets/environment/previews/fern_02.webp"
+    },
+    {
+      "id": "fir_sapling",
+      "name": "Abetos jóvenes",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "pyrenees",
+        "norway"
+      ],
+      "targetTriangles": 14000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/fir_sapling",
+      "license": "CC0-1.0",
+      "sourceTriangles": 433021,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/fir_sapling/lod0.gltf",
+          "triangles": 14000,
+          "dimensions": [
+            0.8611,
+            1.3007,
+            0.8222
+          ],
+          "meshes": 1,
+          "materials": 2,
+          "gltfBytes": 4494
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/fir_sapling/lod1.gltf",
+          "triangles": 4666,
+          "dimensions": [
+            0.8611,
+            1.3007,
+            0.8222
+          ],
+          "meshes": 1,
+          "materials": 2,
+          "gltfBytes": 4492
+        }
+      ],
+      "acceptedSourceFindings": 3,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_branches_arm_1k.webp",
+          "bytes": 1311184,
+          "sha256": "2348263d4e9c0837c23a54c627ec8484ef27b54d692ce443dd1f86a89543e03b"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_branches_diff_1k.webp",
+          "bytes": 413302,
+          "sha256": "47119579db09caf232f299533b221f6d43b7d0a6c4768874adc3823031d3b623"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_branches_nor_gl_1k.webp",
+          "bytes": 1875874,
+          "sha256": "74f083a30a2e3c3fc8f478e4dddc7cdd85296120b79bd95bd7b9f33121a3adbf"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_twigs_arm_1k.webp",
+          "bytes": 380000,
+          "sha256": "7839d3df45fb5918f49f71a062732d14aecf48e76e42b76a710a9504c836769a"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_twigs_diff-twigs_alpha.webp",
+          "bytes": 246004,
+          "sha256": "ff19b4966f78f2fbae63d26595c5a8383f75ccd0b63c78ccbf696b2a646cb0ac"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/fir_sapling_twigs_nor_gl_1k.webp",
+          "bytes": 658612,
+          "sha256": "dfbe4dd50247169623dbe5eb8125741d75c1b5c9df3dbac1f3d4676d329f6555"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/lod0.bin",
+          "bytes": 1368612,
+          "sha256": "ed24a7eb6dfb9c97a8522eb4bb90d6d9812d3d593a69d230e5139c369264d671"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/lod0.gltf",
+          "bytes": 3665,
+          "sha256": "12ea6af94265ea3b095deb11714fc81d8a647035a6d43737d03a0a53c679d4b5"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/lod1.bin",
+          "bytes": 451776,
+          "sha256": "7288d5cb10c4887725ecb0a4dfc3a485476964675893cb5d481ece60783cb774"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/lod1.gltf",
+          "bytes": 3663,
+          "sha256": "4c0c65f9c7c1cf2d2ee0484ffd88e6c58f613429ab85f1797dac8e334b977085"
+        }
+      ],
+      "bytes": 6712692,
+      "preview": "/assets/environment/previews/fir_sapling.webp"
+    },
+    {
+      "id": "forest_leaves_03",
+      "name": "Hojarasca",
+      "family": "Bosque",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/forest_leaves_03",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/forest_leaves_03/color.webp",
+        "normal": "/assets/environment/materials/forest_leaves_03/normal.webp",
+        "arm": "/assets/environment/materials/forest_leaves_03/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/forest_leaves_03/arm.webp",
+          "bytes": 492152,
+          "sha256": "5d3f8b23fc9d76dc5512dd4cb9cb6c201b6774f4760b4dca835e3b33e726c0da"
+        },
+        {
+          "url": "/assets/environment/materials/forest_leaves_03/color.webp",
+          "bytes": 381654,
+          "sha256": "9f8f1f5a591c9b65b84f0e72062b253224850a444bcba0b495a16723297adf24"
+        },
+        {
+          "url": "/assets/environment/materials/forest_leaves_03/normal.webp",
+          "bytes": 721332,
+          "sha256": "eacc26977b769fbc63b6e23561ca388d01c9ff0f73e4181134e33be6087e5886"
+        }
+      ],
+      "bytes": 1595138
+    },
+    {
+      "id": "forrest_ground_01",
+      "name": "Suelo de bosque",
+      "family": "Bosque",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/forrest_ground_01",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/forrest_ground_01/color.webp",
+        "normal": "/assets/environment/materials/forrest_ground_01/normal.webp",
+        "arm": "/assets/environment/materials/forrest_ground_01/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/forrest_ground_01/arm.webp",
+          "bytes": 419774,
+          "sha256": "1c5a74e2fb97f2501023e029ca42735644e3d847f2b6f3885862edddd2dca7e0"
+        },
+        {
+          "url": "/assets/environment/materials/forrest_ground_01/color.webp",
+          "bytes": 484258,
+          "sha256": "3f015df8732793516e1cbe594cdd2bfa3a5952b1a48fc1c7a8149f7c93ef4572"
+        },
+        {
+          "url": "/assets/environment/materials/forrest_ground_01/normal.webp",
+          "bytes": 746488,
+          "sha256": "6c83f581904853f4ba15da96313002f89835c99e81c2d41e891dddf545789d69"
+        }
+      ],
+      "bytes": 1650520
+    },
+    {
+      "id": "grass_ground",
+      "name": "Césped natural",
+      "family": "Pradera",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/grass_ground",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/grass_ground/color.webp",
+        "normal": "/assets/environment/materials/grass_ground/normal.webp",
+        "arm": "/assets/environment/materials/grass_ground/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/grass_ground/arm.webp",
+          "bytes": 471884,
+          "sha256": "e118217aa4e77b0967b44960b13aecb2d16cb421922fc0085c011ffe271e5fc0"
+        },
+        {
+          "url": "/assets/environment/materials/grass_ground/color.webp",
+          "bytes": 339184,
+          "sha256": "9bfbecd3449b3549cb09353fee95aa3f52c7d690e2405e5aed63262ce1010e9e"
+        },
+        {
+          "url": "/assets/environment/materials/grass_ground/normal.webp",
+          "bytes": 707436,
+          "sha256": "f84667b37448e6c2e810133bf469afdac45da6e7ae55d4cecce1fd635aa0c7c1"
+        }
+      ],
+      "bytes": 1518504
+    },
+    {
+      "id": "grass_medium_01",
+      "name": "Matas de hierba",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "grandprix",
+        "pyrenees"
+      ],
+      "targetTriangles": 2000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/grass_medium_01",
+      "license": "CC0-1.0",
+      "sourceTriangles": 24730,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/grass_medium_01/lod0.gltf",
+          "triangles": 2000,
+          "dimensions": [
+            0.317,
+            0.1467,
+            0.3266
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2395
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/grass_medium_01/lod1.gltf",
+          "triangles": 699,
+          "dimensions": [
+            0.317,
+            0.1467,
+            0.3266
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2391
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/grass_medium_01/grass_medium_01_arm_1k.webp",
+          "bytes": 1069634,
+          "sha256": "a8c06f7455fda59338cbe228b6c018a0652f76d4926ae7fde39f50ffb0952f9f"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/grass_medium_01_diff_1k.webp",
+          "bytes": 155108,
+          "sha256": "e8ce6c1280d8332cefbf83273cda9433349abdee6864e7870bd66b8c3e8b549f"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/grass_medium_01_nor_gl_1k.webp",
+          "bytes": 1542872,
+          "sha256": "b5b8fb027f2b284c7b6e69a2a23ca1fa1bf3ababaa3e694ca2315179d34bdd60"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/lod0.bin",
+          "bytes": 99424,
+          "sha256": "ec83c27256d38a444f648715f1895091ffb8801e18a3b4a1006e65efd0992a83"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/lod0.gltf",
+          "bytes": 1979,
+          "sha256": "b8e2679ec9d61d8823624813a0e949df1e72d096288ef18f88a38b792a06ee09"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/lod1.bin",
+          "bytes": 42500,
+          "sha256": "1abecee032c15526db9a04129427b05692d2c8634a53fb17c505ccbe31c2c06a"
+        },
+        {
+          "url": "/assets/environment/models/grass_medium_01/lod1.gltf",
+          "bytes": 1975,
+          "sha256": "2a338e08365445f378b376663a990f4b3b724d16825160d324c1de714091f438"
+        }
+      ],
+      "bytes": 2913492,
+      "preview": "/assets/environment/previews/grass_medium_01.webp"
+    },
+    {
+      "id": "gravel_road",
+      "name": "Grava de escapatoria",
+      "family": "Circuito",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/gravel_road",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/gravel_road/color.webp",
+        "normal": "/assets/environment/materials/gravel_road/normal.webp",
+        "arm": "/assets/environment/materials/gravel_road/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/gravel_road/arm.webp",
+          "bytes": 90090,
+          "sha256": "2e4c0b893b98087303ff73fe7064ab52653cd570fdf3a9e0b3f2de79857817e8"
+        },
+        {
+          "url": "/assets/environment/materials/gravel_road/color.webp",
+          "bytes": 191356,
+          "sha256": "5fd359a260099576480fd2a717527e8c4d5baa108c1d0db94822940d9bd41806"
+        },
+        {
+          "url": "/assets/environment/materials/gravel_road/normal.webp",
+          "bytes": 456422,
+          "sha256": "b288392ddf7a5ad3374ea92f086e81b766ed2db65c02bcf82524cd132af1a258"
+        }
+      ],
+      "bytes": 737868
+    },
+    {
+      "id": "island_tree_02",
+      "name": "Árbol insular",
+      "family": "Vegetación",
+      "biomes": [
+        "reunion",
+        "amalfi"
+      ],
+      "targetTriangles": 18000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/island_tree_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 1072213,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/island_tree_02/lod0.gltf",
+          "triangles": 17999,
+          "dimensions": [
+            4.2077,
+            3.4066,
+            4.0707
+          ],
+          "meshes": 3,
+          "materials": 3,
+          "gltfBytes": 7400
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/island_tree_02/lod1.gltf",
+          "triangles": 6821,
+          "dimensions": [
+            4.2077,
+            3.4066,
+            4.0707
+          ],
+          "meshes": 3,
+          "materials": 3,
+          "gltfBytes": 7390
+        }
+      ],
+      "acceptedSourceFindings": 2047,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_arm_1k.webp",
+          "bytes": 1130954,
+          "sha256": "8066847b837954daacbaaf54a308bd6a05e80c23f22c02e5e5054b201d6a438a"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_branches_arm_1k.webp",
+          "bytes": 907312,
+          "sha256": "a56533103f1d5c8c2eff27b8e4376a78472724ee566b1473a8185e7b8420f282"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_branches_diff_1k.webp",
+          "bytes": 217904,
+          "sha256": "31cc0d4c1d652846cc7d576facab2f5fdc5b320a47abf5392bbad8e92f3db36d"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_branches_nor_gl_1k.webp",
+          "bytes": 1414320,
+          "sha256": "0984da078e21f4663831e9c5448f9b5baf0f3fc8d7dc97821d8353a3c85f7c1e"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_diff_1k.webp",
+          "bytes": 363216,
+          "sha256": "2bc3bfbeae88f8bc4de4c3303e7e9649addad3fbf0b53229bdebe4827f6ab53a"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_leaves_arm_1k.webp",
+          "bytes": 760280,
+          "sha256": "a4bafe1e4001a995528a1c7bbf33df8914f5b724a960eb67bfa5f8b7b0aea640"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_leaves_diff-island_tree_02_leaves_alpha-leaves_alpha.webp",
+          "bytes": 288298,
+          "sha256": "7b47198bd54695f86f441a9bd940253f852ab272ab5989f1ea6093b5fbc3f46e"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_leaves_nor_gl_1k.webp",
+          "bytes": 716500,
+          "sha256": "5af3d52c26c2244e993c8bd6141b51f73cce9a84ad0493330c8452f16be3b5cc"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/island_tree_02_nor_gl_1k.webp",
+          "bytes": 1873952,
+          "sha256": "7c4568d9eb72082a132972526aba114732bd6dc553266f0eabd904ba46a0d6e2"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/lod0.bin",
+          "bytes": 1554364,
+          "sha256": "d88754cd52482740d92454ac17c160f8a1ce35cc7643da02b5b42eb97193ae8e"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/lod0.gltf",
+          "bytes": 5836,
+          "sha256": "24149ea1c7976bedd393fb01d71038474724de4faff1197dd3fe7c8a4675326c"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/lod1.bin",
+          "bytes": 592256,
+          "sha256": "d5013c97b5268c6aa420d25f1c02458833cbabc3e18b2eac7f103867b601710c"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/lod1.gltf",
+          "bytes": 5826,
+          "sha256": "5748e15b03d06f59fe72ecc7ca2f4d7d77f3f5732f964a864042bb8c3c4ff1d9"
+        }
+      ],
+      "bytes": 9831018,
+      "preview": "/assets/environment/previews/island_tree_02.webp"
+    },
+    {
+      "id": "metal_plate",
+      "name": "Chapa metálica",
+      "family": "Circuito",
+      "tileMeters": 2,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/metal_plate",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/metal_plate/color.webp",
+        "normal": "/assets/environment/materials/metal_plate/normal.webp",
+        "arm": "/assets/environment/materials/metal_plate/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/metal_plate/arm.webp",
+          "bytes": 470928,
+          "sha256": "d82d40dd54844200d30404d7f8ae62ca4d9bf1101ab46c02e79787c65bc41a99"
+        },
+        {
+          "url": "/assets/environment/materials/metal_plate/color.webp",
+          "bytes": 195894,
+          "sha256": "681b4dc71b1d7122ef5d6878a0bd5af26eb5f6a9bae47db9ab27002647a34d78"
+        },
+        {
+          "url": "/assets/environment/materials/metal_plate/normal.webp",
+          "bytes": 324450,
+          "sha256": "a7eee077948058eb9e6e4165eabe1cca519863df1c16a60f220276d2381e6ed6"
+        }
+      ],
+      "bytes": 991272
+    },
+    {
+      "id": "modular_chainlink_fence",
+      "name": "Valla de seguridad modular",
+      "family": "Circuito",
+      "biomes": [
+        "grandprix",
+        "tokyo",
+        "bund"
+      ],
+      "targetTriangles": 6000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/modular_chainlink_fence",
+      "license": "CC0-1.0",
+      "sourceTriangles": 89232,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/modular_chainlink_fence/lod0.gltf",
+          "triangles": 5296,
+          "dimensions": [
+            1.1335,
+            2.5229,
+            0.1494
+          ],
+          "meshes": 3,
+          "materials": 2,
+          "gltfBytes": 7294
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/modular_chainlink_fence/lod1.gltf",
+          "triangles": 1998,
+          "dimensions": [
+            1.1335,
+            2.5229,
+            0.1494
+          ],
+          "meshes": 3,
+          "materials": 2,
+          "gltfBytes": 7305
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/lod0.bin",
+          "bytes": 176780,
+          "sha256": "99e9effdbc50d1f9fe02fed73e690e78aff2da97659e676f1c4059563c0ce1a0"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/lod0.gltf",
+          "bytes": 5575,
+          "sha256": "843f34c763398cfe4e40ff24130a269789ff3a7a5eabe1e995e8db4e979c44ce"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/lod1.bin",
+          "bytes": 85708,
+          "sha256": "210f52b6deb0eee5e5ad4da2730ebe8abb82f86a1b3209a43cae392591e6464b"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/lod1.gltf",
+          "bytes": 5586,
+          "sha256": "908e643832fae9a3331a6f9fe9bcd30aa5f52bfeb51c40a19f6ee62da6a2d590"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_posts_arm_1k.webp",
+          "bytes": 1301832,
+          "sha256": "5ecbb3464fd14e35b4cd1a72208a6c4fe6416657378cda3384ca38de6d50cc03"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_posts_diff_1k.webp",
+          "bytes": 291676,
+          "sha256": "f78d0b7e38df632646c164768976636fb83cb4c4bfab2eb6be9326e9bbcc6525"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_posts_nor_gl_1k.webp",
+          "bytes": 757072,
+          "sha256": "0ccae14951c95a7f32fb5316c56cf95f0ce7e8a6318b809602fb0ec8416c2048"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_wire_arm_1k.webp",
+          "bytes": 1155648,
+          "sha256": "75b52cea39872c1c22420772f313e3b7279d7821fee55401d3e50b97df896a81"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_wire_diff_1k.webp",
+          "bytes": 226850,
+          "sha256": "a2759ed40bb84ed3875f281d6ccb60ce1917b65fe03c9b92d518437ac97aedfb"
+        },
+        {
+          "url": "/assets/environment/models/modular_chainlink_fence/modular_chainlink_fence_wire_nor_gl_1k.webp",
+          "bytes": 921926,
+          "sha256": "b51d65d2db8fbcb06f2d40f303d241412f4d91f537b527542e9bd813a764b73c"
+        }
+      ],
+      "bytes": 4928653,
+      "preview": "/assets/environment/previews/modular_chainlink_fence.webp"
+    },
+    {
+      "id": "mossy_rock",
+      "name": "Roca cubierta de musgo",
+      "family": "Bosque",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/mossy_rock",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/mossy_rock/color.webp",
+        "normal": "/assets/environment/materials/mossy_rock/normal.webp",
+        "arm": "/assets/environment/materials/mossy_rock/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/mossy_rock/arm.webp",
+          "bytes": 476196,
+          "sha256": "187efd767feda60f533ff78f6e96f682d7a0e5be9d73bc049379ddc3e6f9efb4"
+        },
+        {
+          "url": "/assets/environment/materials/mossy_rock/color.webp",
+          "bytes": 473544,
+          "sha256": "806e0a279ee812b83a2552360502518d9b7da35e5a480f4fb369f82ecdaf1097"
+        },
+        {
+          "url": "/assets/environment/materials/mossy_rock/normal.webp",
+          "bytes": 512792,
+          "sha256": "d53918bb98d32d76f3edbda56d903b6ba01c9a9dd2a2091282c172333ce271eb"
+        }
+      ],
+      "bytes": 1462532
+    },
+    {
+      "id": "mud_forest",
+      "name": "Tierra de selva",
+      "family": "Selva",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/mud_forest/color.webp",
+        "normal": "/assets/environment/materials/mud_forest/normal.webp",
+        "arm": "/assets/environment/materials/mud_forest/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/mud_forest/arm.webp",
+          "bytes": 391308,
+          "sha256": "e80d0c1f75c0b5d6e490d268c7629130c366153d14f3c7fa22b1dc8959112db8"
+        },
+        {
+          "url": "/assets/environment/materials/mud_forest/color.webp",
+          "bytes": 360396,
+          "sha256": "7f975407b3bbf1393f5e7ef29b0645aa305a24be88a8ffe28bfc713390014e4c"
+        },
+        {
+          "url": "/assets/environment/materials/mud_forest/normal.webp",
+          "bytes": 763772,
+          "sha256": "0e3215b9f0dc64c80f57a3fd60c734f6385386956833331ff0967aed63e1dc80"
+        }
+      ],
+      "bytes": 1515476
+    },
+    {
+      "id": "namaqualand_boulder_02",
+      "name": "Granito erosionado",
+      "family": "Rocas",
+      "biomes": [
+        "sahara",
+        "pyrenees",
+        "reunion"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/namaqualand_boulder_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 97964,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod0.gltf",
+          "triangles": 3499,
+          "dimensions": [
+            2.5321,
+            0.8826,
+            1.2343
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2395
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod1.gltf",
+          "triangles": 1165,
+          "dimensions": [
+            2.5321,
+            0.8826,
+            1.2343
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2391
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod0.bin",
+          "bytes": 107364,
+          "sha256": "f67f319cd885cc2548cee25bac128be4a3312698d51fce33f89a795674f3995e"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod0.gltf",
+          "bytes": 1982,
+          "sha256": "5a90ac7d316c25951603f757abf10443c4cc223e3b7b63b08015d5f7569e7801"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod1.bin",
+          "bytes": 44048,
+          "sha256": "e86b8e0049317938ce530574126732b7a60a201aed29581a088182e4502fde6f"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/lod1.gltf",
+          "bytes": 1978,
+          "sha256": "98fc20e8f00982a3d672f18375e48bfa54a2c0abecb20d2cb51b95f3367e85c2"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/namaqualand_boulder_02_arm_1k.webp",
+          "bytes": 1332520,
+          "sha256": "f1f022dddd21be024c545532d77a2d7c4b11e842b8ba463e6201b40a5e785ca4"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/namaqualand_boulder_02_diff_1k.webp",
+          "bytes": 528360,
+          "sha256": "2b50791af0079394e5d8d81f9d2677df3b6533e25d4bb51051fd382b160de011"
+        },
+        {
+          "url": "/assets/environment/models/namaqualand_boulder_02/namaqualand_boulder_02_nor_gl_1k.webp",
+          "bytes": 1772746,
+          "sha256": "ce049a10ce4662588a38e0afbd3dc6e5cfd8fcbdb16ca2f6b32fc481c4b2858e"
+        }
+      ],
+      "bytes": 3788998,
+      "preview": "/assets/environment/previews/namaqualand_boulder_02.webp"
+    },
+    {
+      "id": "old_tyre",
+      "name": "Neumático usado",
+      "family": "Circuito",
+      "biomes": [
+        "grandprix",
+        "woodland"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/old_tyre",
+      "license": "CC0-1.0",
+      "sourceTriangles": 2880,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/old_tyre/lod0.gltf",
+          "triangles": 2880,
+          "dimensions": [
+            0.6,
+            0.6,
+            0.165
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2283
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/old_tyre/lod1.gltf",
+          "triangles": 1166,
+          "dimensions": [
+            0.6,
+            0.6,
+            0.165
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2277
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/old_tyre/lod0.bin",
+          "bytes": 84160,
+          "sha256": "4e43f86074fa18ebb635da27743038feb92de031857dc9caace436218a56cc4c"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/lod0.gltf",
+          "bytes": 1870,
+          "sha256": "92a6948e21c73c06953e82cfce1ffb5b6e0885e9eb6e3132aa4f55b16a23552b"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/lod1.bin",
+          "bytes": 35380,
+          "sha256": "e4c99df924d4b634c80880935b445ea15fe949e7b7228432f8d0b9eef1f4e212"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/lod1.gltf",
+          "bytes": 1864,
+          "sha256": "21ecac0d9f33fc348e0d5e8326a95554912acfe07243ac009763885af0c85830"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/old_tyre_arm_1k.webp",
+          "bytes": 1316254,
+          "sha256": "6283ebd4801b86121e6302a0059db1fed71347d6d0d81f9ec4e20515b02ec38c"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/old_tyre_diff_1k.webp",
+          "bytes": 306000,
+          "sha256": "39cc233b72c51d772d1152876005acc0d00479b3562c948a4ea0f71bac693dc1"
+        },
+        {
+          "url": "/assets/environment/models/old_tyre/old_tyre_nor_gl_1k.webp",
+          "bytes": 1247388,
+          "sha256": "e0b3f42c8cb297dd7426530ead4ff0c4ec959cfed120324880d6484522894acf"
+        }
+      ],
+      "bytes": 2992916,
+      "preview": "/assets/environment/previews/old_tyre.webp"
+    },
+    {
+      "id": "pine_sapling_small",
+      "name": "Pino joven",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "pyrenees",
+        "norway"
+      ],
+      "targetTriangles": 16000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/pine_sapling_small",
+      "license": "CC0-1.0",
+      "sourceTriangles": 398144,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/pine_sapling_small/lod0.gltf",
+          "triangles": 15999,
+          "dimensions": [
+            0.7877,
+            1.299,
+            0.7274
+          ],
+          "meshes": 1,
+          "materials": 2,
+          "gltfBytes": 4816
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/pine_sapling_small/lod1.gltf",
+          "triangles": 5333,
+          "dimensions": [
+            0.7877,
+            1.299,
+            0.7274
+          ],
+          "meshes": 1,
+          "materials": 2,
+          "gltfBytes": 4813
+        }
+      ],
+      "acceptedSourceFindings": 1,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/pine_sapling_small/lod0.bin",
+          "bytes": 1085340,
+          "sha256": "f03864ba8701ed322d5c7a137575e34443621bdf77656dd1a1d233e7cb91425f"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/lod0.gltf",
+          "bytes": 3920,
+          "sha256": "3fb0ac20661fb17340cf660fd8d16ff735f12762f0ecb14d8c51b393d13e9f97"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/lod1.bin",
+          "bytes": 465376,
+          "sha256": "d08b09b705bc35b6bc61f7718dc35562b3b1ac74ca3e6e1dbadfd21648cb9bf3"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/lod1.gltf",
+          "bytes": 3917,
+          "sha256": "e181d92ed2e0c5c4ecc8aae81187efbca1e64801b7da39af4fec8b14f4a9a8b9"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_bark_arm_1k.webp",
+          "bytes": 1348434,
+          "sha256": "bec5df4521a2027784c74102b5dd250377969571a7f64b71ed7824803d90bbeb"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_bark_diff_1k.webp",
+          "bytes": 376450,
+          "sha256": "8e06f52d5bc48494bc15a234287ebf1ff7b1f08da5c33b73509aaa34eedb3e92"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_bark_nor_gl_1k.webp",
+          "bytes": 1665990,
+          "sha256": "41a1bd59fc7c7a05e0a036ab3eb7153ee0c725c3ee01efe2bcbcf1683e5f1b05"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_twig_arm_1k.webp",
+          "bytes": 607656,
+          "sha256": "b928e5689e5de74f4b037ba1517f5f2bb2ab607756ad51b84649dc4023799d17"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_twig_diff-twig_alpha.webp",
+          "bytes": 699968,
+          "sha256": "1ee4df93f377535419003e9576df580784fa1a83483d7121a1c5744234a54636"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_twig_nor_gl_1k.webp",
+          "bytes": 1111420,
+          "sha256": "5c91e407a205d3790fa8fa5645c7c841cdf02bb4c6d57efb84a23f9c8e194b47"
+        }
+      ],
+      "bytes": 7368471,
+      "preview": "/assets/environment/previews/pine_sapling_small.webp"
+    },
+    {
+      "id": "red_brick_03",
+      "name": "Ladrillo histórico",
+      "family": "Arquitectura",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/red_brick_03",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/red_brick_03/color.webp",
+        "normal": "/assets/environment/materials/red_brick_03/normal.webp",
+        "arm": "/assets/environment/materials/red_brick_03/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/red_brick_03/arm.webp",
+          "bytes": 215200,
+          "sha256": "8ddfebf370e1468e786e09f624022a0f5ff1dbd1155c7c3e06397a15abadacfc"
+        },
+        {
+          "url": "/assets/environment/materials/red_brick_03/color.webp",
+          "bytes": 447706,
+          "sha256": "4360fa7760db60fdd795c9079762aee1715642d9e167f4ef1ba9860e259bd5b0"
+        },
+        {
+          "url": "/assets/environment/materials/red_brick_03/normal.webp",
+          "bytes": 534782,
+          "sha256": "3254cb11d54d6cbc5f24c820564a93d7860c880baaefdb35b5d9d08c94536bef"
+        }
+      ],
+      "bytes": 1197688
+    },
+    {
+      "id": "rock_face_03",
+      "name": "Acantilado de roca",
+      "family": "Montaña",
+      "tileMeters": 5,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/rock_face_03",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/rock_face_03/color.webp",
+        "normal": "/assets/environment/materials/rock_face_03/normal.webp",
+        "arm": "/assets/environment/materials/rock_face_03/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/rock_face_03/arm.webp",
+          "bytes": 381246,
+          "sha256": "fb2dbcbaf73c8e762c1eb1065ba2f5785817471e60f891c5480f1d55d53f6e13"
+        },
+        {
+          "url": "/assets/environment/materials/rock_face_03/color.webp",
+          "bytes": 362060,
+          "sha256": "526f16d1ef74a4488847b2eeecfb642bee3b5f328e7cf97dc418b65f6074c7c6"
+        },
+        {
+          "url": "/assets/environment/materials/rock_face_03/normal.webp",
+          "bytes": 588980,
+          "sha256": "59289aa7cb1d76958f433a50ca0b064337135015697fe32f5022c3a76ed9e58f"
+        }
+      ],
+      "bytes": 1332286
+    },
+    {
+      "id": "rock_moss_set_01",
+      "name": "Rocas con musgo",
+      "family": "Rocas",
+      "biomes": [
+        "woodland",
+        "reunion"
+      ],
+      "targetTriangles": 4000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/rock_moss_set_01",
+      "license": "CC0-1.0",
+      "sourceTriangles": 63127,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/rock_moss_set_01/lod0.gltf",
+          "triangles": 4000,
+          "dimensions": [
+            2.2376,
+            1.4727,
+            3.3688
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2374
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/rock_moss_set_01/lod1.gltf",
+          "triangles": 1332,
+          "dimensions": [
+            2.2376,
+            1.4727,
+            3.3688
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2369
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/lod0.bin",
+          "bytes": 99808,
+          "sha256": "af0a243a8171d50445689da6d6a1f4a5edeeee4d59379d0654b88fa03127d59a"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/lod0.gltf",
+          "bytes": 1961,
+          "sha256": "a557a07b2302fa0bdfe7c555812492868f5f863ec7cd456777bdf13c0382cff9"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/lod1.bin",
+          "bytes": 36408,
+          "sha256": "4082202e65e8228d2b654680902f5195f2d3e128ac739fc0de40c82f7d25094c"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/lod1.gltf",
+          "bytes": 1956,
+          "sha256": "e3fdab85f2041035b68fab0b792d75efd4627a284d585695f3b59995a5d296ca"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/rock_moss_set_01_diff_1k.webp",
+          "bytes": 229690,
+          "sha256": "ec6e22c68854ac8a8d80071b73aed38d368adceb4eb49be6df6199ce3bd44173"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/rock_moss_set_01_nor_gl_1k.webp",
+          "bytes": 1151078,
+          "sha256": "15887645ae09f4e702b518a9c2c941dc9cfbb6cbddfe96945a82e52526ed08e6"
+        },
+        {
+          "url": "/assets/environment/models/rock_moss_set_01/rock_moss_set_01_rough_1k.webp",
+          "bytes": 226134,
+          "sha256": "3a399b52b972fd8f01d462db8199c68777d061d399b2214917ff431c40a93ce5"
+        }
+      ],
+      "bytes": 1747035,
+      "preview": "/assets/environment/previews/rock_moss_set_01.webp"
+    },
+    {
+      "id": "sand_02",
+      "name": "Arena de dunas",
+      "family": "Desierto",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/sand_02",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/sand_02/color.webp",
+        "normal": "/assets/environment/materials/sand_02/normal.webp",
+        "arm": "/assets/environment/materials/sand_02/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/sand_02/arm.webp",
+          "bytes": 142404,
+          "sha256": "9eb68142da4fe8d4c937a612453dfaa503c4f26f614cc32797ddba7c6afb9e50"
+        },
+        {
+          "url": "/assets/environment/materials/sand_02/color.webp",
+          "bytes": 435022,
+          "sha256": "2bf6dd71cee76aea69358dd2b93e15ad5806b4b4a1e0cb63e83fa6ecaf082e22"
+        },
+        {
+          "url": "/assets/environment/materials/sand_02/normal.webp",
+          "bytes": 590290,
+          "sha256": "81d2417548a4fd8c3855c5472e167dd00b5da88803146f83eec673b11e9c4e3a"
+        }
+      ],
+      "bytes": 1167716
+    },
+    {
+      "id": "snow_02",
+      "name": "Nieve compactada",
+      "family": "Invierno",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/snow_02",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/snow_02/color.webp",
+        "normal": "/assets/environment/materials/snow_02/normal.webp",
+        "arm": "/assets/environment/materials/snow_02/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/snow_02/arm.webp",
+          "bytes": 111150,
+          "sha256": "74887b282ab5e6a9ab9f793b3a8c16c19390dbf8255ff9f55f59614a61b7a8dd"
+        },
+        {
+          "url": "/assets/environment/materials/snow_02/color.webp",
+          "bytes": 180094,
+          "sha256": "8de04ee865d5028993ce6b958b18228ce6ed61a1b449eaafef7e232cc0b3bdf1"
+        },
+        {
+          "url": "/assets/environment/materials/snow_02/normal.webp",
+          "bytes": 569946,
+          "sha256": "712f38f766683c778f051a824f277afeb93b3606542514b282794487880eab72"
+        }
+      ],
+      "bytes": 861190
+    },
+    {
+      "id": "snow_05",
+      "name": "Nieve irregular",
+      "family": "Invierno",
+      "tileMeters": 4,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/snow_05",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/snow_05/color.webp",
+        "normal": "/assets/environment/materials/snow_05/normal.webp",
+        "arm": "/assets/environment/materials/snow_05/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/snow_05/arm.webp",
+          "bytes": 330144,
+          "sha256": "eca637ff33df581677d7933b4027b5bcf3a170fe6c919a59b3b44220cf7c269a"
+        },
+        {
+          "url": "/assets/environment/materials/snow_05/color.webp",
+          "bytes": 385840,
+          "sha256": "ab9f163e212dbadc3924e4bbcf82ddc0668ae5eb6b2b0037f3aca9fcda799951"
+        },
+        {
+          "url": "/assets/environment/materials/snow_05/normal.webp",
+          "bytes": 665098,
+          "sha256": "037f6bbd072491c63cd944d9f7afd3e662b015ba92e22b54c469412aebb77b63"
+        }
+      ],
+      "bytes": 1381082
+    },
+    {
+      "id": "street_lamp_01",
+      "name": "Farola de servicio",
+      "family": "Circuito",
+      "biomes": [
+        "grandprix",
+        "tokyo",
+        "bund"
+      ],
+      "targetTriangles": 5000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/street_lamp_01",
+      "license": "CC0-1.0",
+      "sourceTriangles": 30610,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/street_lamp_01/lod0.gltf",
+          "triangles": 4999,
+          "dimensions": [
+            0.7043,
+            3.8706,
+            0.3865
+          ],
+          "meshes": 1,
+          "materials": 3,
+          "gltfBytes": 5111
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/street_lamp_01/lod1.gltf",
+          "triangles": 1657,
+          "dimensions": [
+            0.7043,
+            3.8706,
+            0.3865
+          ],
+          "meshes": 1,
+          "materials": 3,
+          "gltfBytes": 5092
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/street_lamp_01/lod0.bin",
+          "bytes": 147212,
+          "sha256": "9ac33b6e9eacc5b18a63f4370c313de39873b1406da0712a3276d4b78541aae5"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/lod0.gltf",
+          "bytes": 4150,
+          "sha256": "87b864df408ada8feb858e10d7866f202038bdcb385359e449a16630838405a6"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/lod1.bin",
+          "bytes": 58168,
+          "sha256": "e2a2c48968030d9f0403cfdc79eebcdd02b21d6632e526aa6014154422618b42"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/lod1.gltf",
+          "bytes": 4131,
+          "sha256": "4584aa101fe3a3b82fb15583f099c77dc228334a6b75e9a22c9d73030696fe43"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/street_lamp_01_arm_1k.webp",
+          "bytes": 1112162,
+          "sha256": "b327806233d2ee36c2a5540c60cd9524c369b07c138b24ea04a8f6058f6c1a4a"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/street_lamp_01_diff_1k.webp",
+          "bytes": 84472,
+          "sha256": "b3ee195e4f7d86d702f13db6f4a1afcb40e7dfd44f79b87660ee1532dc072645"
+        },
+        {
+          "url": "/assets/environment/models/street_lamp_01/street_lamp_01_nor_gl_1k.webp",
+          "bytes": 795680,
+          "sha256": "2e89cec13ab17c45f8a6f43809b0797ed6dcfd729e2bdaa02dc85669bb3a55ff"
+        }
+      ],
+      "bytes": 2205975,
+      "preview": "/assets/environment/previews/street_lamp_01.webp"
+    },
+    {
+      "id": "tree_small_02",
+      "name": "Árbol frondoso",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "grandprix",
+        "amalfi"
+      ],
+      "targetTriangles": 18000,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/tree_small_02",
+      "license": "CC0-1.0",
+      "sourceTriangles": 2062487,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/tree_small_02/lod0.gltf",
+          "triangles": 53957,
+          "dimensions": [
+            2.9167,
+            4.5567,
+            4.2925
+          ],
+          "meshes": 3,
+          "materials": 3,
+          "gltfBytes": 7806
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/tree_small_02/lod1.gltf",
+          "triangles": 13217,
+          "dimensions": [
+            2.9167,
+            4.5567,
+            4.2925
+          ],
+          "meshes": 3,
+          "materials": 3,
+          "gltfBytes": 7790
+        }
+      ],
+      "acceptedSourceFindings": 3019,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/tree_small_02/lod0.bin",
+          "bytes": 4472392,
+          "sha256": "845382c5448ecfa06178779ceccbc4739e27d37d69d1c3be9a9582e7277536e5"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/lod0.gltf",
+          "bytes": 6123,
+          "sha256": "e59a70a58fa033946fbc4545d51f6bd54e7df275c4114e36ebd28f24a9d00f77"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/lod1.bin",
+          "bytes": 927984,
+          "sha256": "3227cd483a23e1698ec0d7a951cc1879f77dd5a545be9f2ab730b3c6bb347045"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/lod1.gltf",
+          "bytes": 6107,
+          "sha256": "94a502228122a0b5328b67e19da04c1924269cb8de61306665e6b2cb0327c42f"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_arm_1k.webp",
+          "bytes": 1213344,
+          "sha256": "defe4a540ef47f69200b39bab1cc6af258816bb2fc551bb0ef5973558ad43635"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_branch_arm_1k.webp",
+          "bytes": 781460,
+          "sha256": "0b88c6b73439443df067be55c921eb05749fcc53a33be70b2f59605f30b988bf"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_branch_diff_1k.webp",
+          "bytes": 162904,
+          "sha256": "058d2281df5010a00ea61b70ff90c0b4d4ac6f69b11b426bd4896719e995f05f"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_branch_nor_gl_1k.webp",
+          "bytes": 1092752,
+          "sha256": "0ea6afb99e069e9ad1a19589e4805342e6ace9ac06fb84e0f6562847f5004717"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_diff_1k.webp",
+          "bytes": 433662,
+          "sha256": "083b76cae17916d0f6c0888247bd935e6fc0a70422407c9f5747fa0367895003"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_leaves_arm_1k.webp",
+          "bytes": 1064288,
+          "sha256": "da808f0e51ce6e1f71c90375f3cd89cd1f12f6c0e76d21241fffbd58b34c2a9a"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_leaves_diff-tree_small_02_leaves_alpha-leaves_alpha.webp",
+          "bytes": 528086,
+          "sha256": "cbbfacf988098b70a07274d3ed901c070238cc45eededae4ebe876b338d39984"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_leaves_nor_gl_1k.webp",
+          "bytes": 1184150,
+          "sha256": "8d113b3fcb52e61a29c7cab4e4c67d2f29eb8630b191c15cdb7ec59e69b112bf"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/tree_small_02_nor_gl_1k.webp",
+          "bytes": 2004612,
+          "sha256": "7f7f97144c29a157be5d1bd342ab500423ca78854d335de7b47e28cd48878937"
+        }
+      ],
+      "bytes": 13877864,
+      "preview": "/assets/environment/previews/tree_small_02.webp"
+    },
+    {
+      "id": "tree_stump_01",
+      "name": "Tocón escaneado",
+      "family": "Vegetación",
+      "biomes": [
+        "woodland",
+        "pyrenees"
+      ],
+      "targetTriangles": 3500,
+      "kind": "model",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "license": "CC0-1.0",
+      "sourceTriangles": 41046,
+      "lods": [
+        {
+          "level": 0,
+          "url": "/assets/environment/models/tree_stump_01/lod0.gltf",
+          "triangles": 3500,
+          "dimensions": [
+            1.4256,
+            0.5727,
+            1.5903
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2343
+        },
+        {
+          "level": 1,
+          "url": "/assets/environment/models/tree_stump_01/lod1.gltf",
+          "triangles": 1166,
+          "dimensions": [
+            1.4256,
+            0.5727,
+            1.5903
+          ],
+          "meshes": 1,
+          "materials": 1,
+          "gltfBytes": 2338
+        }
+      ],
+      "acceptedSourceFindings": 0,
+      "blockingFindings": 0,
+      "files": [
+        {
+          "url": "/assets/environment/models/tree_stump_01/lod0.bin",
+          "bytes": 100424,
+          "sha256": "6185a69b3a65885f9aeb059806cc649ff1cc33456261d3dc15e1248b18b31678"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/lod0.gltf",
+          "bytes": 1930,
+          "sha256": "eaa82f5a40b3a24ce160c45ffd4d3f659adb25bf275e15ebe9c941cb04277853"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/lod1.bin",
+          "bytes": 39124,
+          "sha256": "e381259d98bb116f8eea5cbc8c21a95a1f55c3c27455c5b27e6fc82d89c5e010"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/lod1.gltf",
+          "bytes": 1925,
+          "sha256": "dd4c15542f46b91055410c82dbcd019a8bf696cdf5d0f08f801bf39744b00aa2"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/tree_stump_01_arm_1k.webp",
+          "bytes": 1349326,
+          "sha256": "34665cbf798fe6107b94ff3f04588bcf6e14ce810cadffd77cf543637a0725a3"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/tree_stump_01_diff_1k.webp",
+          "bytes": 464610,
+          "sha256": "eb63ca00e283c0c407d860c0ad82a731671be085f1dc3c37a89780e9a0d43076"
+        },
+        {
+          "url": "/assets/environment/models/tree_stump_01/tree_stump_01_nor_gl_1k.webp",
+          "bytes": 2022590,
+          "sha256": "b059e9bf57ff0f9e41882e29700ba59874abbd60ba02cae0dfeeba38ffffa94c"
+        }
+      ],
+      "bytes": 3979929,
+      "preview": "/assets/environment/previews/tree_stump_01.webp"
+    },
+    {
+      "id": "white_plaster_rough_01",
+      "name": "Estuco mediterráneo",
+      "family": "Arquitectura",
+      "tileMeters": 3,
+      "kind": "material",
+      "source": "https://polyhaven.com/a/white_plaster_rough_01",
+      "license": "CC0-1.0",
+      "resolution": 1024,
+      "maps": {
+        "color": "/assets/environment/materials/white_plaster_rough_01/color.webp",
+        "normal": "/assets/environment/materials/white_plaster_rough_01/normal.webp",
+        "arm": "/assets/environment/materials/white_plaster_rough_01/arm.webp"
+      },
+      "files": [
+        {
+          "url": "/assets/environment/materials/white_plaster_rough_01/arm.webp",
+          "bytes": 520592,
+          "sha256": "7d139f62be688d417198bf413ce0fc570d1833a9b635c337716dd05089df2ef1"
+        },
+        {
+          "url": "/assets/environment/materials/white_plaster_rough_01/color.webp",
+          "bytes": 427936,
+          "sha256": "8ff742bb538c091e1bd6836551b894df70662a1ddb097e57adf56ae8e5fe03f2"
+        },
+        {
+          "url": "/assets/environment/materials/white_plaster_rough_01/normal.webp",
+          "bytes": 243374,
+          "sha256": "416a021c1ade51d965b91dbc983cca817e1f1d188a111a9fd096ac723c854f9a"
+        }
+      ],
+      "bytes": 1191902
+    }
+  ]
+}

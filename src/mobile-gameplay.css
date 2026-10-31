@@ -6,7 +6,6 @@
   .touch-brake-hint{display:none!important}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .topbar,
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .session-info,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap,
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .bottom-left,
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .controls-hint,
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .driving-status{display:none}
@@ -15,6 +14,11 @@
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing .tiny-label{font-size:5px;letter-spacing:.5px}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing strong{font:500 25px/28px 'Barlow Condensed',sans-serif;letter-spacing:.3px}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .lap-counter{padding-right:10px}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap{position:fixed;display:block;top:calc(env(safe-area-inset-top,0px) + 88px);left:calc(env(safe-area-inset-left,0px) + 12px);width:clamp(120px,32vw,144px);padding:8px;border-radius:8px;background:#183329a6;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap canvas{width:100%;height:auto;aspect-ratio:360/250}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading .tiny-label{font-size:6px;letter-spacing:.5px}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading>span:last-child{font-size:7px}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-footer{font-size:6px;letter-spacing:.5px}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .bottom-bar{position:fixed;inset:0;margin:0;pointer-events:none}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speedometer{position:static;width:auto;margin:0;pointer-events:none}
   body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speed-row>strong,
@@ -31,4 +35,9 @@
   body[data-state="running"] .toast{top:86px;padding:9px 14px;font-size:9px;min-width:0;max-width:85%;pointer-events:none}
   body[data-state="countdown"] .mobile-touch-guide{position:fixed;inset:64% 0 14%;display:grid;grid-template-columns:1fr 1fr;align-items:center;text-align:center;gap:10px;color:#f0f6e2cc;font-size:9px;letter-spacing:1px;pointer-events:none;z-index:7;text-shadow:0 1px 9px #132c22}
   .mobile-touch-guide small{grid-column:1/-1;font-size:8px;letter-spacing:.2px;color:#e1edcfaa}
+}
+@media(max-height:500px) and (max-width:1000px),(max-height:500px) and (pointer:coarse){
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap{top:calc(env(safe-area-inset-top,0px) + 76px);width:108px;padding:5px}
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading,
+  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-footer{display:none}
 }

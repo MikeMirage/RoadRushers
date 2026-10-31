@@ -20,7 +20,7 @@
       <nav class="toolbar" aria-label="Opciones de juego">
         <button id="hub-btn" class="toolbar-button" aria-label="Configurar prueba"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4H16M4 10H16M4 16H16M7 2V6M13 8V12M8 14V18" stroke="currentColor" stroke-width="1.4"/></svg><span>Pruebas</span></button>
         <button id="garage-btn" class="toolbar-button" aria-label="Garaje"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 9L5 4H15L17 9M3 9H17V15H3V9ZM5 15V17M15 15V17M5 12H7M13 12H15" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span>Garaje</span></button>
-        <button id="track-kit-btn" class="toolbar-button" aria-label="Kit de circuitos"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 17V7A4 4 0 0 1 12 7V13A2 2 0 0 0 16 13V3M7 17V8M9 4V7M9 10V14M13 16H16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>Tramos</span></button>
+        <button id="track-kit-btn" class="toolbar-button" aria-label="Editor de pistas"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 17V7A4 4 0 0 1 12 7V13A2 2 0 0 0 16 13V3M7 17V8M9 4V7M9 10V14M13 16H16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>Editor</span></button>
         <button id="sound-btn" class="icon-button" aria-label="Activar sonido" title="Activar sonido"></button>
         <button id="environment-btn" class="toolbar-button" aria-label="Estudio de entornos" aria-controls="environment-studio" aria-expanded="false"><span aria-hidden="true">☀</span><span>Entorno</span></button>
         <button id="camera-btn" class="toolbar-button" aria-label="Cámara aérea, cambiar con C" title="Cambiar cámara (C)"><span id="camera-icon"></span><span id="camera-label">Aérea</span><kbd>C</kbd></button>
@@ -39,7 +39,7 @@
 
       <section class="timing glass" aria-label="Tiempos de vuelta">
         <div class="lap-counter"><span class="tiny-label">VUELTA</span><strong id="lap-number">01</strong></div>
-        <div class="current-time"><span class="tiny-label">TIEMPO ACTUAL</span><strong id="lap-time">0:00.00</strong></div>
+        <div class="current-time"><span class="tiny-label">TIEMPO ACTUAL</span><strong id="lap-time">0:00.00</strong><span id="ghost-status" class="ghost-status"></span></div>
         <div class="best-time"><span class="tiny-label">TU RÉCORD <span class="record-dot">●</span></span><strong id="best-time">—:—.——</strong><span id="last-time">Primera vuelta pendiente</span></div>
       </section>
 
@@ -87,7 +87,7 @@
       <div id="touch-steering" class="touch-steering" role="group" aria-label="Dirección táctil: mitad inferior izquierda y derecha"><button id="steer-left" aria-label="Girar a la izquierda"></button><button id="steer-right" aria-label="Girar a la derecha"></button></div><div class="mobile-touch-guide" aria-hidden="true"><span>← TOCA A LA IZQUIERDA</span><span>TOCA A LA DERECHA →</span><small>Las dos zonas a la vez para frenar</small></div>
     </main>
       <section id="garage-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Garaje"><div id="garage-content" class="garage-modal glass"></div></section>
-      <section id="track-kit-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Kit de circuitos"><div id="track-kit-content" class="track-kit-modal"></div></section>
+      <section id="track-kit-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Editor de pistas"><div id="track-kit-content" class="track-kit-modal"></div></section>
       <section id="race-setup-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Configurar carrera IA"><div id="race-setup-content" class="race-setup-modal glass"></div></section>
       <section id="result-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Resultado de la prueba"><div id="result-content" class="result-modal glass"></div></section>
     <div id="fatal-error" class="fatal-error hidden" role="alert"><h2>No se ha podido arrancar.</h2><p id="error-message"></p><button onclick="location.reload()">Volver a intentar</button></div>

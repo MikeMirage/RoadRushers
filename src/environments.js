@@ -9,21 +9,34 @@ const seeded = seed => () => { seed = (Math.imul(seed,1664525)+1013904223)|0; re
 
 class Scenery {
   constructor(group) {
-    this.group = group; this.batches = {};
+    this.group = group; this.batches = {};this.assetKind=null;this.placements=[];
     this.geometries = { box:new THREE.BoxGeometry(1,1,1), cone:new THREE.ConeGeometry(1,1,7), cylinder:new THREE.CylinderGeometry(1,1,1,8), rock:new THREE.IcosahedronGeometry(1,0) };
   }
   add(shape,x,y,z,sx,sy,sz,color,angle=0,tilt=0) {
     object.position.set(x,y,z); object.scale.set(sx,sy,sz); object.rotation.set(tilt,angle,0); object.updateMatrix();
-    (this.batches[shape] ||= []).push([object.matrix.clone(),new THREE.Color(color)]);
+    const key=this.assetKind?`${shape}:${this.assetKind}`:shape;
+    (this.batches[key] ||= []).push([object.matrix.clone(),new THREE.Color(color)]);
+  }
+  tree(kind,x,z,scale=1,color='#55785b',angle=0){
+    this.placements.push({kind,x,z,scale,angle});this.assetKind=kind;
+    this.add('cylinder',x,1.7*scale,z,.25*scale,3.4*scale,.25*scale,'#80694b',angle);
+    if(kind==='pine'){
+      this.add('cone',x,3.6*scale,z,2*scale,5*scale,2*scale,color,angle);
+      this.add('cone',x,5.5*scale,z,1.4*scale,3.9*scale,1.4*scale,color,angle);
+    }else for(let j=0;j<3;j++)this.add('rock',x+(j-1)*1.3*scale,(5+j%2)*scale,z,2.8*scale,2.5*scale,2.7*scale,color,angle);
+    this.assetKind=null;
   }
   box(x,y,z,sx,sy,sz,color,angle=0) { this.add('box',x,y,z,sx,sy,sz,color,angle); }
   flush() {
-    for (const [shape,instances] of Object.entries(this.batches)) {
+    this.group.userData.assetPlacements=this.placements;
+    for (const [key,instances] of Object.entries(this.batches)) {
+      const [shape,kind]=key.split(':');
       const mesh = new THREE.InstancedMesh(this.geometries[shape],mat('#ffffff'),instances.length);
+      if(kind)mesh.userData.assetFallback=kind;
       instances.forEach(([matrix,color],i) => { mesh.setMatrixAt(i,matrix); mesh.setColorAt(i,color); });
       mesh.castShadow = mesh.receiveShadow = true; this.group.add(mesh);
     }
-    for (const [name,geometry] of Object.entries(this.geometries)) if (!this.batches[name]) geometry.dispose();
+    for (const [name,geometry] of Object.entries(this.geometries)) if (!Object.keys(this.batches).some(k=>k.split(':')[0]===name)) geometry.dispose();
   }
 }
 
@@ -57,9 +70,7 @@ function house(s,x,z,width=6,height=5,angle=0,forest=false) {
 }
 
 function pine(s,x,z,scale,color='#456955') {
-  s.add('cylinder',x,1.3*scale,z,.24*scale,2.6*scale,.24*scale,'#8b7155');
-  s.add('cone',x,3.6*scale,z,2*scale,5*scale,2*scale,color);
-  s.add('cone',x,5.5*scale,z,1.4*scale,3.9*scale,1.4*scale,color);
+  s.tree('pine',x,z,scale,color);
 }
 
 const shore = x => 90 + Math.sin(x*.024)*6 + Math.sin(x*.065)*3;
@@ -135,7 +146,7 @@ function forest(group,circuit,s,rng,state) {
     if(circuit.nearest(x,z).distance<13||Math.abs(z-riverZ(x))<10||Math.abs(x)<27&&z>-44&&z<1)continue;
     const scale=.65+rng()*1.1;
     if(i%4)pine(s,x,z,scale,i%2?'#3e6553':'#55785e');
-    else {s.add('cylinder',x,2*scale,z,.3,4*scale,.3,'#8f7554');for(let j=0;j<3;j++)s.add('rock',x+(j-1)*1.3,5*scale+j%2,z,2.8*scale,2.5*scale,2.7*scale,j%2?'#77916a':'#5e805e');}
+    else s.tree('broadleaf',x,z,scale,'#63855b');
     if(i%4===0)s.add('rock',x+2,.8,z+2,2,1.4,2.7,'#8b9981',rng()*6);
     if(i%5===0)s.add('rock',x-2,.25,z-2,2,.6,2,'#8ba26c');
   }
@@ -156,9 +167,9 @@ function openBiome(group,circuit,s,rng,state){
       if(i%2===0)s.add('rock',x,scale,z,scale*5,scale*4,scale*4,biome.rock,rng()*6);
       else pine(s,x,z,scale*.9,'#5a796c');
     }else if(state.biome==='autumn'){
-      s.add('cylinder',x,2*scale,z,.25,4*scale,.25,'#7c644a');s.add('rock',x,5*scale,z,2.4*scale,2.7*scale,2.4*scale,['#b97036','#c59d4d','#9b693e'][i%3]);
+      s.tree('broadleaf',x,z,scale,['#b97036','#c59d4d','#9b693e'][i%3]);
     }else if(state.biome==='forest')pine(s,x,z,scale,i%2?'#3f6d51':'#63835a');
-    else if(i%3===0){s.add('cylinder',x,1.8*scale,z,.24,3.6*scale,.24,'#8a7350');s.add('rock',x,4.6*scale,z,2.8*scale,2.5*scale,2.8*scale,i%2?'#789258':'#63884d');}
+    else if(i%3===0)s.tree(state.biome==='jungle'?'tropical':'broadleaf',x,z,scale,i%2?'#789258':'#63884d');
     else if(i%7===0)s.add('rock',x,.6,z,2,1.4,2.5,biome.rock);
   }
   for(let i=0;i<24;i++){

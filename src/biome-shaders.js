@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { BIOMES } from './environment-config.js';
+import { applyEnvironmentPbr, groundPbrId } from './environment-assets.js';
 
 // Original GLSL, using Shadertoy-style iTime and world-space noise. No remote shaders.
 const noiseGLSL=`
@@ -24,7 +25,9 @@ export function groundMaterial(state){
       diffuseColor.rgb*=1.0-rrWet*.24;
       float snowMask=smoothstep(.27,.8,rrPatch+rrSnow*.75);
       diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.85,.9,.92),rrSnow*snowMask);`);
-  };m.customProgramCacheKey=()=> 'roadrushers-ground-v1';return m;
+  };m.customProgramCacheKey=()=> 'roadrushers-ground-v1';
+  const asset=groundPbrId(state);if(asset)applyEnvironmentPbr(m,asset,{worldMeters:4,normalStrength:.65});
+  return m;
 }
 
 export function waterfallMaterial(state){
@@ -33,7 +36,7 @@ export function waterfallMaterial(state){
 }
 
 export function waterMaterial(state){
-  const m=new THREE.MeshStandardMaterial({color:'#498f9f',roughness:.24,metalness:.2});m.name='biome-water';m.userData.envUniforms=uniforms(state);
+  const m=new THREE.MeshPhysicalMaterial({color:'#226d77',roughness:.16,metalness:0,ior:1.333,clearcoat:1,clearcoatRoughness:.12});m.name='biome-water';m.userData.envUniforms=uniforms(state);
   m.onBeforeCompile=shader=>{
     Object.assign(shader.uniforms,m.userData.envUniforms);
     shader.vertexShader='varying vec3 rrWorld;uniform float iTime,rrWind;\n'+shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
@@ -42,10 +45,14 @@ export function waterMaterial(state){
     shader.fragmentShader='varying vec3 rrWorld;uniform float iTime,rrWind,rrWet,rrSnow,rrMode;\n'+noiseGLSL+shader.fragmentShader;
     shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
       float wave=rrFbm(rrWorld.xz*.34+vec2(iTime*.06,-iTime*.04));
-      diffuseColor.rgb*=.84+wave*.32;`);
+      float rrCrest=pow(max(0.0,sin(rrWorld.x*.31+rrWorld.z*.23+iTime*.8)),12.0);
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.08,.29,.30),wave*.45);
+      diffuseColor.rgb+=vec3(.08,.13,.11)*rrCrest*min(rrWind*.04,.35);`);
     shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
-      normal=normalize(normal+vec3(sin(rrWorld.x*.3+iTime)*.075,0.0,cos(rrWorld.z*.25-iTime)*.075));`);
-  };m.customProgramCacheKey=()=> 'roadrushers-water-v1';return m;
+      float rrWaveX=sin(rrWorld.x*.74+rrWorld.z*.29+iTime*.8)*.11+sin(rrWorld.x*1.91-rrWorld.z*.43-iTime*1.2)*.045;
+      float rrWaveZ=cos(rrWorld.z*.67-rrWorld.x*.21-iTime*.65)*.1+cos(rrWorld.z*2.13+rrWorld.x*.49+iTime*1.1)*.04;
+      normal=normalize(normal+mat3(viewMatrix)*vec3(rrWaveX,0.0,rrWaveZ));`);
+  };m.customProgramCacheKey=()=> 'roadrushers-water-v2';return m;
 }
 
 export function buildGrass(group,circuit,state){

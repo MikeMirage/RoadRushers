@@ -50,6 +50,15 @@ export function trackEnvironment(config,weather='clear'){
   const preset=themePreset(theme);
   return normalizeEnvironment({...preset,biome,weather,hour:weather==='sunset'?18.2:preset.hour,...(weather===preset.weather?{}:{clouds:weather==='rain'||weather==='snow'?.86:weather==='fog'?.6:preset.clouds,fog:weather==='fog'?.7:preset.fog,precipitation:['rain','snow'].includes(weather)?.75:0,wetness:weather==='rain'?.9:preset.wetness,snow:weather==='snow'?.7:preset.snow})});
 }
+/** Editor lighting travels with the track; explicit session weather can still override it. */
+export function environmentForTrack(config,weather=config.weather||'clear'){
+  const defaults=trackEnvironment(config,weather),saved=config.editorEnvironment;
+  if(!saved||saved.theme!==defaults.theme)return defaults;
+  const state=normalizeEnvironment(saved);
+  if(weather!==state.weather){for(const key of ['weather','clouds','fog','precipitation','wetness','snow'])state[key]=defaults[key];if(weather==='sunset')state.hour=18.2;}
+  return state;
+}
+
 /** Local solar time; no location permission, timezone or weather service is involved. */
 export function solarPosition(state){
   const rad=Math.PI/180;

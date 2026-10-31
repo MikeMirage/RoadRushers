@@ -45,9 +45,15 @@ Posición en directo, parrilla escalonada, minimapa con rivales y resultado al l
 
 ## Kit modular de circuitos
 
-Abrir **Tramos** en la barra superior para inspeccionar y montar 21 tipos de piezas: rectas, curvas de tres radios, enlaces de 45°, horquillas, chicanes, peraltes, rampas, puente, badenes y cresta de salto. El banco muestra sus conexiones y medidas en 3D; permite añadir piezas, quitar la última, deshacer, guardar un borrador local y probar montajes cerrados.
+Abrir **Tramos** para montar **122 tipos de piezas**: rectas métricas, curvas de varios radios y ángulos, chicanes, cambios de eje, peraltes, rampas, espirales, puentes, túneles, lomas y transiciones de anchura/superficie. Admite 128 piezas, búsqueda, inserción, duplicado, reflejo, reordenación, edición de medidas, deshacer y borradores locales.
 
-Incluye **Club técnico**, **Ocho elevado** y **Rally de crestas**, con altura real, cruces a distinto nivel y física de vuelo y aterrizaje. Se prueban en un entorno neutro para evaluar primero los tramos. Ver [definición del kit y reglas de montaje](TRACK_KIT.md).
+Incluye **18 montajes cerrados**, desde Club técnico y Ocho elevado hasta Tokyo Express, Fiordo de invierno, Barro de Reunión y Espirales gemelas. La altura, el peralte, la anchura y las superficies se comparten entre render y física. Ver [el sistema ampliado de pistas y entornos](WORLD_SYSTEM.md) y [las reglas del kit original](TRACK_KIT.md).
+
+## Entornos y dirección de arte
+
+**Entorno** abre una vista previa con cámara orbital. Hay nueve presets: bosque frondoso, circuito con hierba, dunas y oasis, invierno noruego, costa amalfitana, autopistas de Tokio, Bund de Shanghái, Pirineos y selva de Reunión. Se puede ajustar hora solar, azimut/elevación del sol, clima, nubes, niebla, precipitación, viento, humedad, nieve y color grading. Terreno, hierba, agua y cascadas tienen shaders procedurales; las ciudades tienen luces nocturnas y los coches, faros.
+
+Los mismos presets se eligen al probar un montaje y en sus carreras IA. El estudio tiene panel lateral en escritorio y hoja inferior en móvil. Ver [implementación y presupuestos gráficos](WORLD_SYSTEM.md). La siguiente fase de meta y navegación móvil se propone en [dirección de juego](GAME_DIRECTION.md), con Golf Clash y Gran Turismo como referencias.
 
 ## Copa de Iniciación (implementación reservada)
 
@@ -64,6 +70,8 @@ Cada prueba es una vuelta con coche, materiales, clima y ritmo oficiales. Un bro
 Bronce vale 1 punto, plata 2 y oro 3. Completando las tres pruebas, la copa es de bronce con 3 puntos, plata con 6 y oro con 8. El primer bronce desbloquea el Evo Rally; completar las tres pruebas desbloquea el Cobra 427. El guardado es local al navegador y dispositivo. Si el almacenamiento no está disponible, se puede progresar durante la sesión.
 
 Ocho controles ordenados validan cada vuelta y rechazan el sentido contrario y los saltos de recorrido. El entrenamiento usa récords independientes por circuito, coche, superficie, clima y ritmo, y no concede recompensas de campeonato.
+
+En individual compites automáticamente contra el **fantasma de tu mejor vuelta**: una copia cian semitransparente de tu coche, sin colisiones y con dos estelas cortas que se desvanecen. La primera vuelta completa crea la referencia; solo una vuelta más rápida la sustituye. Se guarda al cruzar meta y se recupera al volver a jugar en el mismo navegador. El fantasma sigue el cronómetro de cada vuelta, incluidas pausas, reinicios, saltos, altura y peralte. Las carreras IA también conservan la trazada de su mejor vuelta, en su propia categoría; el fantasma personal se muestra en individual. Si el navegador impide guardar, se mantiene durante la sesión y se indica al completar la vuelta. Los récords antiguos que solo contienen tiempos necesitan una nueva vuelta completa para crear su trazada.
 
 ## Garaje: una colección de miniaturas
 
@@ -110,6 +118,10 @@ La cámara aérea es alta, alejada y de orientación fija, con margen para ver e
 
 `http://127.0.0.1:5174/?stats=1` muestra FPS, tiempo de render, llamadas de dibujo y resolución. Solo aparece al solicitarlo en la URL. Esta versión tiene progresión y récords locales; la economía, torneos online y ELO quedan para una siguiente fase.
 
+## Editor manual de pistas
+
+Abre **Editor** en la barra superior. Combina 122 módulos de pista, 17 tipos de props y nueve entornos en una escena 3D con controles en tiempo real. Puedes ajustar el sol, el clima y el color, colocar decorado, deshacer/rehacer, guardar y exportar/importar el circuito en JSON. **Probar pista** utiliza el documento editado. La interfaz se adapta a móvil; los props manuales son decorativos y no tienen colisiones. La parte de IA queda aplazada. Detalles en [WORLD_SYSTEM.md](WORLD_SYSTEM.md).
+
 ## Código
 
 - `src/config.js`: circuitos, sectores, coches, campeonato y condiciones.
@@ -128,3 +140,8 @@ La cámara aérea es alta, alejada y de orientación fija, con margen para ver e
 - Evo y Cobra: geometría propia procedural de Three.js, inspirada en las siluetas de los coches indicados, sin insignias de fabricante.
 - Three.js y Vite, MIT. DM Sans y Barlow Condensed, SIL Open Font License, distribuidas mediante Fontsource.
 - Se conserva el aviso original en `LICENSE`.
+- Naturaleza, rocas, props y materiales PBR de [Poly Haven](https://polyhaven.com), [CC0](https://polyhaven.com/license). Los originales, licencias y checksums se conservan en `art/source/polyhaven/`.
+
+## Biblioteca de arte de entornos
+
+`/asset-library.html` permite revisar **16 modelos 3D y 20 materiales PBR gratuitos**, comparar LODs, ver sus mallas y probar agua animada. El juego incorpora los suelos y superficies PBR, vegetación texturizada, rocas y helechos con carga local e instancias. Véase [ENVIRONMENT_ASSETS.md](ENVIRONMENT_ASSETS.md) para el inventario por bioma, preparación, procedencia y límites de la primera integración.

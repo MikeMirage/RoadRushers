@@ -1,0 +1,128 @@
+{
+  "id": "coast_rocks_02",
+  "sourceVariantTriangles": 1260423,
+  "lods": [
+    {
+      "level": 0,
+      "url": "/assets/environment/models/coast_rocks_02/lod0.gltf",
+      "triangles": 4500,
+      "dimensions": [
+        45.9647,
+        3.1714,
+        49.4648
+      ],
+      "meshes": 1,
+      "materials": 1,
+      "gltfBytes": 2335
+    },
+    {
+      "level": 1,
+      "url": "/assets/environment/models/coast_rocks_02/lod1.gltf",
+      "triangles": 1500,
+      "dimensions": [
+        45.9647,
+        3.1714,
+        49.4648
+      ],
+      "meshes": 1,
+      "materials": 1,
+      "gltfBytes": 2332
+    }
+  ],
+  "qa": [
+    {
+      "level": 0,
+      "raw": {
+        "ok": true,
+        "pass": true,
+        "errors": [],
+        "warnings": [
+          "asset lowest point z=-0.0169 (not resting on ground plane z=0)"
+        ],
+        "ground_z": -0.0169,
+        "zfighting": [],
+        "floating": [],
+        "back_to_back": [],
+        "enclosed": [],
+        "objects": {
+          "coast_rocks_02": {
+            "verts": 2295,
+            "faces": 4500,
+            "tris": 4500,
+            "ngons": 0,
+            "boundary_edges": 94,
+            "nonmanifold_edges": 0,
+            "wire_edges": 0,
+            "loose_verts": 0,
+            "degenerate_faces": 0,
+            "zero_length_edges": 0,
+            "inconsistent_normals_edges": 0,
+            "duplicate_verts": 0,
+            "islands": 1,
+            "inside_out_islands": 0,
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "materials": 1,
+            "uv_maps": 1,
+            "uv_oob_pct": 0.0,
+            "uv_zero_area_faces": 0,
+            "uv_overlap_pct": 0.04,
+            "uv_coverage_pct": 68.6
+          }
+        }
+      },
+      "acceptedSourceFindings": [],
+      "blocking": []
+    },
+    {
+      "level": 1,
+      "raw": {
+        "ok": true,
+        "pass": true,
+        "errors": [],
+        "warnings": [
+          "asset lowest point z=-0.0169 (not resting on ground plane z=0)"
+        ],
+        "ground_z": -0.0169,
+        "zfighting": [],
+        "floating": [],
+        "back_to_back": [],
+        "enclosed": [],
+        "objects": {
+          "coast_rocks_02": {
+            "verts": 792,
+            "faces": 1500,
+            "tris": 1500,
+            "ngons": 0,
+            "boundary_edges": 88,
+            "nonmanifold_edges": 0,
+            "wire_edges": 0,
+            "loose_verts": 0,
+            "degenerate_faces": 0,
+            "zero_length_edges": 0,
+            "inconsistent_normals_edges": 0,
+            "duplicate_verts": 0,
+            "islands": 1,
+            "inside_out_islands": 0,
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "materials": 1,
+            "uv_maps": 1,
+            "uv_oob_pct": 0.0,
+            "uv_zero_area_faces": 0,
+            "uv_overlap_pct": 0.03,
+            "uv_coverage_pct": 63.6
+          }
+        }
+      },
+      "acceptedSourceFindings": [],
+      "blocking": []
+    }
+  ]
+}

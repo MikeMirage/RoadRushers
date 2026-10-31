@@ -11,10 +11,12 @@ import './career.css';
 import './vehicle-collection.css';
 import './environment-studio.css';
 import './track-kit.css';
+import './track-editor.css';
 import './race.css';
 import './playground.css';
 import './mobile-gameplay.css';
 import './results.css';
+import './ghost.css';
 import { ResultRecords,resultContext,createReport } from './results.js';
 import { renderSessionResult } from './results-ui.js';
 import { loadAILeaderboard } from './leaderboard.js';
@@ -25,6 +27,7 @@ import { World } from './world.js';
 import { EngineAudio } from './audio.js';
 import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
+import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
 
 import { renderGarage,renderGarageDetail } from './vehicle-collection-ui.js';
 import { renderPlayground } from './playground-ui.js';
@@ -48,6 +51,8 @@ let storage;
 try { storage = localStorage; } catch { storage = null; }
 const playgroundOptions=loadPlayground(storage);
 const resultRecords=new ResultRecords(storage);
+const ghostRecords=new GhostRecords(storage);
+let ghostRecorder,ghostLap=null;
 const settings=resolvePlayground(playgroundOptions).settings;
 let world, circuit, drive, laps, best = null, state = 'loading', countdown = 0, toastTime = 0, finishedTime = null;
 let lastFrame = performance.now(), uiTimer = 0, mapProjection, modalFocus, garage;
@@ -110,14 +115,14 @@ function openGarage(inspectId,context) {
   garage ||= new GarageView(inspectVehicle);
   garage.mount($('garage-stage'),playgroundOptions.vehicleId);
   if(typeof inspectId==='string'&&VEHICLES.some(v=>v.id===inspectId))inspectVehicle(inspectId);
-  for (const node of document.querySelectorAll('header, main, #result-overlay')) node.inert=true;
+  for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=true;
   $('garage-content').querySelector('[data-action="close-garage"]').focus();
 }
 function closeGarage() {
   const wasOpen = !$('garage-overlay').classList.contains('hidden');
   $('garage-overlay').classList.add('hidden');
   garage?.hide();
-  for (const node of document.querySelectorAll('header, main, #result-overlay')) node.inert=false;
+  for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=false;
   if (wasOpen && modalFocus?.isConnected) modalFocus.focus();
 }
 function openKit() {
@@ -125,10 +130,10 @@ function openKit() {
   closeGarage();kitFocus=document.activeElement;
   if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
   workbench ||= new TrackWorkbench(config=>{
-    closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'track'});settings.track=config;launchPlayground();
+    closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'track',weather:'track',surface:'track'});settings.track=config;launchPlayground();
   },closeKit);
   $('track-kit-overlay').classList.remove('hidden');workbench.mount($('track-kit-content'));
-  for(const node of document.querySelectorAll('header,main,#result-overlay'))node.inert=true;
+  for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
   $('track-kit-content').querySelector('[data-kit="close"]').focus();
 }
 function openEnvironment(){
@@ -142,18 +147,18 @@ function openEnvironment(){
     world.applyEnvironment(visual,final);
   },closeEnvironment,()=>world.fitEnvironmentView(),world.environmentSettings);
   $('environment-studio').classList.remove('hidden');document.body.dataset.environmentStudio='true';$('environment-btn').setAttribute('aria-expanded','true');
-  for(const n of document.querySelectorAll('main,header'))n.inert=true;
+  for(const n of document.querySelectorAll('main,header.topbar'))n.inert=true;
   environmentStudio.mount($('environment-studio'),`${settings.track.id}:${settings.track.environmentTheme||'free'}`,world.environmentSettings);world.setEditorView(true,drive);$('environment-studio').querySelector('[data-env-action="close"]').focus();
 }
 function closeEnvironment(){
   environmentStudio?.hide();$('environment-studio').classList.add('hidden');delete document.body.dataset.environmentStudio;$('environment-btn').setAttribute('aria-expanded','false');
   world?.setEditorView(false);
-  for(const n of document.querySelectorAll('main,header'))n.inert=false;
+  for(const n of document.querySelectorAll('main,header.topbar'))n.inert=false;
   if(environmentFocus?.isConnected)environmentFocus.focus();
 }
 function closeKit() {
   const open=workbench?.visible;$('track-kit-overlay').classList.add('hidden');workbench?.hide();
-  if(open){for(const node of document.querySelectorAll('header,main,#result-overlay'))node.inert=false;if(kitFocus?.isConnected)kitFocus.focus();}
+  if(open){for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;if(kitFocus?.isConnected)kitFocus.focus();}
 }
 function refreshRaceSetup(){
   const active=document.activeElement,attribute=['raceCount','raceLaps','raceInteraction','raceWidth','raceDifficulty'].find(key=>active?.dataset?.[key]!=null);
@@ -170,12 +175,12 @@ function openRaceSetup(useCurrent=false){
   if(useCurrent||!raceOptions.trackId)raceOptions.trackId=(settings.track.raceBaseConfig||settings.track).id;
   if(!raceTracks.some(t=>t.id===raceOptions.trackId))raceOptions.trackId=raceTracks[0].id;
   raceSetupOpen=true;refreshRaceSetup();$('race-setup-overlay').classList.remove('hidden');
-  for(const node of document.querySelectorAll('header,main,#result-overlay'))node.inert=true;
+  for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
   $('race-setup-content').querySelector('[data-race-action="close"]').focus();
 }
 function closeRaceSetup(){
   const wasOpen=raceSetupOpen;raceSetupOpen=false;$('race-setup-overlay').classList.add('hidden');
-  if(wasOpen){for(const node of document.querySelectorAll('header,main,#result-overlay'))node.inert=false;if(raceSetupFocus?.isConnected)raceSetupFocus.focus();}
+  if(wasOpen){for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;if(raceSetupFocus?.isConnected)raceSetupFocus.focus();}
 }
 function launchRace(){
   const base=raceTracks.find(t=>t.id===raceOptions.trackId)||raceTracks[0],variant=makeRaceTrack(base,raceOptions.width);
@@ -236,7 +241,7 @@ function updateOptions() {
   $('session-kind').innerHTML=competing?`<i></i> CARRERA IA · ${race.count} COCHES`:'<i></i> PRUEBAS DE CONDUCCIÓN';
   $('intro-kicker').textContent=competing?`PARRILLA IA · ${race.lapCount} VUELTAS`:'ENTRENAMIENTO LIBRE';
   $('intro-title').textContent=settings.track.name;$('intro-description').textContent=settings.track.subtitle;
-  $('intro-targets').innerHTML=competing?`<div class="race-briefing"><span><strong>${race.count}</strong>COCHES</span><span><strong>${race.lapCount}</strong>VUELTAS</span><span><strong>${race.interaction==='ghost'?'◇':'↔'}</strong>${race.interaction==='ghost'?'GHOSTS':'CONTACTO'}</span></div>`:'<span class="practice-note">Prueba tu coche y compara tus vueltas.</span>';
+  $('intro-targets').innerHTML=competing?`<div class="race-briefing"><span><strong>${race.count}</strong>COCHES</span><span><strong>${race.lapCount}</strong>VUELTAS</span><span><strong>${race.interaction==='ghost'?'◇':'↔'}</strong>${race.interaction==='ghost'?'GHOSTS':'CONTACTO'}</span></div>`:`<span class="practice-note">${ghostLap?`Compite contra el fantasma de tu mejor vuelta · ${formatTime(ghostLap.duration)}.`:'Completa una vuelta para crear tu fantasma. Tu mejor trazada se guarda automáticamente.'}</span>`;
   $('intro-car').innerHTML=`${carIllustration(settings.vehicle)}<span><strong>${settings.vehicle.name}</strong>${settings.vehicle.description}</span>`;
   startButton.innerHTML=competing?'Tomar la salida <span>↗</span>':'Salir a pista <span>↗</span>';
   $('intro-race-btn').classList.remove('hidden');$('intro-race-btn').textContent=competing?'Configurar parrilla →':'Competir contra IA →';
@@ -273,11 +278,21 @@ function makeSession(rebuild) {
   race=settings.mode==='race'?new RaceSession(circuit,settings.vehicle,settings.raceRules):null;
   drive=race?race.player.drive:new DriveModel(circuit,settings.vehicle);laps=new LapTracker();finishedTime=null;world.setRivals(race);
   timingContext=resultContext(settings,circuit);
+  resetGhost();world.setGhost(!race);
   world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();readBest();updateOptions();setState('ready');updateHUD();drawMap();
 }
 function toast(message){$('toast').textContent=message;$('toast').classList.remove('hidden');toastTime=3.2;}
 function start(){if(state!=='ready')return;setLab(false);setState('countdown');countdown=3;$('countdown').textContent='3';}
-function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
+function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;resetGhost();readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
+
+function resetGhost(){
+  ghostRecorder=new GhostRecorder(drive);
+  ghostLap=race?null:ghostRecords.get(timingContext);
+}
+function recordGhost(elapsed,crossing){
+  const recorded=ghostRecorder.step(elapsed,drive,crossing);
+  if(recorded&&ghostRecords.recordLap(timingContext,recorded)&&!race)ghostLap=recorded;
+}
 function pause(){if(state==='running')setState('paused');else if(state==='paused')setState('running');else if(state==='countdown')setState('ready');}
 function toggleCamera(){settings.camera=settings.camera==='topdown'?'chase':'topdown';playgroundOptions.camera=settings.camera;savePlayground(storage,playgroundOptions);$('camera-label').textContent=settings.camera==='chase'?'3ª persona':'Aérea';$('camera-btn').setAttribute('aria-label',`Cámara ${settings.camera==='chase'?'tercera persona':'aérea'}, cambiar con C`);if(state==='hub')refreshPlayground();}
 
@@ -309,7 +324,8 @@ function finish(lap){
   resultRecords.recordLap(timingContext,lap);
   const newRecord=best==null||lap<best;
   if(newRecord){best=lap;try{storage?.setItem(recordKey(),String(lap));}catch{}$('best-time').textContent=formatTime(best);}
-  toast(`${newRecord?'✦ Nuevo récord':'Vuelta completada'} · ${formatTime(lap)}`);
+  const ghostNote=ghostLap?.duration===lap?(ghostRecords.saveAvailable?' · fantasma guardado':' · fantasma solo en esta sesión'):'';
+  toast(`${newRecord?'✦ Nuevo récord':'Vuelta completada'} · ${formatTime(lap)}${ghostNote}`);
 }
 
 function updateHUD(){
@@ -320,6 +336,9 @@ function updateHUD(){
   const surface=circuit.surfaceAt(drive.road.progress,settings.surface);
   $('speed-fill').style.width=`${Math.min(100,drive.speed/(SURFACES[surface].speed*settings.vehicle.speed*PACES[settings.pace].speed)*100)}%`;
   $('last-time').textContent=laps.last?`Última: ${formatTime(laps.last)}`:'Primera vuelta pendiente';
+  $('ghost-status').hidden=Boolean(race);
+  $('ghost-status').textContent=ghostLap?`◇ TU FANTASMA · ${formatTime(ghostLap.duration)}`:'◇ FANTASMA: COMPLETA UNA VUELTA';
+  $('ghost-status').title=ghostLap?(ghostRecords.saveAvailable?'Tu mejor vuelta guardada en este navegador.':'Fantasma disponible durante esta sesión; no se ha podido guardar.'):'Tu primera vuelta completa creará el fantasma automáticamente.';
   const wrongWay=race?race.player.tracker.wrongWay:laps.wrongWay;
   const status=$('driving-status');status.classList.toggle('warning',wrongWay||drive.impact>.15);
   status.classList.toggle('braking',drive.braking&&drive.grounded);
@@ -333,6 +352,8 @@ function drawMap(){
   for(const crossing of circuit.layout?.crossings||[]){const a=circuit.at(crossing.upperProgress-.015),b=circuit.at(crossing.upperProgress+.015);ctx.beginPath();ctx.moveTo(...project(a.x,a.z));ctx.lineTo(...project(b.x,b.z));ctx.lineWidth=11;ctx.strokeStyle='#203c32';ctx.stroke();ctx.lineWidth=5;ctx.strokeStyle='#a5d5d1';ctx.stroke();}
   const start=circuit.at(0),[sx,sy]=project(start.x,start.z);ctx.beginPath();ctx.moveTo(sx-start.normal.x*9,sy-start.normal.z*9);ctx.lineTo(sx+start.normal.x*9,sy+start.normal.z*9);ctx.strokeStyle='#f8ffe3';ctx.lineWidth=4;ctx.stroke();
   for(const rival of race?.rivals||[]){const[x,y]=project(rival.drive.x,rival.drive.z);ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fillStyle=rival.color;ctx.fill();}
+  const ghost=!race&&['countdown','running','paused'].includes(state)&&sampleGhost(ghostLap,laps.time);
+  if(ghost){const[x,y]=project(ghost.x,ghost.z);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.strokeStyle='#8be1ee';ctx.lineWidth=1.5;ctx.stroke();}
   const[x,y]=project(drive.x,drive.z);ctx.save();ctx.translate(x,y);ctx.rotate(-drive.heading);ctx.beginPath();ctx.moveTo(0,9);ctx.lineTo(-6,-5);ctx.lineTo(6,-5);ctx.closePath();ctx.fillStyle=settings.vehicle.color;ctx.fill();ctx.restore();
 }
 
@@ -354,7 +375,8 @@ function setupInput(){
       return;
     }
     if(workbench?.visible){
-      if(e.code==='Tab'){const buttons=[...$('track-kit-content').querySelectorAll('button:not(:disabled),select')],first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+      if(workbench.handleKey(e))return;
+      if(e.code==='Tab'){const buttons=[...$('track-kit-content').querySelectorAll('button:not(:disabled),select:not(:disabled),input:not(:disabled):not([hidden]),summary,canvas')].filter(el=>el.getClientRects().length),first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }
     if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;
@@ -439,8 +461,19 @@ function frame(now){
   if(state==='running'){
     const input=readDrivingInput(keys,pointers),steps=simulationClock.advance(dt);
     for(let i=0;i<steps;i++){
-      if(race){const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace);if(race.player.tracker.lapTimes.length>previous)resultRecords.recordLap(timingContext,race.player.tracker.lapTimes.at(-1));if(done){finish(race.player.finishTime);break;}}
-      else{drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake);const lap=laps.step(FIXED_STEP,drive.road.progress);if(lap){finish(lap);if(state!=='running')break;}}
+      if(race){
+        const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace);
+        const completed=race.player.tracker.lapTimes.length>previous;
+        recordGhost(race.elapsed,completed?race.player.tracker.lapStartedAt:null);
+        if(completed)resultRecords.recordLap(timingContext,race.player.tracker.lapTimes.at(-1));
+        if(done){finish(race.player.finishTime);break;}
+      }
+      else{
+        drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake);
+        const lap=laps.step(FIXED_STEP,drive.road.progress);
+        recordGhost(laps.elapsed,lap?laps.lapStartedAt:null);
+        if(lap){finish(lap);if(state!=='running')break;}
+      }
     }
   }
   if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').classList.add('hidden');}
@@ -449,6 +482,8 @@ function frame(now){
   if(workbench?.visible)workbench.update(dt);
   else if(garage?.visible)garage.update(dt);
   else {
+    const ghostTime=state==='running'||state==='paused'?Math.max(0,laps.time-FIXED_STEP*(1-simulationClock.alpha)):0;
+    world.ghost?.update(ghostLap,ghostTime,['countdown','running','paused'].includes(state));
     world.update(dt,renderDrive,settings.camera,state==='running',state!=='paused',state==='running'||state==='paused'?simulationClock.alpha:1);
     const ratio=resolution.sample(rawDt);if(Math.abs(world.renderer.getPixelRatio()-ratio)>.01)world.renderer.setPixelRatio(ratio);
   }

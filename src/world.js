@@ -7,9 +7,13 @@ import { DriftEffects } from './drift-effects.js';
 import { BrakeEffects } from './brake-effects.js';
 import { roadRibbon as ribbon,trackStructures } from './road-geometry.js';
 import { RivalFleet } from './rival-fleet.js';
+import { GhostView } from './ghost-view.js';
 import { EnvironmentSystem } from './environment-system.js';
-import { normalizeEnvironment, trackEnvironment } from './environment-config.js';
+import { normalizeEnvironment, environmentForTrack } from './environment-config.js';
+import { ManualPropLayer } from './manual-props.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { applyEnvironmentPbr, roadPbrId } from './environment-assets.js';
+import { enhanceLandscape } from './landscape-assets.js';
 
 const temp = new THREE.Object3D();
 const mat = (color, options = {}) => new THREE.MeshStandardMaterial({ color, roughness: 1, ...options });
@@ -108,6 +112,7 @@ export class World {
       geometries.forEach(g => g.dispose());materials.forEach(m => {m.map?.dispose();m.dispose();});
     }
     const model = buildVehicle(vehicle);
+    this.vehicleModel = model;
     this.body = model.group; this.wheels = model.wheels; this.frontWheels = model.frontWheels;
     this.vehicleId = vehicle.id; this.car.add(this.body);
     this.brakeEffects.bind(model);
@@ -117,6 +122,11 @@ export class World {
   setRivals(session) {
     if(session&&this.fleet?.session===session)return;
     this.fleet?.dispose();this.fleet=session?new RivalFleet(this.scene,session,this.brakeEffects.glow.material.map):null;
+  }
+
+  setGhost(enabled) {
+    this.ghost?.dispose();
+    this.ghost = enabled ? new GhostView(this.scene, this.vehicleModel) : null;
   }
 
   updateRoadGroups(surfaceId) {
@@ -133,21 +143,27 @@ export class World {
   }
 
   build(circuit, surfaceId, weatherId) {
+    this.manualProps?.dispose();this.manualProps=null;
     if (this.environment) {
       this.scene.remove(this.environment);
       const geometries = new Set(), materials = new Set();
       this.environment.traverse(o => {
         if (o.geometry) geometries.add(o.geometry);
+        if (o.isInstancedMesh) o.dispose();
         for (const material of (Array.isArray(o.material) ? o.material : [o.material])) if (material) materials.add(material);
       });
       geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose());
     }
     this.circuit = circuit;
-    this.environmentSettings=trackEnvironment(circuit.config,weatherId);
+    this.environmentSettings=environmentForTrack(circuit.config,weatherId);
     this.environment = new THREE.Group();
     this.scene.add(this.environment);
     const half = u => circuit.widthAt(u) / 2;
-    this.roadMaterials = Object.values(SURFACES).map(surface => mat(surface.color, { map: this.texture, roughness: surface.roughness, side: THREE.DoubleSide }));
+    this.roadMaterials = Object.entries(SURFACES).map(([id,surface]) => {
+      const material=mat(surface.color,{map:this.texture,roughness:surface.roughness,side:THREE.DoubleSide});
+      const asset=roadPbrId(id);if(asset)applyEnvironmentPbr(material,asset,{repeat:[2,2],normalStrength:.55});
+      return material;
+    });
     this.environment.add(ribbon(circuit, u => -half(u)-1, u => half(u)+1, 0.015, mat('#bcb393', { side: THREE.DoubleSide })));
     this.roadMesh = ribbon(circuit, u => -half(u), u => half(u), 0.035, this.roadMaterials);
     this.environment.add(this.roadMesh);
@@ -157,6 +173,7 @@ export class World {
     this.environment.add(trackStructures(circuit));
     this.addTrackDetails();
     this.addLandscape();
+    this.manualProps=new ManualPropLayer(this.environment,circuit.config.manualProps||[]);
     this.setConditions(surfaceId, weatherId);
     this.cameraReady = false;
     this.resetDrivingEffects();
@@ -181,6 +198,7 @@ export class World {
       temp.position.y = p.y+0.42; temp.updateMatrix(); posts.setMatrixAt(i * 2 + side, temp.matrix);
     }
     curbs.receiveShadow = true; rails.castShadow = true;
+    this.roadCurbs=curbs;this.curbTheme=null;
     this.environment.add(curbs, rails, posts);
     // A checkered start line and a compact overhead gantry.
     const start = new THREE.Group(), spawn = circuit.at(0);
@@ -218,11 +236,15 @@ export class World {
       arrows.setMatrixAt(i, temp.matrix);
     }
     this.environment.add(arrows);
+    this.directionArrows=arrows;
   }
 
   addLandscape() {
     this.landscape=new THREE.Group();this.landscape.name='biome-landscape';this.environment.add(this.landscape);
     buildEnvironment(this.landscape,this.circuit,this.environmentSettings);
+    const landscape=this.landscape;
+    void enhanceLandscape(landscape,this.circuit,this.environmentSettings,()=>this.landscape===landscape)
+      .then(changed=>{if(changed)this.renderer.shadowMap.needsUpdate=true;});
   }
 
   applyEnvironment(input,reflections=true){
@@ -230,12 +252,16 @@ export class World {
     const rebuild=!previous||['theme','biome','grassDensity','quality'].some(key=>previous[key]!==state[key]);
     this.environmentSettings=state;
     if(rebuild&&this.landscape){
-      const gs=new Set(),ms=new Set();this.landscape.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)ms.add(o.material);});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());this.landscape.removeFromParent();this.addLandscape();
+      const gs=new Set(),ms=new Set();this.landscape.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.isInstancedMesh)o.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)ms.add(m);});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());this.landscape.removeFromParent();this.addLandscape();
     }
     this.atmosphere.configure(state,this.circuit);if(reflections)this.atmosphere.refreshReflections();
-    this.moon.intensity=this.atmosphere.solar.elevation<0?.52:.05;
+    const urban=['tokyo','bund'].includes(state.theme);
+    if(this.roadCurbs&&this.curbTheme!==urban){const a=new THREE.Color(urban?'#9aa6a0':'#d96f49'),b=new THREE.Color('#f3efdc');for(let i=0;i<this.roadCurbs.count;i++)this.roadCurbs.setColorAt(i,i%4<2?a:b);this.roadCurbs.instanceColor.needsUpdate=true;this.curbTheme=urban;}
+    if(this.directionArrows)this.directionArrows.visible=!urban;
+    const night=this.atmosphere.solar.elevation<0;
+    this.moon.intensity=night?1.6:.05;
     this.headlamp.intensity=this.atmosphere.solar.elevation<5?65:0;
-    this.roadMaterials?.forEach((m,i)=>{m.roughness=SURFACES[Object.keys(SURFACES)[i]].roughness*(1-state.wetness*.68);});
+    this.roadMaterials?.forEach((m,i)=>{m.roughness=SURFACES[Object.keys(SURFACES)[i]].roughness*(1-state.wetness*.68);m.emissive.set(night?'#27394c':'#000000');m.emissiveIntensity=night?.4:0;});
     this.precipitation.visible=['rain','snow'].includes(state.weather)&&state.precipitation>0;
     this.precipitationSnow.value=state.weather==='snow'?1:0;this.precipitation.material.size=state.weather==='snow'?.32:.65;
     this.precipitationCount=Math.floor((state.quality==='mobile'?320:640)*state.precipitation);
@@ -244,17 +270,21 @@ export class World {
 
   setEditorView(enabled,focus){
     this.editorControls??=new OrbitControls(this.camera,this.renderer.domElement);this.editorControls.enabled=enabled;
-    this.editorControls.enableDamping=true;this.editorControls.minDistance=10;this.editorControls.maxDistance=550;this.editorControls.maxPolarAngle=Math.PI/2-.025;
-    if(enabled){const p=focus||this.car.position;this.editorControls.target.set(p.x,p.y+.6,p.z);this.camera.position.set(p.x+36,p.y+24,p.z+42);this.camera.fov=45;this.camera.updateProjectionMatrix();this.editorControls.update();}else this.cameraReady=false;
+    this.editorControls.enableDamping=true;this.editorControls.minDistance=10;this.editorControls.maxDistance=1400;this.editorControls.maxPolarAngle=Math.PI/2-.025;
+    this.camera.far=enabled?2200:700;this.camera.near=enabled?1:.1;
+    if(enabled){const p=focus||this.car.position;this.editorControls.target.set(p.x,p.y+.6,p.z);this.camera.position.set(p.x+36,p.y+24,p.z+42);this.camera.fov=45;this.camera.updateProjectionMatrix();this.editorControls.update();}else{this.camera.clearViewOffset();this.cameraReady=false;}
   }
 
   fitEnvironmentView(){
-    const bounds=new THREE.Box3().setFromPoints(this.circuit.samples),center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3()),span=Math.max(size.x,size.z,55);
-    this.editorControls.target.copy(center);this.camera.position.copy(center).add(new THREE.Vector3(span*.65,span*.7,span*.8));this.editorControls.update();
+    const bounds=new THREE.Box3().setFromPoints(this.circuit.samples),theme=this.environmentSettings.theme;
+    if(['amalfi','norway','bund'].includes(theme))bounds.max.z+=theme==='bund'?180:70;
+    const center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3()),span=Math.max(size.x,size.z,55);
+    const portraitZoom=Math.max(1,.95/this.camera.aspect);
+    this.editorControls.target.copy(center);this.camera.position.copy(center).add(new THREE.Vector3(span*.65,span*.7,span*.8).multiplyScalar(portraitZoom));this.editorControls.update();
   }
 
   setConditions(surfaceId, weatherId) {
-    const weatherChanged=this.weatherId!==weatherId,defaults=trackEnvironment(this.circuit.config,weatherId);
+    const weatherChanged=this.weatherId!==weatherId,defaults=environmentForTrack(this.circuit.config,weatherId);
     this.surfaceId = surfaceId; this.weatherId = weatherId;
     this.updateRoadGroups(surfaceId);
     Object.values(SURFACES).forEach((surface,i) => {
@@ -263,7 +293,7 @@ export class World {
     });
     const state={...this.environmentSettings,weather:weatherId};
     if(weatherChanged)for(const key of ['clouds','fog','precipitation','wetness','snow'])state[key]=defaults[key];
-    if(weatherId==='sunset'&&weatherChanged)state.hour=18.2;
+    if(weatherId==='sunset'&&weatherChanged&&this.circuit.config.editorEnvironment?.weather!=='sunset')state.hour=18.2;
     this.applyEnvironment(state);
   }
 
@@ -283,7 +313,7 @@ export class World {
     }
     const underpass=this.circuit.layout?.crossings.some(c=>(drive.y||0)<c.upperY-3&&Math.hypot(drive.x-c.x,drive.z-c.z)<this.circuit.config.width*.9);
     this.underpassMarker.visible=Boolean(underpass||this.fleet);if(this.underpassMarker.visible)this.underpassMarker.position.set(drive.x,(drive.y||0)+.2,drive.z);
-    if(this.editorControls?.enabled)this.editorControls.update();
+    if(this.editorControls?.enabled){this.editorControls.update();this.camera.near=Math.max(.2,Math.min(20,this.camera.position.distanceTo(this.editorControls.target)*.02));this.camera.setViewOffset(innerWidth,innerHeight,innerWidth>760?175:0,innerWidth<=760?innerHeight*.2:0,innerWidth,innerHeight);}
     else{
       const rig = this.cameraRig.update(dt, drive, cameraMode, !this.cameraReady, this.camera.aspect);
       this.camera.position.copy(rig.position); this.camera.lookAt(rig.look);
@@ -306,7 +336,7 @@ export class World {
     this.driftEffects.update(animateWeather ? dt : 0, drive, running, this.circuit.surfaceAt(drive.progress || 0, this.surfaceId));
     this.brakeEffects.update(drive,this.circuit,running);
     this.fleet?.update(dt,alpha,running);
-    this.atmosphere.update(animateWeather?dt:0,this.landscape);this.atmosphere.render(dt);
+    this.atmosphere.update(animateWeather?dt:0,this.landscape,this.editorControls?.enabled?this.camera.position.distanceTo(this.editorControls.target):0);this.atmosphere.render(dt);
   }
 
   resetDrivingEffects() {
