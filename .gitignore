@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+artifacts/
+
+# Local reference clone and machine-specific files.
+reference/
+.env
+.env.*
+!.env.example
+.codex/
+.agents/
+.aws/

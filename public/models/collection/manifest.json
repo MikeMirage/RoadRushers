@@ -1,0 +1,2085 @@
+{
+  "version": 1,
+  "axes": "+Y up, +Z forward",
+  "scale": "RoadRushers miniature metres",
+  "uvLayout": "panel-atlas-3x2",
+  "batches": [
+    {
+      "id": "heritage",
+      "name": "Clásicos europeos",
+      "subtitle": "Pequeños iconos y gran turismo · 1938–1973"
+    },
+    {
+      "id": "americana",
+      "name": "Muscle & hot rods",
+      "subtitle": "Cromados, capós largos y V8 · 1932–1992"
+    },
+    {
+      "id": "drivers",
+      "name": "Japón & rally",
+      "subtitle": "Cultura de conducción · 1969–2002"
+    },
+    {
+      "id": "exotics",
+      "name": "Deportivos & supercoches",
+      "subtitle": "Siluetas de circuito y carretera · 1966–2021"
+    },
+    {
+      "id": "adventure",
+      "name": "Aventura & especiales",
+      "subtitle": "Del campo al paddock · 1941–2017"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "bambino",
+      "name": "Bambino 59",
+      "batch": "heritage",
+      "inspiration": "Fiat 500 (1957)",
+      "file": "bambino.glb",
+      "bytes": 438988,
+      "triangles": 4412,
+      "primitives": 15,
+      "dimensions": [
+        1.6257,
+        1.333,
+        2.5284
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#d6e5bd",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "borough",
+      "name": "Borough Cooper",
+      "batch": "heritage",
+      "inspiration": "Mini Cooper Mk I",
+      "file": "borough.glb",
+      "bytes": 424472,
+      "triangles": 4260,
+      "primitives": 15,
+      "dimensions": [
+        1.7072,
+        1.238,
+        2.5947
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#a53635",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "kafer",
+      "name": "Käfer 63",
+      "batch": "heritage",
+      "inspiration": "Volkswagen Beetle",
+      "file": "kafer.glb",
+      "bytes": 589184,
+      "triangles": 5988,
+      "primitives": 14,
+      "dimensions": [
+        1.8472,
+        1.363,
+        3.0251
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#d5b66d",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "parisienne",
+      "name": "Parisienne 2",
+      "batch": "heritage",
+      "inspiration": "Citroën 2CV",
+      "file": "parisienne.glb",
+      "bytes": 639796,
+      "triangles": 6504,
+      "primitives": 15,
+      "dimensions": [
+        1.6617,
+        1.493,
+        2.9854
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#80abb9",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "bubble",
+      "name": "Bubble 57",
+      "batch": "heritage",
+      "inspiration": "BMW Isetta",
+      "file": "bubble.glb",
+      "bytes": 437064,
+      "triangles": 4396,
+      "primitives": 15,
+      "dimensions": [
+        1.6042,
+        1.293,
+        2.1332
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#ed9b6d",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "montane",
+      "name": "Montane 110",
+      "batch": "heritage",
+      "inspiration": "Alpine A110 berlinette",
+      "file": "montane.glb",
+      "bytes": 526976,
+      "triangles": 5340,
+      "primitives": 14,
+      "dimensions": [
+        1.8539,
+        1.123,
+        3.145
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#4f93cb",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "sovereign",
+      "name": "Sovereign E",
+      "batch": "heritage",
+      "inspiration": "Jaguar E-Type coupé",
+      "file": "sovereign.glb",
+      "bytes": 567028,
+      "triangles": 5756,
+      "primitives": 14,
+      "dimensions": [
+        1.7965,
+        1.153,
+        3.7757
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#366657",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "mesh",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "gullwing",
+      "name": "Silber 300",
+      "batch": "heritage",
+      "inspiration": "Mercedes-Benz 300 SL",
+      "file": "gullwing.glb",
+      "bytes": 542048,
+      "triangles": 5496,
+      "primitives": 14,
+      "dimensions": [
+        1.9142,
+        1.233,
+        3.5949
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c1c9cc",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "mesh",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "speedwell",
+      "name": "Speedwell 56",
+      "batch": "heritage",
+      "inspiration": "Porsche 356 Speedster",
+      "file": "speedwell.glb",
+      "bytes": 521404,
+      "triangles": 5272,
+      "primitives": 15,
+      "dimensions": [
+        1.7952,
+        1.0889,
+        3.1245
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e8dbb9",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "mesh",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "deesse",
+      "name": "Déesse 21",
+      "batch": "heritage",
+      "inspiration": "Citroën DS",
+      "file": "deesse.glb",
+      "bytes": 435176,
+      "triangles": 4372,
+      "primitives": 15,
+      "dimensions": [
+        1.9227,
+        1.293,
+        3.9193
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#b8b7a4",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "classic",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "deuce",
+      "name": "Deuce 32",
+      "batch": "americana",
+      "inspiration": "Ford hot rod de 1932",
+      "file": "deuce.glb",
+      "bytes": 520440,
+      "triangles": 5272,
+      "primitives": 14,
+      "dimensions": [
+        1.8612,
+        1.388,
+        2.9922
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#81383d",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "belvedere",
+      "name": "Belvedere 57",
+      "batch": "americana",
+      "inspiration": "Chevrolet Bel Air 1957",
+      "file": "belvedere.glb",
+      "bytes": 441544,
+      "triangles": 4440,
+      "primitives": 15,
+      "dimensions": [
+        1.9543,
+        1.308,
+        3.959
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#63b4b4",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "stingray",
+      "name": "Stingray 63",
+      "batch": "americana",
+      "inspiration": "Chevrolet Corvette C2",
+      "file": "stingray.glb",
+      "bytes": 432556,
+      "triangles": 4356,
+      "primitives": 14,
+      "dimensions": [
+        1.9336,
+        1.143,
+        3.5815
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c7cbd0",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "mustang",
+      "name": "Stallion 67",
+      "batch": "americana",
+      "inspiration": "Ford Mustang fastback",
+      "file": "mustang.glb",
+      "bytes": 439432,
+      "triangles": 4428,
+      "primitives": 14,
+      "dimensions": [
+        1.953,
+        1.188,
+        3.7013
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#497873",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "camaro",
+      "name": "Rocoso SS",
+      "batch": "americana",
+      "inspiration": "Chevrolet Camaro 1969",
+      "file": "camaro.glb",
+      "bytes": 456004,
+      "triangles": 4600,
+      "primitives": 14,
+      "dimensions": [
+        1.9737,
+        1.148,
+        3.6808
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e29c40",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "charger",
+      "name": "Outlaw 69",
+      "batch": "americana",
+      "inspiration": "Dodge Charger 1969",
+      "file": "charger.glb",
+      "bytes": 397484,
+      "triangles": 3992,
+      "primitives": 14,
+      "dimensions": [
+        2.0138,
+        1.2287,
+        4.0385
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#a74334",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "challenger",
+      "name": "Challenger RT",
+      "batch": "americana",
+      "inspiration": "Dodge Challenger 1970",
+      "file": "challenger.glb",
+      "bytes": 495464,
+      "triangles": 5012,
+      "primitives": 14,
+      "dimensions": [
+        2.0438,
+        1.198,
+        3.9391
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#9d76b0",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "firebird",
+      "name": "Phoenix 77",
+      "batch": "americana",
+      "inspiration": "Pontiac Firebird Trans Am",
+      "file": "firebird.glb",
+      "bytes": 419656,
+      "triangles": 4224,
+      "primitives": 14,
+      "dimensions": [
+        2.0231,
+        1.159,
+        3.9629
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#30363b",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#bc9a54",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "gto",
+      "name": "Tempest 65",
+      "batch": "americana",
+      "inspiration": "Pontiac GTO 1965",
+      "file": "gto.glb",
+      "bytes": 496644,
+      "triangles": 5024,
+      "primitives": 14,
+      "dimensions": [
+        1.9455,
+        1.318,
+        3.9428
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#6b90b1",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "viper",
+      "name": "Venom 92",
+      "batch": "americana",
+      "inspiration": "Dodge Viper RT/10",
+      "file": "viper.glb",
+      "bytes": 427640,
+      "triangles": 4296,
+      "primitives": 15,
+      "dimensions": [
+        2.1138,
+        1.0725,
+        3.7007
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c43833",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "hakone",
+      "name": "Hakone R34",
+      "batch": "drivers",
+      "inspiration": "Nissan Skyline GT-R R34",
+      "file": "hakone.glb",
+      "bytes": 455932,
+      "triangles": 4600,
+      "primitives": 14,
+      "dimensions": [
+        1.9936,
+        1.2511,
+        3.8301
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#5796c6",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "aichi",
+      "name": "Aichi A80",
+      "batch": "drivers",
+      "inspiration": "Toyota Supra A80",
+      "file": "aichi.glb",
+      "bytes": 519032,
+      "triangles": 5256,
+      "primitives": 14,
+      "dimensions": [
+        2.0324,
+        1.223,
+        3.7435
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e7d8b1",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "rotor",
+      "name": "Rotor FD",
+      "batch": "drivers",
+      "inspiration": "Mazda RX-7 FD",
+      "file": "rotor.glb",
+      "bytes": 471288,
+      "triangles": 4760,
+      "primitives": 14,
+      "dimensions": [
+        1.983,
+        1.167,
+        3.51
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#d6ab3c",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "midori",
+      "name": "Midori NA1",
+      "batch": "drivers",
+      "inspiration": "Honda NSX NA1",
+      "file": "midori.glb",
+      "bytes": 374148,
+      "triangles": 3736,
+      "primitives": 15,
+      "dimensions": [
+        2.0024,
+        1.098,
+        3.7007
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c64b42",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "hachiro",
+      "name": "Hachiro 86",
+      "batch": "drivers",
+      "inspiration": "Toyota AE86 Trueno",
+      "file": "hachiro.glb",
+      "bytes": 374304,
+      "triangles": 3740,
+      "primitives": 15,
+      "dimensions": [
+        1.8278,
+        1.188,
+        3.4225
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#dedfd4",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "fairwind",
+      "name": "Fairwind Z",
+      "batch": "drivers",
+      "inspiration": "Datsun 240Z",
+      "file": "fairwind.glb",
+      "bytes": 420272,
+      "triangles": 4228,
+      "primitives": 14,
+      "dimensions": [
+        1.8666,
+        1.163,
+        3.5815
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#dd773f",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "boxer",
+      "name": "Boxer 22",
+      "batch": "drivers",
+      "inspiration": "Subaru Impreza 22B",
+      "file": "boxer.glb",
+      "bytes": 524320,
+      "triangles": 5312,
+      "primitives": 14,
+      "dimensions": [
+        2.0024,
+        1.2811,
+        3.631
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#3569b6",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#bc9a54",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "delta",
+      "name": "Valle HF",
+      "batch": "drivers",
+      "inspiration": "Lancia Delta Integrale",
+      "file": "delta.glb",
+      "bytes": 609188,
+      "triangles": 6196,
+      "primitives": 14,
+      "dimensions": [
+        1.8878,
+        1.318,
+        3.145
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c0523e",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "stratos",
+      "name": "Orbite HF",
+      "batch": "drivers",
+      "inspiration": "Lancia Stratos",
+      "file": "stratos.glb",
+      "bytes": 468648,
+      "triangles": 4732,
+      "primitives": 14,
+      "dimensions": [
+        1.9936,
+        1.1729,
+        3.2057
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#71ae66",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "turbine",
+      "name": "Turbine 205",
+      "batch": "drivers",
+      "inspiration": "Peugeot 205 T16",
+      "file": "turbine.glb",
+      "bytes": 521584,
+      "triangles": 5284,
+      "primitives": 14,
+      "dimensions": [
+        1.9072,
+        1.338,
+        3.064
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#dfd8c8",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "rally",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "neun",
+      "name": "Neun Turbo",
+      "batch": "exotics",
+      "inspiration": "Porsche 911 Turbo 930",
+      "file": "neun.glb",
+      "bytes": 511248,
+      "triangles": 5176,
+      "primitives": 14,
+      "dimensions": [
+        1.9336,
+        1.253,
+        3.4424
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#8c9794",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "rosso",
+      "name": "Rosso 40",
+      "batch": "exotics",
+      "inspiration": "Ferrari F40",
+      "file": "rosso.glb",
+      "bytes": 407156,
+      "triangles": 4092,
+      "primitives": 14,
+      "dimensions": [
+        2.1095,
+        1.1529,
+        3.6808
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#d44737",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "cuneo",
+      "name": "Cuneo 84",
+      "batch": "exotics",
+      "inspiration": "Lamborghini Countach",
+      "file": "cuneo.glb",
+      "bytes": 470928,
+      "triangles": 4756,
+      "primitives": 14,
+      "dimensions": [
+        2.1677,
+        1.1529,
+        3.5417
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e6e1c9",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "miura",
+      "name": "Miura S",
+      "batch": "exotics",
+      "inspiration": "Lamborghini Miura",
+      "file": "miura.glb",
+      "bytes": 490192,
+      "triangles": 4956,
+      "primitives": 14,
+      "dimensions": [
+        1.9918,
+        1.113,
+        3.5417
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#cf9b39",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "testa",
+      "name": "Testa 84",
+      "batch": "exotics",
+      "inspiration": "Ferrari Testarossa",
+      "file": "testa.glb",
+      "bytes": 412148,
+      "triangles": 4144,
+      "primitives": 14,
+      "dimensions": [
+        2.2065,
+        1.098,
+        3.8398
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e7e1cf",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "woking",
+      "name": "Woking F1",
+      "batch": "exotics",
+      "inspiration": "McLaren F1",
+      "file": "woking.glb",
+      "bytes": 526848,
+      "triangles": 5328,
+      "primitives": 15,
+      "dimensions": [
+        2.0694,
+        1.205,
+        3.6292
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#d09038",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "molsheim",
+      "name": "Molsheim 16",
+      "batch": "exotics",
+      "inspiration": "Bugatti Veyron",
+      "file": "molsheim.glb",
+      "bytes": 496800,
+      "triangles": 5016,
+      "primitives": 15,
+      "dimensions": [
+        2.2078,
+        1.183,
+        3.6833
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#558da0",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "modena",
+      "name": "Modena Z",
+      "batch": "exotics",
+      "inspiration": "Pagani Zonda",
+      "file": "modena.glb",
+      "bytes": 542744,
+      "triangles": 5504,
+      "primitives": 14,
+      "dimensions": [
+        2.1871,
+        1.225,
+        3.8398
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#b2b9b6",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "enduro",
+      "name": "Enduro 40",
+      "batch": "exotics",
+      "inspiration": "Ford GT40",
+      "file": "enduro.glb",
+      "bytes": 449464,
+      "triangles": 4532,
+      "primitives": 14,
+      "dimensions": [
+        2.1082,
+        1.064,
+        3.5417
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#69b3c4",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "volt",
+      "name": "Volt N",
+      "batch": "exotics",
+      "inspiration": "Rimac Nevera",
+      "file": "volt.glb",
+      "bytes": 400236,
+      "triangles": 4020,
+      "primitives": 14,
+      "dimensions": [
+        2.1884,
+        1.183,
+        3.8795
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#486e9a",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "willy",
+      "name": "Willy 41",
+      "batch": "adventure",
+      "inspiration": "Willys MB",
+      "file": "willy.glb",
+      "bytes": 544224,
+      "triangles": 5484,
+      "primitives": 18,
+      "dimensions": [
+        1.9191,
+        1.452,
+        3.0471
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#7f8865",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "moorland",
+      "name": "Moorland 90",
+      "batch": "adventure",
+      "inspiration": "Land Rover Defender 90",
+      "file": "moorland.glb",
+      "bytes": 571884,
+      "triangles": 5780,
+      "primitives": 17,
+      "dimensions": [
+        1.9786,
+        1.842,
+        3.252
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#7c998c",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "trailmaster",
+      "name": "Trailmaster 40",
+      "batch": "adventure",
+      "inspiration": "Toyota Land Cruiser FJ40",
+      "file": "trailmaster.glb",
+      "bytes": 552572,
+      "triangles": 5580,
+      "primitives": 17,
+      "dimensions": [
+        1.998,
+        1.658,
+        3.2496
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#bfad78",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "bronco",
+      "name": "Mesa 66",
+      "batch": "adventure",
+      "inspiration": "Ford Bronco primera generación",
+      "file": "bronco.glb",
+      "bytes": 533052,
+      "triangles": 5376,
+      "primitives": 17,
+      "dimensions": [
+        2.0249,
+        1.638,
+        3.4262
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#cf7752",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "gelande",
+      "name": "Gelände G",
+      "batch": "adventure",
+      "inspiration": "Mercedes-Benz Clase G",
+      "file": "gelande.glb",
+      "bytes": 576976,
+      "triangles": 5844,
+      "primitives": 16,
+      "dimensions": [
+        2.0756,
+        1.882,
+        3.7232
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#656f6e",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "raptor",
+      "name": "Badlands R",
+      "batch": "adventure",
+      "inspiration": "Ford F-150 Raptor",
+      "file": "raptor.glb",
+      "bytes": 551244,
+      "triangles": 5592,
+      "primitives": 14,
+      "dimensions": [
+        2.3092,
+        1.578,
+        4.277
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c08d55",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "kombu",
+      "name": "Kombu 64",
+      "batch": "adventure",
+      "inspiration": "Volkswagen Type 2 T1",
+      "file": "kombu.glb",
+      "bytes": 443348,
+      "triangles": 4460,
+      "primitives": 15,
+      "dimensions": [
+        1.9191,
+        1.818,
+        3.7007
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#7fb8b4",
+        "secondary": "#e8e3cf",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "dune",
+      "name": "Dune 959",
+      "batch": "adventure",
+      "inspiration": "Porsche 959 Paris-Dakar",
+      "file": "dune.glb",
+      "bytes": 713264,
+      "triangles": 7280,
+      "primitives": 14,
+      "dimensions": [
+        2.0901,
+        1.432,
+        3.6918
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#e0dbc5",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "offroad",
+        "rimColor": "#b8c1c6",
+        "tire": "all-terrain",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "superbird",
+      "name": "Superbird 70",
+      "batch": "adventure",
+      "inspiration": "Plymouth Road Runner Superbird",
+      "file": "superbird.glb",
+      "bytes": 419040,
+      "triangles": 4216,
+      "primitives": 14,
+      "dimensions": [
+        2.0438,
+        1.5938,
+        4.504
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#c6bd51",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    },
+    {
+      "id": "seven",
+      "name": "Club Seven",
+      "batch": "adventure",
+      "inspiration": "Lotus Seven / Caterham",
+      "file": "seven.glb",
+      "bytes": 576232,
+      "triangles": 5832,
+      "primitives": 16,
+      "dimensions": [
+        1.9394,
+        1.27,
+        3.0726
+      ],
+      "customization": {
+        "version": 1,
+        "slots": [
+          "exterior-paint",
+          "secondary-paint",
+          "windows",
+          "rubber",
+          "rims"
+        ],
+        "uvLayout": "panel-atlas-3x2",
+        "color": "#4c8068",
+        "secondary": "#222b32",
+        "wrap": "none",
+        "rim": "sport",
+        "rimColor": "#b8c1c6",
+        "tire": "road",
+        "glass": "#567681",
+        "glassOpacity": 0.85,
+        "trail": "none"
+      },
+      "sockets": [
+        "trail-rear-left",
+        "exhaust-left",
+        "trail-rear-right",
+        "exhaust-right"
+      ]
+    }
+  ]
+}

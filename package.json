@@ -1,0 +1,22 @@
+{
+  "name": "roadrushers",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/*.test.js",
+    "models:qa": "node scripts/vehicle-qa.mjs",
+    "models:export": "node scripts/export-vehicles.mjs"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/dm-sans": "^5.3.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5"
+  }
+}

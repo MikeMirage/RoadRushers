@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024">
+  <rect width="1536" height="1024" fill="#e2e5db"/>
+  <g fill="none" stroke="#294638" stroke-width="2" stroke-dasharray="8 8">
+    <path d="M512 0V1024M1024 0V1024M0 512H1536"/>
+    <rect x="13" y="13" width="486" height="486"/><rect x="525" y="13" width="486" height="486"/><rect x="1037" y="13" width="486" height="486"/>
+    <rect x="13" y="525" width="486" height="486"/><rect x="525" y="525" width="486" height="486"/><rect x="1037" y="525" width="486" height="486"/>
+  </g>
+  <g fill="#294638" text-anchor="middle" font-family="sans-serif">
+    <g font-size="30"><text x="256" y="70">LATERAL IZQUIERDO</text><text x="768" y="70">BAJOS</text><text x="1280" y="70">TRASERA</text><text x="256" y="582">LATERAL DERECHO</text><text x="768" y="582">TECHO / CAPÓ</text><text x="1280" y="582">DELANTERA</text></g>
+    <g font-size="18"><text x="256" y="460">v 0–0.5 · x negativo</text><text x="768" y="460">v 0–0.5 · y negativo</text><text x="1280" y="460">v 0–0.5 · z negativo</text><text x="256" y="972">v 0.5–1 · x positivo</text><text x="768" y="972">v 0.5–1 · y positivo</text><text x="1280" y="972">v 0.5–1 · z positivo</text></g>
+    <g font-size="20"><text x="256" y="250">Morro ← longitud → Cola</text><text x="768" y="250">Izquierda ← ancho → Derecha</text><text x="1280" y="250">Derecha ← ancho → Izquierda</text><text x="256" y="762">Cola ← longitud → Morro</text><text x="768" y="762">Izquierda ← ancho → Derecha</text><text x="1280" y="762">Izquierda ← ancho → Derecha</text></g>
+  </g>
+  <g stroke="#294638" stroke-width="1" opacity=".25"><path d="M256 110V440M768 110V440M1280 110V440M256 622V952M768 622V952M1280 622V952M30 280H480M540 280H995M1050 280H1510M30 792H480M540 792H995M1050 792H1510"/></g>
+</svg>

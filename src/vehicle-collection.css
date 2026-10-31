@@ -1,0 +1,33 @@
+.archive-launch{display:flex;justify-content:space-between;width:100%;margin-top:13px;border:0;border-top:1px solid #b8d69c33;padding:13px 0 0;background:none;color:var(--lime);font:500 10px 'DM Sans',sans-serif;text-align:left;cursor:pointer}
+.collection-batches{display:flex;gap:6px;overflow-x:auto;margin:19px 0 0;padding:0 0 5px;scrollbar-width:thin}
+.collection-batches button{flex:1 0 auto;position:relative;border:1px solid #bed3ac2a;border-radius:6px;padding:10px 24px 10px 11px;background:#cbdab108;color:#c9d7c0;font:500 12px 'Barlow Condensed',sans-serif;text-align:left;cursor:pointer}
+.collection-batches button>span{display:block;font:500 6px 'DM Sans',sans-serif;letter-spacing:1px;color:#91a78b;margin-bottom:4px}
+.collection-batches button>small{position:absolute;right:7px;top:11px;font-size:8px;color:#90a486}
+.collection-batches button[aria-pressed=true]{border-color:#c6db89;background:#ccdc9315;color:#e7efc8}
+.collection-layout{grid-template-columns:minmax(0,1fr) 240px;gap:25px;margin-top:15px}
+.collection-viewport{height:clamp(220px,45vh,420px)}
+.collection-roster{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.collection-car{min-width:0;padding:9px 9px}
+.collection-car strong{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.collection-car small{font-size:6px}
+.collection-roster{max-height:152px;overflow:auto;scrollbar-width:thin}
+.collection-detail{max-height:calc(100vh - 205px);overflow-y:auto;scrollbar-width:thin;padding-right:5px}
+.collection-detail h3{font-size:37px;margin-top:13px}
+.collection-detail .vehicle-stats{margin:17px 0}
+.collection-ownership{padding-top:12px;margin-bottom:14px}
+.vehicle-workshop{border-top:1px solid #cbdab12e;margin-top:16px;padding-top:13px;font-size:9px;color:#bacdb2}
+.vehicle-workshop summary{cursor:pointer;color:#e7edcf;font:500 16px 'Barlow Condensed',sans-serif;list-style:none;display:flex;justify-content:space-between}
+.workshop-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 11px;margin:13px 0}
+.workshop-fields label{display:flex;flex-direction:column;gap:6px;font-size:8px;color:#b8c9ac;min-width:0}
+.workshop-fields input[type=color]{width:100%;height:27px;padding:1px;border:1px solid #c3d4ad38;border-radius:4px;background:#274235;cursor:pointer}
+.workshop-fields select{width:100%;height:27px;border:1px solid #c3d4ad38;border-radius:4px;background:#274235;color:#e1e7d3;font-size:9px;padding:0 5px}
+.workshop-fields input[type=range]{width:100%;height:27px;accent-color:#cee68e;margin:0}
+.wrap-upload{display:block;border:1px dashed #c3d4ad4a;border-radius:4px;padding:9px;font-size:9px;cursor:pointer}
+.wrap-upload>span{display:block;font-size:6px;letter-spacing:.6px;margin:4px 0 6px;color:#90aa85}
+.wrap-upload input{font-size:8px;width:100%;color:#b6c9aa}
+.vehicle-workshop>small{display:block;font-size:7px;line-height:1.6;color:#9db891;margin-top:8px}
+.vehicle-download{display:flex;justify-content:space-between;text-decoration:none;color:#d5e99f;padding:11px 0 6px;font-size:9px}
+.trail-ready{font-size:7px;line-height:1.6;color:#91ac86;margin:7px 0 0}
+.vehicle-workshop input:focus-visible,.vehicle-workshop select:focus-visible,.collection-batches button:focus-visible{outline:2px solid #e2f1ad;outline-offset:2px}
+@media(max-height:760px) and (min-width:761px){.collection-viewport{height:clamp(210px,43vh,350px)}.collection-layout{align-items:start}.collection-detail h3{font-size:33px}.collection-batches{margin-top:11px}.collection-roster{max-height:104px}.collection-detail{max-height:calc(100vh - 175px)}}
+@media(max-width:760px){.collection-batches{margin-top:13px}.collection-batches button{flex:0 0 127px}.collection-layout{display:flex}.collection-viewport{height:345px}.collection-roster{grid-template-columns:repeat(2,minmax(0,1fr));max-height:228px;overflow:auto}.collection-detail{display:flex;max-height:none;overflow:visible}.collection-car strong{font-size:17px}.vehicle-workshop{margin-top:15px}.workshop-fields{grid-template-columns:1fr 1fr;gap:12px}.workshop-fields label{font-size:10px}.workshop-fields select,.workshop-fields input[type=color]{height:34px}.wrap-upload{font-size:11px}.wrap-upload input{font-size:10px}.vehicle-workshop>small,.trail-ready{font-size:9px}.collection-detail .vehicle-stats{margin:17px 0}.garage-modal .modal-heading h2{font-size:30px}.collection-count{font-size:17px}.collection-count small{font-size:11px}}
