@@ -139,9 +139,11 @@ export class LapTracker {
     this.lap = 1;
     this.last = null;
     this.wrongWay = false;
+    this.elapsed=0;this.lapTimes=[];this.lapStartedAt=0;
   }
   step(dt, progress) {
     this.time += dt;
+    this.elapsed += dt;
     let delta = progress - this.previous;
     if (delta < -0.5) delta += 1;
     if (delta > 0.5) delta -= 1;
@@ -153,8 +155,9 @@ export class LapTracker {
     const gate = this.nextGate / 8;
     if (this.nextGate < 8 && prev < gate && progress >= gate) this.nextGate++;
     if (prev > 0.94 && progress < 0.06 && this.nextGate === 8) {
-      this.last = this.time;
-      this.time = 0;
+      const crossing=this.elapsed-dt+dt*(1-prev)/delta;
+      this.last=crossing-this.lapStartedAt;this.lapTimes.push(this.last);this.lapStartedAt=crossing;
+      this.time=this.elapsed-crossing;
       this.lap++;
       this.nextGate = 1;
       return this.last;

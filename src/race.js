@@ -25,7 +25,7 @@ export function makeRaceTrack(base,width='original') {
 
 /** Ordered eighth-lap gates, starting behind the line on a real staggered grid. */
 export class RaceProgress {
-  constructor(raw,behind,length){this.previous=raw;this.absolute=-behind/length;this.nextGate=0;this.completed=0;this.finishTime=null;this.wrongWay=false;}
+  constructor(raw,behind,length){this.previous=raw;this.absolute=-behind/length;this.nextGate=behind>0?0:1;this.completed=0;this.finishTime=null;this.wrongWay=false;this.lapTimes=[];this.lapStartedAt=0;}
   step(dt,raw,elapsed,laps){
     const delta=progressDelta(raw,this.previous);this.previous=raw;this.wrongWay=delta<-.00008;
     if(Math.abs(delta)>.04)return false;
@@ -33,8 +33,9 @@ export class RaceProgress {
     if(delta<=0||this.finishTime!=null)return false;
     while(this.absolute>=this.nextGate/8&&before<this.nextGate/8){
       const gate=this.nextGate++;
-      if(gate>0&&gate%8===0)this.completed=gate/8;
-      if(gate===laps*8){this.finishTime=elapsed-dt+dt*clamp((gate/8-before)/delta,0,1);return true;}
+      const crossing=elapsed-dt+dt*clamp((gate/8-before)/delta,0,1);
+      if(gate>0&&gate%8===0){this.completed=gate/8;this.lapTimes.push(crossing-this.lapStartedAt);this.lapStartedAt=crossing;}
+      if(gate===laps*8){this.finishTime=crossing;return true;}
     }
     return false;
   }

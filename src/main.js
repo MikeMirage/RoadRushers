@@ -14,6 +14,10 @@ import './track-kit.css';
 import './race.css';
 import './playground.css';
 import './mobile-gameplay.css';
+import './results.css';
+import { ResultRecords,resultContext,createReport } from './results.js';
+import { renderSessionResult } from './results-ui.js';
+import { loadAILeaderboard } from './leaderboard.js';
 import { TRACKS, SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
 import { Circuit } from './circuit.js';
 import { DriveModel, LapTracker, formatTime } from './physics.js';
@@ -32,7 +36,7 @@ import { EnvironmentStudio } from './environment-studio.js';
 import { TrackWorkbench } from './track-workbench.js';
 import { readDrivingInput,bindTouchSteering } from './input.js';
 import { RaceSession,makeRaceTrack } from './race.js';
-import { availableRaceTracks,renderRaceSetup,renderRaceHUD,renderRaceResult } from './race-ui.js';
+import { availableRaceTracks,renderRaceSetup,renderRaceHUD } from './race-ui.js';
 
 const $ = id => document.getElementById(id);
 const icons = {
@@ -43,10 +47,12 @@ const icons = {
 let storage;
 try { storage = localStorage; } catch { storage = null; }
 const playgroundOptions=loadPlayground(storage);
+const resultRecords=new ResultRecords(storage);
 const settings=resolvePlayground(playgroundOptions).settings;
 let world, circuit, drive, laps, best = null, state = 'loading', countdown = 0, toastTime = 0, finishedTime = null;
 let lastFrame = performance.now(), uiTimer = 0, mapProjection, modalFocus, garage;
 let workbench,kitFocus,touchControls,garageContext='session';
+let timingContext,previousPersonalLap=null,activeReport=null,leaderboardAbort;
 let environmentStudio,environmentFocus;
 let race=null,raceSetupOpen=false,raceSetupFocus,raceTracks=[];
 const raceOptions={count:12,interaction:'ghost',laps:3,width:'original',trackId:null,difficulty:'club',fieldLevels:'mixed'};
@@ -58,8 +64,9 @@ const thumbnails = new Map();
 
 function recordKey() { return `roadrushers.v3.${settings.track.id}.${settings.vehicle.id}.${settings.surface}.${settings.weather}.${settings.pace}`; }
 function readBest() {
-  best = null;
-  if(settings.mode==='practice')try { const value = Number(storage?.getItem(recordKey())); if (value > 0 && value < 3600 && Number.isFinite(value)) best = value; } catch { /* Session-only records remain available. */ }
+  best = resultRecords.get(timingContext).bestLap;
+  if(settings.mode==='practice')try { const value = Number(storage?.getItem(recordKey())); if (value > 0 && value < 3600 && Number.isFinite(value)) best = Math.min(best??Infinity,value); } catch { /* Session-only records remain available. */ }
+  previousPersonalLap=best;
   $('best-time').textContent = formatTime(best);
 }
 
@@ -76,7 +83,7 @@ function trackSVG(config) {
 function refreshPlayground(){ $('playground-hub').innerHTML=renderPlayground(playgroundOptions,playgroundTracks(settings.track),state!=='loading'); }
 function showHub(){
   if(!world||state==='loading')return;
-  closeGarage();closeKit();closeRaceSetup();if(environmentStudio?.visible)closeEnvironment();setLab(false);refreshPlayground();setState('hub');
+  stopResultCalculation();closeGarage();closeKit();closeRaceSetup();if(environmentStudio?.visible)closeEnvironment();setLab(false);refreshPlayground();setState('hub');
 }
 function launchPlayground(startNow=true){
   if(!world||state==='loading')return;
@@ -251,10 +258,12 @@ function setState(next) {
   $('result-overlay').classList.toggle('hidden',next!=='finished');
   $('race-hud').classList.toggle('hidden',!race||!['countdown','running','paused','finished'].includes(next));
   $('pause-btn').setAttribute('aria-label',next==='paused'?'Continuar':'Pausar');$('pause-btn').textContent=next==='paused'?'▷':'Ⅱ';
+  $('end-session-btn').textContent=race?'Retirarse y ver tiempos':'Finalizar y ver tiempos';$('end-session-btn').disabled=(race?race.elapsed:laps?.elapsed||0)<=0;
   $('footer-label').textContent=next==='running'?`${settings.vehicle.name.toUpperCase()} · TU SIGUIENTE CURVA`:'BUSCA TU PROPIA TRAZADA';
   audio.update(drive?.speed||0,next==='running');keys.clear();clearPointers();
 }
 function makeSession(rebuild) {
+  stopResultCalculation();
   world.setVehicle(settings.vehicle);
   if(rebuild||!circuit){
     circuit=new Circuit(settings.track);world.build(circuit,settings.surface,settings.weather);
@@ -263,20 +272,41 @@ function makeSession(rebuild) {
   }else world.setConditions(settings.surface,settings.weather);
   race=settings.mode==='race'?new RaceSession(circuit,settings.vehicle,settings.raceRules):null;
   drive=race?race.player.drive:new DriveModel(circuit,settings.vehicle);laps=new LapTracker();finishedTime=null;world.setRivals(race);
+  timingContext=resultContext(settings,circuit);
   world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();readBest();updateOptions();setState('ready');updateHUD();drawMap();
 }
 function toast(message){$('toast').textContent=message;$('toast').classList.remove('hidden');toastTime=3.2;}
 function start(){if(state!=='ready')return;setLab(false);setState('countdown');countdown=3;$('countdown').textContent='3';}
-function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
+function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
 function pause(){if(state==='running')setState('paused');else if(state==='paused')setState('running');else if(state==='countdown')setState('ready');}
 function toggleCamera(){settings.camera=settings.camera==='topdown'?'chase':'topdown';playgroundOptions.camera=settings.camera;savePlayground(storage,playgroundOptions);$('camera-label').textContent=settings.camera==='chase'?'3ª persona':'Aérea';$('camera-btn').setAttribute('aria-label',`Cámara ${settings.camera==='chase'?'tercera persona':'aérea'}, cambiar con C`);if(state==='hub')refreshPlayground();}
 
-function finish(lap) {
-  $('result-content').classList.toggle('race-result-modal',Boolean(race));
-  $('result-overlay').setAttribute('aria-label',race?'Resultado de la carrera':'Resultado de la prueba');
-  if(race){
-    finishedTime=race.player.finishTime;$('result-content').innerHTML=renderRaceResult(race,settings.track);setState('finished');updateHUD();$('result-content').scrollTop=0;$('result-content').querySelector('h2').focus({preventScroll:true});return;
-  }
+function stopResultCalculation(){leaderboardAbort?.abort();leaderboardAbort=null;activeReport=null;}
+function paintResult(resetScroll=false){
+  if(!activeReport)return;
+  const scroll=$('result-content').querySelector('.report-body')?.scrollTop||0;
+  $('result-content').innerHTML=renderSessionResult(activeReport);
+  $('result-content').querySelector('.report-body').scrollTop=resetScroll?0:scroll;
+}
+function calculateRanking(report){
+  leaderboardAbort?.abort();leaderboardAbort=new AbortController();report.leaderboard={status:'loading',entries:[]};
+  loadAILeaderboard(report.context,{storage,signal:leaderboardAbort.signal}).then(entries=>{
+    if(activeReport!==report)return;report.leaderboard={status:'ready',entries};if(report.tab==='ranking')paintResult();
+  }).catch(error=>{if(error.name==='AbortError'||activeReport!==report)return;report.leaderboard={status:'error',error:error.message,entries:[]};if(report.tab==='ranking')paintResult();});
+}
+function showTimingResults(complete){
+  const totalTime=race?(race.player.finishTime??race.elapsed):laps.elapsed;if(totalTime<=0)return;
+  const lapTimes=race?race.player.tracker.lapTimes:laps.lapTimes;
+  const racers=race?race.standings().map(r=>({id:r.id,name:r.name,isPlayer:r.isPlayer,level:r.level,finishTime:r.finishTime})):[];
+  activeReport=createReport({context:timingContext,lapTimes,totalTime,complete,position:race?.position,racers,records:resultRecords,previousBestLap:previousPersonalLap});
+  finishedTime=totalTime;best=activeReport.personalBest;$('best-time').textContent=formatTime(best);
+  $('result-content').classList.remove('race-result-modal');$('result-content').classList.add('session-result-modal');
+  $('result-overlay').setAttribute('aria-label','Tiempos y clasificación');paintResult(true);setState('finished');updateHUD();
+  $('result-content').querySelector('h2').focus({preventScroll:true});calculateRanking(activeReport);
+}
+function finish(lap){
+  if(race){showTimingResults(true);return;}
+  resultRecords.recordLap(timingContext,lap);
   const newRecord=best==null||lap<best;
   if(newRecord){best=lap;try{storage?.setItem(recordKey(),String(lap));}catch{}$('best-time').textContent=formatTime(best);}
   toast(`${newRecord?'✦ Nuevo récord':'Vuelta completada'} · ${formatTime(lap)}`);
@@ -308,6 +338,11 @@ function drawMap(){
 
 function setupInput(){
   window.addEventListener('keydown',e=>{
+    if(state==='finished'){
+      if(e.code==='Escape'){e.preventDefault();showHub();}
+      if(e.code==='Tab'){const items=[...$('result-content').querySelectorAll('button:not(:disabled),[tabindex="0"]')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+      return;
+    }
     if(environmentStudio?.visible){
       if(e.code==='Escape'){e.preventDefault();closeEnvironment();}
       if(e.code==='Tab'){const items=[...$('environment-studio').querySelectorAll('button:not(:disabled),select,input:not(:disabled)')].filter(n=>n.getClientRects().length),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
@@ -319,7 +354,6 @@ function setupInput(){
       return;
     }
     if(workbench?.visible){
-      if(e.code==='Escape'){e.preventDefault();closeKit();}
       if(e.code==='Tab'){const buttons=[...$('track-kit-content').querySelectorAll('button:not(:disabled),select')],first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }
@@ -346,6 +380,7 @@ function setupInput(){
   $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('garage-btn').addEventListener('click',openGarage);$('intro-back').addEventListener('click',showHub);$('pause-hub-btn').addEventListener('click',showHub);
   $('track-kit-btn').addEventListener('click',openKit);
   $('environment-btn').addEventListener('click',openEnvironment);
+  $('end-session-btn').addEventListener('click',()=>{if(state==='paused')showTimingResults(false);});
   $('intro-race-btn').addEventListener('click',()=>openRaceSetup(true));
   $('race-setup-overlay').addEventListener('click',e=>{
     const button=e.target.closest('button');if(!button||button.disabled)return;
@@ -388,7 +423,14 @@ function setupInput(){
     if(e.target.id!=='vehicle-wrap-file')return;
     try{await garage.uploadWrap(e.target.files[0]);if($('workshop-status'))$('workshop-status').textContent='Textura UV aplicada durante esta sesión.';}catch(error){if($('workshop-status'))$('workshop-status').textContent=error.message;}
   });
-  $('result-overlay').addEventListener('click',e=>{if(e.target.closest('[data-race-action="configure"]'))showHub();const action=e.target.closest('[data-result]')?.dataset.result;if(action==='hub')showHub();if(action==='retry')reset();});
+  $('result-overlay').addEventListener('click',e=>{
+    if(!activeReport)return;
+    const tab=e.target.closest('[data-results-tab]')?.dataset.resultsTab,metric=e.target.closest('[data-results-metric]')?.dataset.resultsMetric;
+    if(['times','ranking','field'].includes(tab)){activeReport.tab=tab;paintResult(true);$('result-content').querySelector(`[data-results-tab="${tab}"]`).focus({preventScroll:true});}
+    if(['lap','total'].includes(metric)){activeReport.metric=metric;paintResult(true);$('result-content').querySelector(`[data-results-metric="${metric}"]`).focus({preventScroll:true});}
+    if(e.target.closest('[data-results-reload]')){calculateRanking(activeReport);paintResult(true);}
+    const action=e.target.closest('[data-result]')?.dataset.result;if(action==='hub')showHub();if(action==='retry')reset();
+  });
 }
 
 function frame(now){
@@ -397,7 +439,7 @@ function frame(now){
   if(state==='running'){
     const input=readDrivingInput(keys,pointers),steps=simulationClock.advance(dt);
     for(let i=0;i<steps;i++){
-      if(race){if(race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace)){finish(race.player.finishTime);break;}}
+      if(race){const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace);if(race.player.tracker.lapTimes.length>previous)resultRecords.recordLap(timingContext,race.player.tracker.lapTimes.at(-1));if(done){finish(race.player.finishTime);break;}}
       else{drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake);const lap=laps.step(FIXED_STEP,drive.road.progress);if(lap){finish(lap);if(state!=='running')break;}}
     }
   }
