@@ -17,6 +17,7 @@ import './playground.css';
 import './mobile-gameplay.css';
 import './results.css';
 import './ghost.css';
+import './minimal-ui.css';
 import { ResultRecords,resultContext,createReport } from './results.js';
 import { renderSessionResult } from './results-ui.js';
 import { loadAILeaderboard } from './leaderboard.js';
@@ -85,7 +86,12 @@ function trackSVG(config) {
   thumbnails.set(config.id, svg); return svg;
 }
 
-function refreshPlayground(){ $('playground-hub').innerHTML=renderPlayground(playgroundOptions,playgroundTracks(settings.track),state!=='loading'); }
+function refreshPlayground(){
+  const hub=$('playground-hub'),opened=[...hub.querySelectorAll('details[open]')].map(d=>d.dataset.playDetails),scroll=hub.scrollTop;
+  hub.innerHTML=renderPlayground(playgroundOptions,playgroundTracks(settings.track),state!=='loading');
+  for(const detail of hub.querySelectorAll('details'))detail.open=opened.includes(detail.dataset.playDetails);
+  hub.scrollTop=scroll;
+}
 function showHub(){
   if(!world||state==='loading')return;
   stopResultCalculation();closeGarage();closeKit();closeRaceSetup();if(environmentStudio?.visible)closeEnvironment();setLab(false);refreshPlayground();setState('hub');
@@ -379,7 +385,7 @@ function setupInput(){
       if(e.code==='Tab'){const buttons=[...$('track-kit-content').querySelectorAll('button:not(:disabled),select:not(:disabled),input:not(:disabled):not([hidden]),summary,canvas')].filter(el=>el.getClientRects().length),first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }
-    if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;
+    if(['INPUT','SELECT','TEXTAREA','SUMMARY'].includes(document.activeElement?.tagName))return;
     if(!$('garage-overlay').classList.contains('hidden')){
       if(e.code==='Escape'){e.preventDefault();cancelGarage();}
       if(e.code==='Tab'){
@@ -390,7 +396,7 @@ function setupInput(){
       return;
     }
     if(['ArrowLeft','ArrowRight','Space','KeyA','KeyD','KeyC','KeyR','Escape','Enter'].includes(e.code)){
-      if(e.code==='Enter'&&document.activeElement?.tagName==='BUTTON')return;
+      if(['Enter','Space'].includes(e.code)&&document.activeElement?.tagName==='BUTTON')return;
       e.preventDefault();if(!e.repeat){if(e.code==='KeyC')toggleCamera();if(e.code==='KeyR')reset();if(e.code==='Space'||e.code==='Escape')pause();if(e.code==='Enter')start();}keys.add(e.code);
     }
   });

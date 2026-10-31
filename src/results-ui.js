@@ -3,7 +3,7 @@ import { SURFACES,WEATHER,PACES } from './config.js';
 import { AI_LEVELS } from './race-driver.js';
 import { centiseconds,estimatedStanding } from './results.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const time=value=>value==null?'—:—.——':formatTime(value);
+const time=value=>value==null?'—':formatTime(value);
 
 function timesPanel(r){
   return `<table class="report-table" aria-label="Tus tiempos de vuelta"><thead><tr><th>VUELTA</th><th>TIEMPO</th><th>CON TU MEJOR</th></tr></thead><tbody>${r.lapTimes.map((lap,i)=>`<tr class="${centiseconds(lap)===centiseconds(r.bestLap)?'fast-lap':''}"><th>${String(i+1).padStart(2,'0')}${centiseconds(lap)===centiseconds(r.bestLap)?'<small>MEJOR</small>':''}</th><td>${time(lap)}</td><td>${centiseconds(lap)===centiseconds(r.bestLap)?'—':`+${((centiseconds(lap)-centiseconds(r.bestLap))/100).toFixed(2)} s`}</td></tr>`).join('')}</tbody></table>${!r.lapTimes.length?'<p class="report-note">No has completado ninguna vuelta. Completa una para registrar tu tiempo.</p>':''}${r.partialTime>.01?`<p class="report-note">Vuelta en curso: ${time(r.partialTime)} · No completada. Está incluida en el tiempo total.</p>`:''}${r.context.mode==='race'?'<p class="report-note">La vuelta 1 incluye la salida desde la parrilla.</p>':''}<p class="report-record-note">${r.saved?'Récords guardados en este navegador.':'Récords disponibles durante esta sesión; no se han podido guardar.'} Se comparan la misma configuración y el mismo coche.</p>`;
