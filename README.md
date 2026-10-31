@@ -4,6 +4,10 @@ Carreras 3D con aceleración automática y solo dos controles de dirección. Est
 
 **[Jugar en GitHub Pages](https://mikemirage.github.io/RoadRushers/)** · [Repositorio](https://github.com/MikeMirage/RoadRushers)
 
+## Fase actual: pruebas de gameplay
+
+La entrada del juego es un configurador libre: los 53 coches, todos los circuitos, superficie, clima, entorno, anchura, ritmo, cámara y carreras IA están disponibles desde el principio. Las copas y la progresión quedan fuera de este flujo. Ver [modo de pruebas y controles móviles](PLAYGROUND.md).
+
 ## Ejecutar
 
 ```sh
@@ -27,7 +31,7 @@ Para comprobar esa ruta localmente:
 
 ```sh
 npm run build -- --base /RoadRushers/
-npm run preview
+npm run preview -- --base /RoadRushers/
 # Abrir http://127.0.0.1:4174/RoadRushers/
 ```
 
@@ -45,7 +49,9 @@ Abrir **Tramos** en la barra superior para inspeccionar y montar 21 tipos de pie
 
 Incluye **Club técnico**, **Ocho elevado** y **Rally de crestas**, con altura real, cruces a distinto nivel y física de vuelo y aterrizaje. Se prueban en un entorno neutro para evaluar primero los tramos. Ver [definición del kit y reglas de montaje](TRACK_KIT.md).
 
-## Copa de Iniciación
+## Copa de Iniciación (implementación reservada)
+
+Este sistema se conserva para una fase posterior y no limita el modo de pruebas actual.
 
 Cada prueba es una vuelta con coche, materiales, clima y ritmo oficiales. Un bronce abre la siguiente prueba. Los mejores resultados se conservan y pueden mejorarse sin perder medallas.
 
@@ -96,7 +102,7 @@ Los tres circuitos tienen anchuras variables y curvas suavizadas. El mismo recor
 | C | Cámara aérea / tercera persona amplia |
 | Espacio / Escape | Pausa / continuar; Escape cierra el garaje |
 | R | Reiniciar la vuelta |
-| Flechas en pantalla | Una para girar; ambas a la vez para frenar |
+| Mitad inferior izquierda / derecha de la pantalla | Girar; tocar las dos zonas a la vez para frenar |
 
 El coche acelera solo. Mantener izquierda y derecha a la vez corta el acelerador y aumenta suavemente la presión del freno hasta detenerlo si se mantiene. Soltar una dirección libera el freno, vuelve a acelerar y permite entrar en la curva con esa dirección. El agarre de la superficie y el clima afectan a la distancia de frenado. Los tres coches encienden sus pilotos traseros rojos al frenar y proyectan un halo rojo sobre la carretera mediante un degradado, sin luces dinámicas; sigue la altura y el peralte del tramo. Entra con velocidad y mantén el giro para derrapar; suelta o aplica contravolante para recuperar la trayectoria. Humo y marcas representan el deslizamiento real. Superficie, clima y perfil del coche modifican el agarre y la velocidad. Los guardarraíles contienen el coche sin rebotes repetidos. Al cambiar de pestaña se pausa y libera los controles.
 

@@ -2,14 +2,14 @@ import { ENVIRONMENT_THEMES, CLIMATES, ENVIRONMENT_KEY, normalizeEnvironment, so
 
 export class EnvironmentStudio{
   constructor(onChange,onClose,onCamera,initial){
-    Object.assign(this,{onChange,onClose,onCamera});this.visible=false;this.state=normalizeEnvironment(initial);
-    try{const saved=JSON.parse(localStorage.getItem(ENVIRONMENT_KEY)||'null');if(saved?.version===1)this.state=normalizeEnvironment(saved.state);}catch{}
+    Object.assign(this,{onChange,onClose,onCamera});this.visible=false;this.state=normalizeEnvironment(initial);this.savedTracks={};
+    try{const saved=JSON.parse(localStorage.getItem(ENVIRONMENT_KEY)||'null');if(saved?.version===1){this.state=normalizeEnvironment(saved.state);this.savedTracks=saved.tracks&&typeof saved.tracks==='object'?saved.tracks:{};}}catch{}
   }
-  mount(host){
-    this.host=host;this.visible=true;this.render();
+  mount(host,sceneKey,initial){
+    this.host=host;this.sceneKey=sceneKey;this.state=normalizeEnvironment(this.savedTracks[sceneKey]||{...(initial||this.state),quality:this.state.quality});this.visible=true;this.render();
     host.oninput=e=>{const key=e.target.dataset.env;if(e.target.type!=='range'||!key||key==='grassDensity')return;this.update(key,e.target.value,false);};
     host.onchange=e=>{const key=e.target.dataset.env;if(!key)return;this.update(key,e.target.value,true);};
-    host.onclick=e=>{const action=e.target.closest('[data-env-action]')?.dataset.envAction;if(action==='close')this.onClose();if(action==='camera')this.onCamera();if(action==='reset'){this.state=themePreset(this.state.theme);this.render();this.emit(true);}};
+    host.onclick=e=>{const action=e.target.closest('[data-env-action]')?.dataset.envAction;if(action==='close')this.onClose();if(action==='camera')this.onCamera();if(action==='reset'){this.state=normalizeEnvironment({...themePreset(this.state.theme),quality:this.state.quality});this.render();this.emit(true);}};
     this.emit(true);
   }
   update(key,value,final){
@@ -25,7 +25,8 @@ export class EnvironmentStudio{
     this.emit(final);
   }
   emit(final){
-    try{localStorage.setItem(ENVIRONMENT_KEY,JSON.stringify({version:1,state:this.state}));}catch{}
+    this.savedTracks[this.sceneKey]={...this.state};
+    try{localStorage.setItem(ENVIRONMENT_KEY,JSON.stringify({version:1,state:this.state,tracks:this.savedTracks}));}catch{}
     this.onChange(this.state,final);
   }
   hide(){this.visible=false;}
