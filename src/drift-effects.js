@@ -5,12 +5,12 @@ const TRAIL_COUNT = 2400;
 
 /** Pooled tire marks and smoke, using the smoke sprite from the original kit. */
 export class DriftEffects {
-  constructor(scene) {
+  constructor(scene,texture = new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}sprites/smoke.png`)) {
     this.trailPositions = new Float32Array(TRAIL_COUNT * 18);
     this.trailGeometry = new THREE.BufferGeometry();
     this.trailGeometry.setAttribute('position', new THREE.BufferAttribute(this.trailPositions, 3).setUsage(THREE.DynamicDrawUsage));
     this.trailGeometry.setDrawRange(0, 0);
-    this.trails = new THREE.Mesh(this.trailGeometry, new THREE.MeshBasicMaterial({ color: '#1d2822', transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false }));
+    this.trails = new THREE.Mesh(this.trailGeometry, new THREE.MeshBasicMaterial({ color: '#1d2822', transparent: true, opacity: 0.38, side: THREE.DoubleSide, forceSinglePass:true, depthWrite: false }));
     this.trails.frustumCulled = false;
     scene.add(this.trails);
 
@@ -21,7 +21,6 @@ export class DriftEffects {
     geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3).setUsage(THREE.DynamicDrawUsage));
     geometry.setAttribute('aOpacity', new THREE.BufferAttribute(this.opacities, 1).setUsage(THREE.DynamicDrawUsage));
     geometry.setAttribute('aSize', new THREE.BufferAttribute(this.sizes, 1).setUsage(THREE.DynamicDrawUsage));
-    const texture = new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}sprites/smoke.png`);
     const material = new THREE.PointsMaterial({ map: texture, color: '#bbc1b4', size: 1, transparent: true, depthWrite: false });
     material.onBeforeCompile = shader => {
       shader.vertexShader = 'attribute float aSize;\nattribute float aOpacity;\nvarying float vOpacity;\n' + shader.vertexShader;

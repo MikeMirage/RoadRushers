@@ -1,6 +1,6 @@
 import { loadEnvironmentModel, instanceEnvironmentModel } from './environment-assets.js';
 
-const budgets={mobile:{trees:42,near:0,rocks:22,ferns:26},balanced:{trees:100,near:18,rocks:38,ferns:64},high:{trees:180,near:40,rocks:64,ferns:100}};
+const budgets={mobile:{trees:80,near:0,rocks:22,ferns:26},balanced:{trees:160,near:3,rocks:38,ferns:64},high:{trees:260,near:7,rocks:64,ferns:100}};
 
 /** Geometry for every placement is shared through GPU instancing. A stale
  * asynchronous load never attaches to a rebuilt or abandoned landscape. */

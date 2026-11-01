@@ -2,6 +2,7 @@ node_modules/
 dist/
 .DS_Store
 artifacts/
+versiones/
 
 # Local reference clone and machine-specific files.
 reference/

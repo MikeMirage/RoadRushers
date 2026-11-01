@@ -14,6 +14,8 @@ import { MAX_MANUAL_PROPS,propRoadWarnings } from './prop-catalog.js';
 import { TrackEditorDocument,readEditorDocument,parseEditorFile,editorTrackConfig } from './track-editor-state.js';
 import { editorShell,trackPanel,propsPanel,environmentPanel,escapeHTML } from './track-editor-ui.js';
 import { SURFACES } from './config.js';
+import { basicFloor } from './basic-scene.js';
+import { GameplayRenderer } from './gameplay-renderer.js';
 
 const dispose=group=>{if(!group)return;const gs=new Set(),ms=new Set();group.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.geometry)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)ms.add(m);});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());group.removeFromParent();};
 const clone=value=>structuredClone(value);
@@ -21,19 +23,21 @@ const rad=Math.PI/180;
 
 /** Manual authoring uses the same course, atmosphere and props as the driving scene. */
 export class TrackWorkbench {
-  constructor(onTest,onClose){
+  constructor(onTest,onClose,{basicOnly=false}={}){
+    this.basicOnly=basicOnly;
     Object.assign(this,{onTest,onClose,visible:false,tab:'track',focusSection:null,selectedProp:null,placementType:null,transformMode:'translate',palettePiece:'straight-short',search:'',family:'',snap:true,propWarnings:[],details:{}});
     try{this.storage=localStorage;}catch{}this.document=new TrackEditorDocument(readEditorDocument(this.storage));
-    this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFShadowMap;this.renderer.shadowMap.autoUpdate=false;
+    this.renderer=new THREE.WebGLRenderer({antialias:!basicOnly,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    this.renderer.shadowMap.enabled=!basicOnly;this.renderer.shadowMap.type=THREE.PCFShadowMap;this.renderer.shadowMap.autoUpdate=false;
     const canvas=this.renderer.domElement;canvas.setAttribute('aria-label','Editor 3D: arrastra para orbitar, dos dedos para desplazar y pellizca para acercar.');canvas.tabIndex=0;
     this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(45,1,.1,4000);
     this.controls=new OrbitControls(this.camera,canvas);this.controls.enableDamping=true;this.controls.maxPolarAngle=Math.PI/2-.025;this.controls.minDistance=3;this.controls.maxDistance=2400;
     this.ambient=new THREE.HemisphereLight('#d9e8ef','#7b8864',1.5);this.sun=new THREE.DirectionalLight('#fff2dc',3);this.sun.castShadow=true;this.sun.shadow.mapSize.set(1024,1024);this.sun.shadow.bias=-.0002;this.sun.shadow.normalBias=.06;this.scene.add(this.ambient,this.sun,this.sun.target);
     this.moon=new THREE.DirectionalLight('#a8c5eb',.05);this.moon.position.set(-50,100,40);this.scene.add(this.moon);
-    this.atmosphere=new EnvironmentSystem(this.renderer,this.scene,this.camera,this.sun,this.ambient);
+    if(basicOnly){this.scene.background=new THREE.Color('#8faaa1');this.renderPipeline=new GameplayRenderer(this.renderer,this.scene,this.camera);}
+    else this.atmosphere=new EnvironmentSystem(this.renderer,this.scene,this.camera,this.sun,this.ambient);
     this.grid=new THREE.GridHelper(1600,160,'#b6d9a3','#b6d9a3');this.grid.position.y=.08;this.grid.material.transparent=true;this.grid.material.opacity=.24;this.grid.visible=false;this.grid.raycast=()=>{};this.scene.add(this.grid);
-    this.layer=new ManualPropLayer(this.scene,this.document.value.props);
+    this.layer=new ManualPropLayer(this.scene,basicOnly?[]:this.document.value.props);
     this.selectionBox=new THREE.Box3Helper(new THREE.Box3(),new THREE.Color('#d9ff80'));this.selectionBox.visible=false;this.scene.add(this.selectionBox);
     this.transform=new TransformControls(this.camera,canvas);this.scene.add(this.transform.getHelper());this.applySnap();
     this.transform.addEventListener('dragging-changed',e=>{this.controls.enabled=!e.value&&this.visible;if(e.value)this.document.begin();else if(this.visible){this.finish();this.suppressPick=true;}});
@@ -42,17 +46,20 @@ export class TrackWorkbench {
     canvas.addEventListener('pointerdown',e=>{this.activePointers??=new Set();this.activePointers.add(e.pointerId);this.multiTouch=this.activePointers.size>1||this.multiTouch;this.pointerStart={x:e.clientX,y:e.clientY,id:e.pointerId,time:performance.now()};this.suppressPick=false;});
     canvas.addEventListener('pointercancel',e=>{this.activePointers?.delete(e.pointerId);if(!this.activePointers?.size)this.multiTouch=false;this.pointerStart=null;});
     canvas.addEventListener('pointermove',e=>this.pointerMove(e));canvas.addEventListener('pointerup',e=>this.pointerUp(e));
-    this.observer=new ResizeObserver(()=>this.resize());this.makePrecipitation();
+    this.observer=new ResizeObserver(()=>this.resize());if(!basicOnly)this.makePrecipitation();
   }
   $(id){return this.host?.querySelector(`#${id}`);}
   mount(host){
-    this.host=host;this.visible=true;this.controls.enabled=true;host.classList.add('track-editor');host.innerHTML=editorShell(this.document.value);
+    this.host=host;this.visible=true;this.controls.enabled=true;host.classList.add('track-editor');host.innerHTML=editorShell(this.document.value,{basicOnly:this.basicOnly});
     this.$('kit-stage').append(this.renderer.domElement);this.observer.observe(this.$('kit-stage'));
     host.onclick=e=>this.click(e);host.oninput=e=>this.input(e,false);host.onchange=e=>this.input(e,true);
     this.rebuildCourse();this.rebuildLandscape();this.configureEnvironment(true);this.renderPanel();this.renderSequence();this.status();this.resize();this.fit();this.attachSelection();
   }
+  loadDocument(value){
+    this.finish();if(JSON.stringify(this.document.value)===JSON.stringify(value))return;this.document=new TrackEditorDocument(value);this.focusSection=null;this.selectedProp=null;this.tab='track';
+  }
   hide(){this.finish();this.visible=false;this.controls.enabled=false;this.transform.detach();this.observer.disconnect();this.cancelPlacement();}
-  save(){const ok=this.document.save(this.storage);if(this.$('editor-save-status'))this.$('editor-save-status').textContent=ok?'Guardado en este navegador':'No se pudo guardar · Exporta una copia JSON';return ok;}
+  save(){const ok=this.document.save(this.storage);if(this.$('editor-save-status'))this.$('editor-save-status').textContent=ok?'Guardado en este navegador · Disponible en la lista de circuitos':'No se pudo guardar · Exporta una copia JSON';return ok;}
   finish(){if(this.courseDue)this.rebuildCourse();if(this.landscapeDue)this.rebuildLandscape();if(this.document.commit()){this.save();this.status();}this.gesture=null;}
   mutate(callback,{fit=false,props=false}={}){
     this.finish();try{this.document.change(callback);this.refresh({fit,props});this.save();}catch(error){this.error(error);}
@@ -60,7 +67,7 @@ export class TrackWorkbench {
   refresh({fit=false,props=false}={}){
     const doc=this.document.value;this.focusSection=this.focusSection!=null&&this.focusSection<doc.pieces.length?this.focusSection:null;
     if(!doc.props.some(p=>p.id===this.selectedProp))this.selectedProp=null;
-    if(props){this.transform.detach();this.layer.setRecords(doc.props);}
+    if(props){this.transform.detach();this.layer.setRecords(this.basicOnly?[]:doc.props);}
     this.rebuildCourse();this.landscapeDue=performance.now();this.configureEnvironment(true);this.renderSequence();this.renderPanel();this.status();this.attachSelection();if(fit)this.fit();
     this.host.querySelector('[data-editor-name]').value=doc.name;
   }
@@ -75,12 +82,15 @@ export class TrackWorkbench {
     this.$('editor-sequence').innerHTML=this.document.value.pieces.map((p,i)=>`<button data-editor-section="${i}" aria-pressed="${i===this.focusSection}"><small>${String(i+1).padStart(2,'0')}</small>${escapeHTML(PIECE_CATALOG.find(d=>d.id===(p.id||p)).name)}</button>`).join('')||'<span>Empieza insertando un tramo de la biblioteca.</span>';
   }
   status(){
-    if(!this.host)return;this.propWarnings=propRoadWarnings(this.document.value.props,this.circuit);
+    if(!this.host)return;this.propWarnings=this.basicOnly?[]:propRoadWarnings(this.document.value.props,this.circuit);
     const warning=this.host.querySelector('[data-editor-prop-warning]');if(warning)warning.hidden=!this.propWarnings.includes(this.selectedProp);
     const c=this.compiled,valid=c?.closed&&!c.errors.length;
-    this.$('editor-validation').className=valid?'valid':'';
-    this.$('editor-validation').textContent=c?.errors[0]||(valid?`✓ Circuito cerrado · ${c.length.toFixed(0)} m · ${c.sections.length} tramos${this.propWarnings.length?` · ${this.propWarnings.length} props cerca de la pista`:''}`:!c?.sections.length?'Añade módulos para construir tu circuito.':`Abierto · Cierre: ${c.gap.toFixed(1)} m / ${c.heightGap.toFixed(1)} m de altura / ${(c.angleGap/rad).toFixed(0)}°`);
+    this.$('editor-validation').className=valid&&!c.warnings.length?'valid':'';
+    this.$('editor-validation').textContent=(c?.errors.length?`${c.closed?'Circuito cerrado':'Abierto'} · ${c.errors.join(' · ')}`:null)||(valid?`✓ Circuito cerrado · ${c.length.toFixed(0)} m · ${c.sections.length} tramos${this.propWarnings.length?` · ${this.propWarnings.length} props cerca de la pista`:''}`:!c?.sections.length?'Añade módulos para construir tu circuito.':`Abierto · Cierre: ${c.gap.toFixed(1)} m / ${c.heightGap.toFixed(1)} m de altura / ${(c.angleGap/rad).toFixed(0)}°`);
+    if(c?.warnings.length)this.$('editor-validation').textContent+=` · Aviso: ${c.warnings.join(' · ')}`;
     this.host.querySelector('[data-editor-action="test"]').disabled=!valid;
+    const closer=this.host.querySelector('[data-editor-action="close-circuit"]');
+    closer.hidden=Boolean(c?.closed&&Math.abs(c.endWidth-10)<.01);closer.disabled=!c?.sections.length;
     this.host.querySelector('[data-editor-action="undo"]').disabled=!this.document.undoStack.length&&!this.document.pending;
     this.host.querySelector('[data-editor-action="redo"]').disabled=!this.document.redoStack.length;
   }
@@ -98,6 +108,9 @@ export class TrackWorkbench {
     if(action==='close'){this.onClose();return;}
     if(action==='fit'){this.fit();return;}if(action==='focus'){this.fit(true);return;}if(action==='top'){this.fit(false,true);return;}
     if(action==='save'){this.finish();this.save();return;}
+    if(action==='close-circuit'){
+      this.finish();try{this.document.closeCircuit();this.focusSection=this.document.value.pieces.length-1;this.refresh({fit:true});this.save();}catch(error){this.error(error);}return;
+    }
     if(action==='export'){this.export();return;}
     if(action==='import'){this.$('editor-import-file').click();return;}
     if(action==='test'){this.finish();try{this.onTest(editorTrackConfig(this.document.value));}catch(error){this.error(error);}return;}
@@ -216,7 +229,9 @@ export class TrackWorkbench {
   }
   recolorRoad(){for(const mesh of this.roadMeshes||[]){mesh.material.color.set(mesh.userData.sectionIndex===this.focusSection?'#9ac67b':mesh.userData.baseColor);}}
   rebuildLandscape(){
-    this.landscapeDue=0;dispose(this.landscape);this.landscape=new THREE.Group();this.scene.add(this.landscape);buildEnvironment(this.landscape,this.atmosphereCircuit,this.document.value.environment);polishScenery(this.landscape);this.groundMeshes=[];
+    this.landscapeDue=0;dispose(this.landscape);this.landscape=new THREE.Group();this.scene.add(this.landscape);
+    if(this.basicOnly){this.landscape.add(basicFloor(this.atmosphereCircuit));this.groundMeshes=[this.landscape.children[0]];return;}
+    buildEnvironment(this.landscape,this.atmosphereCircuit,this.document.value.environment);polishScenery(this.landscape);this.groundMeshes=[];
     const landscape=this.landscape;void enhanceLandscape(landscape,this.atmosphereCircuit,this.document.value.environment,()=>this.landscape===landscape).then(changed=>{if(changed)this.renderer.shadowMap.needsUpdate=true;});
     this.landscape.traverse(o=>{if(o.isMesh&&['biome-ground','biome-water'].includes(o.material?.name))this.groundMeshes.push(o);});
     // Authored grounded props follow terrain changes without losing their X/Z, rotation or scale.
@@ -224,7 +239,7 @@ export class TrackWorkbench {
     this.attachSelection();this.syncPropFields();this.status();this.renderer.shadowMap.needsUpdate=true;
   }
   configureEnvironment(reflections){
-    if(!this.atmosphereCircuit)return;const state=this.document.value.environment;this.atmosphere.configure(state,this.atmosphereCircuit);if(reflections)this.atmosphere.refreshReflections();
+    if(this.basicOnly||!this.atmosphereCircuit)return;const state=this.document.value.environment;this.atmosphere.configure(state,this.atmosphereCircuit);if(reflections)this.atmosphere.refreshReflections();
     const night=this.atmosphere.solar.elevation<0;this.moon.intensity=night?1.6:.05;
     for(const mesh of this.roadMeshes){mesh.material.roughness=(SURFACES[mesh.userData.surface]?.roughness||.9)*(1-state.wetness*.68);mesh.material.emissive.set(night?'#27394c':'#000000');mesh.material.emissiveIntensity=night?.4:0;}
     this.precipitation.visible=['rain','snow'].includes(state.weather)&&state.precipitation>0;this.precipitation.material.size=state.weather==='snow'?.3:.16;this.precipitation.geometry.setDrawRange(0,Math.floor((state.quality==='mobile'?250:500)*state.precipitation));
@@ -235,11 +250,12 @@ export class TrackWorkbench {
     if(selection&&this.selectedProp)box=this.layer.boundsFor(this.selectedProp);
     else if(this.circuit){const section=selection?this.circuit.layout.sections[this.focusSection]:null;for(let i=0;i<=180;i++){const p=this.circuit.at(section?(section.from+(section.to-section.from)*i/180)/this.circuit.length:i/180);box.expandByPoint(new THREE.Vector3(p.x,p.y,p.z));}box.expandByScalar(8);}
     if(box.isEmpty()){box.min.set(-15,0,-15);box.max.set(15,1,15);}
-    if(!selection)for(const p of this.document.value.props)box.union(this.layer.boundsFor(p.id));
+    if(!selection&&!this.basicOnly)for(const p of this.document.value.props)box.union(this.layer.boundsFor(p.id));
     const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()),direction=new THREE.Vector3(top?.001:.65,top?1:1.1,top?.001:1).normalize(),right=new THREE.Vector3(direction.z,0,-direction.x).normalize(),up=new THREE.Vector3().crossVectors(direction,right).normalize(),tan=Math.tan(22.5*rad);let distance=16;
     for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1]){const v=new THREE.Vector3(x*size.x/2,y*size.y/2,z*size.z/2),depth=v.dot(direction);distance=Math.max(distance,depth+Math.abs(v.dot(right))/(tan*this.camera.aspect),depth+Math.abs(v.dot(up))/tan);}distance*=1.12;
     this.controls.target.copy(center);this.camera.position.copy(center).addScaledVector(direction,distance);this.camera.lookAt(center);this.controls.maxDistance=Math.max(1800,distance*2.5);this.controls.update();
   }
+  setGraphics(policy){this.renderPipeline?.setGraphics(policy);}
   resize(){if(!this.visible)return;const stage=this.$('kit-stage'),w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();}
   handleKey(e){
     const editing=['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName),mod=e.ctrlKey||e.metaKey;
@@ -254,7 +270,8 @@ export class TrackWorkbench {
   update(dt=.016){
     if(!this.visible)return;const now=performance.now();if(this.courseDue&&now>=this.courseDue)this.rebuildCourse();if(this.landscapeDue&&now>=this.landscapeDue){this.rebuildLandscape();if(!this.document.pending)this.save();}
     this.controls.update();const distance=this.camera.position.distanceTo(this.controls.target),near=Math.max(.1,Math.min(40,distance*.015)),far=Math.max(1500,distance*5);if(Math.abs(this.camera.near-near)>.01||Math.abs(this.camera.far-far)>1){this.camera.near=near;this.camera.far=far;this.camera.updateProjectionMatrix();}
-    if(this.precipitation.visible){const a=this.precipitation.geometry.attributes.position,slow=this.document.value.environment.weather==='snow';this.precipitation.position.set(this.controls.target.x,0,this.controls.target.z);for(let i=0;i<a.count;i++){a.array[i*3+1]-=dt*(slow?3:28);if(a.array[i*3+1]<0)a.array[i*3+1]=80;}a.needsUpdate=true;}
-    this.atmosphere.update(dt,this.landscape,distance);this.atmosphere.render(dt);
+    if(this.precipitation?.visible){const a=this.precipitation.geometry.attributes.position,slow=this.document.value.environment.weather==='snow';this.precipitation.position.set(this.controls.target.x,0,this.controls.target.z);for(let i=0;i<a.count;i++){a.array[i*3+1]-=dt*(slow?3:28);if(a.array[i*3+1]<0)a.array[i*3+1]=80;}a.needsUpdate=true;}
+    if(this.basicOnly)this.renderPipeline.render(dt);
+    else{this.atmosphere.update(dt,this.landscape,distance);this.atmosphere.render(dt);}
   }
 }

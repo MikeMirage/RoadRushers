@@ -1,6 +1,7 @@
 import { EXTRA_PIECES, MAX_TRACK_PIECES } from './track-library.js';
 import { THEMED_LAYOUTS } from './track-presets.js';
 import { themePreset } from './environment-config.js';
+import { GAP_JUMPS,configureGapJump,jumpProfile } from './jump-pieces.js';
 export { MAX_TRACK_PIECES, mirrorPiece } from './track-library.js';
 
 /** Metres, +Y up, +Z forward. Every piece starts at (0,0,0), tangent +Z. */
@@ -19,20 +20,21 @@ export const PIECE_CATALOG = [
   {id:'ramp-down',name:'Rampa de bajada',family:'Verticales',kind:'ramp',length:28,rise:-6,description:'Recupera 6 m de altura y termina en horizontal.'},
   {id:'bumps',name:'Badenes encadenados',family:'Relieve',kind:'bumps',length:30,height:.32,waves:3,description:'Tres ondulaciones físicas de 32 cm. Sin vibración artificial de cámara.'},
   {id:'jump',name:'Cresta de salto',family:'Relieve',kind:'bumps',length:16,height:1.4,waves:1,description:'Una cresta que descarga el coche y permite un salto según la velocidad.'},
+  ...GAP_JUMPS,
   ...EXTRA_PIECES,
 ];
-export const PIECE_FAMILIES=['Rectas','Curvas','Técnicos','Peraltes','Verticales','Espirales','Estructuras','Relieve','Anchuras','Superficies'];
+export const PIECE_FAMILIES=['Rectas','Curvas','Técnicos','Peraltes','Verticales','Espirales','Estructuras','Relieve','Anchuras','Superficies','Saltos'];
 const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 const specOf=piece=>{
   const base=PIECE_CATALOG.find(p=>p.id===(typeof piece==='string'?piece:piece.id));
   if(!base)throw new Error('Tramo desconocido');
   const spec={...base};
   if(typeof piece==='object'){
-    for(const key of ['length','radius','bank','rise','height','waves','amplitude','angle','widthFactorTo'])if(piece[key]!=null)spec[key]=piece[key];
+    for(const key of ['length','radius','bank','rise','height','waves','amplitude','angle','widthFactorTo','launchLength','gapLength','landingLength'])if(piece[key]!=null)spec[key]=piece[key];
     if(piece.surface!=null){if(!['asphalt','gravel','dirt','ice','mud'].includes(piece.surface))throw new Error('Superficie de tramo no válida');spec.surface=piece.surface;}
     if(piece.mirrored){spec.direction=spec.direction==='left'?'right':'left';if(spec.amplitude)spec.amplitude*=-1;if(spec.bank)spec.bank*=-1;}
   }
-  return spec;
+  return spec.kind==='gap-jump'?configureGapJump(spec):spec;
 };
 
 export function samplePiece(piece, steps) {
@@ -43,8 +45,9 @@ export function samplePiece(piece, steps) {
   const count=steps??Math.max(24,Math.ceil(length/.45));
   if(!Number.isInteger(count)||count<2||count>8192)throw new Error('Muestreo de tramo no válido');
   const points=[];
-  for(let i=0;i<=count;i++){
-    const u=i/count;let x=0,y=0,z=length*u,heading=0,grade=0,bank=0;
+  let samples=Array.from({length:count+1},(_,i)=>i/count);
+  if(spec.kind==='gap-jump')samples=[...new Set([...samples,spec.launchLength/length,(spec.launchLength+spec.gapLength)/length])].sort((a,b)=>a-b);
+  for(const u of samples){let x=0,y=0,z=length*u,heading=0,grade=0,bank=0;
     if(spec.kind==='curve'){
       const sign=spec.direction==='right'?-1:1,a=sign*spec.angle*Math.PI/180*u;
       x=sign*spec.radius*(1-Math.cos(a));z=sign*spec.radius*Math.sin(a);heading=a;
@@ -63,18 +66,20 @@ export function samplePiece(piece, steps) {
       const a=2*Math.PI*spec.waves*u;
       y=spec.height*(.5-.5*Math.cos(a));grade=spec.height*Math.PI*spec.waves/length*Math.sin(a);
     }
-    if(spec.kind==='curve'&&spec.rise){y=spec.rise*(.5-.5*Math.cos(Math.PI*u));grade=spec.rise*Math.PI/2/length*Math.sin(Math.PI*u);}
+    if(spec.kind==='gap-jump')({y,grade}=jumpProfile(spec,z));
+    if(['curve','offset'].includes(spec.kind)&&spec.rise){y=spec.rise*(.5-.5*Math.cos(Math.PI*u));grade=spec.rise*Math.PI/2/length*Math.sin(Math.PI*u);}
     points.push({x,y,z,heading,grade,bank});
   }
-  let arcLength=0;for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i];arcLength+=Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z);}
-  return {spec,points,length:arcLength,advance:length};
+  let arcLength=0;const distances=[0];for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i];arcLength+=Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z);distances.push(arcLength);}
+  const gaps=spec.kind==='gap-jump'?[{from:distances[points.findIndex(p=>Math.abs(p.z-spec.launchLength)<1e-7)],to:distances[points.findIndex(p=>Math.abs(p.z-spec.launchLength-spec.gapLength)<1e-7)]}]:[];
+  return {spec,points,length:arcLength,advance:length,gaps};
 }
 
 export function compileLayout(pieces, width=10, baseHeight=0) {
   if(!Array.isArray(pieces)||pieces.length>MAX_TRACK_PIECES||!Number.isFinite(width)||width<6||width>24||!Number.isFinite(baseHeight))throw new Error('Montaje o anchura no válidos');
-  const points=[],sections=[];let x=0,y=baseHeight,z=0,heading=0,total=0,currentWidth=width;
+  const points=[],sections=[],gaps=[];let x=0,y=baseHeight,z=0,heading=0,total=0,currentWidth=width;
   for(const [index,piece]of pieces.entries()){
-    const {spec,points:local}=samplePiece(piece),begin=total;
+    const {spec,points:local,gaps:localGaps}=samplePiece(piece),begin=total;
     const c=Math.cos(heading),s=Math.sin(heading),targetWidth=spec.widthFactorTo?width*spec.widthFactorTo:currentWidth,startWidth=currentWidth;
     for(let i=0;i<local.length;i++){
       if(index&&i===0)continue;
@@ -84,6 +89,7 @@ export function compileLayout(pieces, width=10, baseHeight=0) {
     }
     const end=points.at(-1);
     sections.push({index,spec,from:begin,to:total,startHeight:y,endHeight:end.y,startWidth,endWidth:targetWidth});
+    for(const gap of localGaps)gaps.push({from:begin+gap.from,to:begin+gap.to,section:index,launchFrom:begin,landingTo:total});
     x=end.x;y=end.y;z=end.z;heading=end.heading;currentWidth=targetWidth;
   }
   const gap=Math.hypot(x,z),heightGap=Math.abs(y-baseHeight),angleGap=Math.abs(wrap(heading));
@@ -91,18 +97,21 @@ export function compileLayout(pieces, width=10, baseHeight=0) {
   let minHeight=Infinity,maxHeight=-Infinity,maxGrade=0,minRadius=Infinity;
   for(const p of points){minHeight=Math.min(minHeight,p.y);maxHeight=Math.max(maxHeight,p.y);maxGrade=Math.max(maxGrade,Math.abs(p.grade));}
   for(const section of sections)if(section.spec.kind==='curve')minRadius=Math.min(minRadius,section.spec.radius);
-  const errors=[];
+  const errors=[],warnings=[];
   if(!pieces.length)errors.push('Añade un primer tramo.');
   if(closed&&Math.abs(currentWidth-width)>.01)errors.push('La anchura final debe coincidir con la inicial; añade una transición a 10 m.');
   if(minHeight<-.02)errors.push('Hay tramos por debajo de la cota de salida.');
-  if(maxGrade>.36)errors.push('La pendiente supera el 36% del kit.');
+  if(maxGrade>.36)warnings.push('La pendiente supera el 36 %; puede provocar saltos.');
   if(sections.some(s=>s.spec.kind==='curve'&&s.spec.radius<Math.max(s.startWidth,s.endWidth)/2+1))errors.push('El radio interior no deja espacio para los bordes.');
   if(sections.some(s=>s.spec.kind==='bridge'&&s.startHeight<5.9))errors.push('El tablero de puente necesita una cota mínima de 6 m.');
+  if(gaps.length)warnings.push(`${gaps.length===1?'Salto con hueco':'Saltos con hueco'}: necesitas velocidad para alcanzar el aterrizaje.`);
   const crossings=[];let overlap=false;
   // Spatial broad phase keeps editing long assemblies responsive.
   const pairs=[],cells=new Map(),cellSize=points.reduce((max,p)=>Math.max(max,p.width),width)*2;
   for(let i=0;i<points.length-1;i+=4){
-    const a=points[i],b=points[Math.min(i+4,points.length-1)],pad=Math.max(a.width,b.width),seen=new Set();
+    const a=points[i],b=points[Math.min(i+4,points.length-1)];
+    if(gaps.some(g=>a.distance<g.to&&b.distance>g.from))continue;
+    const pad=Math.max(a.width,b.width),seen=new Set();
     for(let gx=Math.floor((Math.min(a.x,b.x)-pad)/cellSize);gx<=Math.floor((Math.max(a.x,b.x)+pad)/cellSize);gx++)for(let gz=Math.floor((Math.min(a.z,b.z)-pad)/cellSize);gz<=Math.floor((Math.max(a.z,b.z)+pad)/cellSize);gz++){
       const key=`${gx},${gz}`,entries=cells.get(key)||[];for(const j of entries)if(i-j>=8&&!seen.has(j)){pairs.push([j,i]);seen.add(j);}entries.push(i);cells.set(key,entries);
     }
@@ -128,7 +137,7 @@ export function compileLayout(pieces, width=10, baseHeight=0) {
   }
   if(overlap&&!crossings.some(c=>c.clearance<4))errors.push('Dos tramos invaden el mismo espacio: sepáralos en planta o altura.');
   if(crossings.some(c=>c.clearance<4))errors.push('Un cruce necesita al menos 4 m de separación vertical.');
-  return {points,sections,length:total,width,endWidth:currentWidth,closed,gap,heightGap,angleGap,minHeight,maxHeight,maxGrade,minRadius,crossings,errors};
+  return {points,sections,length:total,width,endWidth:currentWidth,closed,gap,heightGap,angleGap,minHeight,maxHeight,maxGrade,minRadius,crossings,errors,warnings,gaps};
 }
 
 export const KIT_PRESETS = [
@@ -141,6 +150,7 @@ export const KIT_PRESETS = [
   {id:'kit-gallery-v2',name:'Galerías',description:'Dos galerías de 48 m conectadas por grandes retornos.',pieces:['straight-64','tunnel-48','arc-64-180-right','straight-64','tunnel-48','arc-64-180-right']},
   {id:'kit-mixed-v2',name:'Club mixto',description:'Asfalto, grava y tierra con cambios de anchura y agarre.',pieces:['width-14','surface-gravel-24','width-10','hairpin-right','width-14','surface-dirt-24','width-10','hairpin-right']},
   ...THEMED_LAYOUTS,
+  {id:'kit-jump-school-v3',name:'Escuela de saltos',description:'Un salto con hueco de 6 m, recta de aceleración y recepción separada.',pieces:['straight-64','gap-jump-short','straight-32','arc-64-180-right',{id:'straight',length:132},'arc-64-180-right']},
 ];
 
 export function kitConfig(pieces,name='Mi montaje',id) {

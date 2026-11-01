@@ -1,0 +1,498 @@
+/* PRL's shared interface: one light palette, one scroll area per screen. */
+:root{
+  --prl-red:#f21e35;--prl-red-action:#d9142f;--prl-blue:#0077b5;
+  --prl-charcoal:#19212c;--ui-bg:#f2f5f9;--ui-surface:#fff;--ui-tint:#eaf5fc;
+  --ui-ink:#19212c;--ui-muted:#526477;--ui-line:#ced8e3;--ui-soft:#f6f8fb;
+  --lime:var(--prl-blue);--muted:var(--ui-muted);--dark:var(--ui-ink);--line:var(--ui-line);--ui-panel:#fffffff2;
+  color:var(--ui-ink);background:var(--ui-bg);color-scheme:light;font-size:14px;
+}
+html,body{height:100%;min-height:100dvh}
+button,a,summary,input,select{touch-action:manipulation}
+button{line-height:1.4}
+button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visible{outline:3px solid var(--prl-blue);outline-offset:3px}
+button:disabled{cursor:default;opacity:.45}
+select,input{accent-color:var(--prl-blue);color-scheme:light}
+select option{background:#fff;color:var(--ui-ink)}
+::selection{background:#bde3fa;color:var(--ui-ink)}
+.primary-button{background:var(--prl-red-action);color:#fff;border:1px solid transparent;min-height:48px;border-radius:6px;font-size:15px;padding:12px 20px;box-shadow:none;gap:24px;font-weight:700}
+.primary-button:hover{background:#b81029}.primary-button>span{font-size:22px}
+.text-button{color:var(--prl-blue);font-size:14px;min-height:40px}
+.glass{background:var(--ui-panel);border:1px solid var(--ui-line);color:var(--ui-ink);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.eyebrow,.tiny-label{color:var(--ui-muted)}
+.eyebrow i,.live-dot,.map-footer i{background:var(--prl-blue)}
+.vignette{background:none}
+body:is([data-state=hub],[data-state=loading]) .vignette{display:block;background:var(--ui-bg)}
+.topbar{height:72px;padding:0 max(24px,env(safe-area-inset-right)) 0 max(24px,env(safe-area-inset-left));background:#fff;border-bottom:1px solid var(--ui-line);gap:16px}
+.brand{gap:0;flex-shrink:0}
+.prl-logo{position:relative;display:block;width:204px;height:56px;overflow:hidden;background:#fff}
+.prl-logo>img{position:absolute;max-width:none;width:124%;height:auto;left:-12%;top:-43%;pointer-events:none}
+.prototype-badge{display:none}
+.toolbar{gap:8px;margin-left:auto}
+.toolbar-button,.icon-button{min-height:44px;height:44px;border:1px solid var(--ui-line);border-radius:6px;background:#fff;color:#334a62;font-size:14px;padding:0 14px}
+.toolbar-button:hover,.icon-button:hover{background:var(--ui-tint)}
+.toolbar-button.active{color:var(--prl-blue);border-color:var(--prl-blue);background:var(--ui-tint)}
+.toolbar-button svg{width:19px;height:19px}
+body[data-state=hub] :is(#hub-btn,#camera-btn){display:none}
+body[data-state=loading] :is(.topbar,.session-info,.timing,.minimap-wrap,.bottom-bar){visibility:hidden}
+
+/* Covers remain a separate, reversible presentation choice. */
+.prl-splash[hidden]{display:none}
+.prl-splash{position:fixed;inset:0;z-index:50;display:grid;grid-template-columns:minmax(220px,.85fr) minmax(0,1fr);background:#fff;color:var(--ui-ink);overflow:hidden}
+.prl-splash-poster{min-width:0;min-height:0;background:var(--ui-soft);display:flex;justify-content:center}
+.prl-splash-poster>img{height:100%;width:100%;object-fit:contain}
+.prl-splash-content{padding:clamp(20px,4vw,64px);align-self:center;max-height:100%;overflow:auto;min-width:0}
+.prl-splash-content>.prl-logo{width:235px;height:64px;margin-bottom:10px}
+.prl-splash-content>.eyebrow{font-size:11px;letter-spacing:1.6px}
+.prl-splash-content h1{font:700 clamp(34px,4.3vw,64px)/1 'Barlow Condensed',sans-serif;margin:22px 0 16px;letter-spacing:-.4px;text-transform:uppercase}
+.prl-splash-content h1 em{color:var(--prl-red-action);font-style:normal}
+.prl-splash-content>p{color:var(--ui-muted);font-size:15px;line-height:1.6;margin:0 0 24px}
+
+.prl-splash-content>.primary-button{width:100%}
+#prl-splash-status{display:block;color:var(--ui-muted);font-size:12px;line-height:1.5;margin-top:12px}
+
+/* A bounded desktop workspace. Only the configuration body scrolls. */
+.playground-hub{position:absolute;inset:96px max(24px,env(safe-area-inset-right)) 24px max(24px,env(safe-area-inset-left));display:grid;grid-template-columns:minmax(210px,.38fr) minmax(0,1fr);gap:24px;max-width:1220px;margin-inline:auto;padding:0;align-items:stretch;overflow:visible;pointer-events:auto;min-height:0;z-index:3}
+
+.play-config{min-width:0;min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;align-self:stretch;background:#fff;border:1px solid var(--ui-line);border-radius:8px;padding:0;box-shadow:0 5px 22px #19212c05}
+.play-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid var(--ui-line);flex-shrink:0}
+.play-heading .eyebrow{font-size:10px;letter-spacing:1.5px;color:var(--prl-blue)}
+.play-heading h1{font:600 36px/1.1 'Barlow Condensed',sans-serif;letter-spacing:-.3px;margin:6px 0 0;color:var(--ui-ink)}
+.play-access{font-size:12px;line-height:1.7;text-align:right;white-space:nowrap;color:var(--ui-muted)}
+.play-config-body{flex:1;min-height:0;overflow:auto;padding:20px 24px;scrollbar-width:thin;scrollbar-color:#9aaec2 var(--ui-soft);overscroll-behavior:contain;scroll-padding-block:12px}
+.play-mode{display:flex;gap:10px;margin:0 0 18px}
+.play-mode button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px;min-height:66px;background:var(--ui-soft);border:1px solid var(--ui-line);border-radius:6px;text-align:left}
+.play-mode strong{font-size:15px;font-weight:600;color:#42566c}.play-mode small{font-size:12px;color:var(--ui-muted)}
+.play-mode button[aria-pressed=true]{background:var(--ui-tint);border-color:var(--prl-blue)}
+.play-mode button[aria-pressed=true] strong{color:var(--prl-blue)}
+.play-selection-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:18px}
+.play-car{min-width:0;display:grid;grid-template-columns:68px minmax(0,1fr);gap:8px 12px;padding:16px;border:1px solid var(--ui-line);border-radius:6px;background:#fff;align-items:center}
+.play-car>.car-illustration{width:68px;height:44px}
+.play-car>div{min-width:0}.play-label{display:block;font-size:10px;letter-spacing:1px;color:var(--ui-muted)}
+.play-car strong{display:block;font:600 25px/1.1 'Barlow Condensed',sans-serif;color:var(--ui-ink);overflow-wrap:break-word;margin:5px 0}
+.play-car small{font-size:11px;color:var(--ui-muted)}
+.play-car button{grid-column:1/-1;min-height:38px;border:1px solid var(--ui-line);border-radius:5px;background:var(--ui-soft);color:var(--prl-blue);font-size:13px;width:100%;padding:7px 10px}
+.play-car button:hover{background:var(--ui-tint)}
+.play-track-choice{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:10px;align-items:center;min-width:0;padding:16px;border:1px solid var(--ui-line);border-radius:6px}
+.play-track-choice>div{min-width:0}.play-field{display:flex;flex-direction:column;gap:7px;font-size:11px;letter-spacing:.6px;color:var(--ui-muted);min-width:0}
+.play-field select{width:100%;min-width:0;min-height:44px;background:var(--ui-soft);border:1px solid var(--ui-line);border-radius:5px;color:var(--ui-ink);font:400 14px 'DM Sans',sans-serif;padding:8px}
+.play-track-choice .play-field select{font:600 22px 'Barlow Condensed',sans-serif}
+.play-track-meta{font-size:11px;line-height:1.5;color:var(--ui-muted);margin:10px 0 0}.play-track-meta span{margin-inline:4px}
+.play-track-choice button{font-size:12px;color:var(--prl-blue);background:none;padding:8px 0;min-height:36px;text-align:left}
+.play-track-preview{color:var(--prl-blue)}.play-track-preview svg{display:block;width:100%;height:80px}
+.play-disclosure{border-top:1px solid var(--ui-line)}
+.play-disclosure summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:66px;padding:14px 0;cursor:pointer}
+.play-disclosure summary::-webkit-details-marker{display:none}
+.play-disclosure summary>span{font-size:14px;font-weight:500;color:var(--ui-ink)}
+.play-disclosure summary small{display:block;color:var(--ui-muted);font-size:12px;font-weight:400;margin-top:5px;line-height:1.5}
+.play-disclosure summary>b{font-size:24px;font-weight:400;color:var(--prl-blue)}
+.play-disclosure[open] summary>b{transform:rotate(45deg)}
+.play-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 18px}
+.play-tools{display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--ui-line)}
+.play-tools button{flex:1;min-height:44px;padding:10px;font-size:13px;background:#fff;color:var(--prl-blue);border:1px solid var(--ui-line);border-radius:5px}
+.play-tools button:hover{background:var(--ui-tint)}
+.play-width-note{font-size:12px;line-height:1.6;color:#856014;margin:12px 0 0}.play-width-note.invalid{color:#b4122c}
+.play-config-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;margin:0;flex-shrink:0;background:#fff;border-top:1px solid var(--ui-line)}
+.play-config-footer>div{min-width:0}.play-config-footer strong{display:block;font-size:13px;font-weight:600}
+.play-config-footer small{display:block;color:var(--ui-muted);font-size:12px;margin-top:4px;line-height:1.5}
+.play-config-footer .primary-button{min-width:200px;position:static;width:auto;flex-shrink:0}
+.play-grip-help{color:var(--ui-muted);font-size:12px;line-height:1.6;margin:0 0 18px}
+
+/* Dialogs use the same light components, rather than a separate dark theme.
+   Legacy sheets retain their geometry; this boundary resets their old paint. */
+.modal-overlay{background:#19212c80;color:var(--ui-ink);backdrop-filter:none;-webkit-backdrop-filter:none;padding:20px;overflow:hidden}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content){color:var(--ui-ink);background:#fff;border:1px solid var(--ui-line);border-radius:8px;box-shadow:0 12px 56px #19212c20;color-scheme:light;scrollbar-color:#9aaec2 var(--ui-soft)}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(*){color:inherit;border-color:var(--ui-line)}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(div,nav,header,footer,aside,section,article,details,summary,thead,th,td){background-color:transparent;background-image:none;box-shadow:none}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(p,small,label,dt,.eyebrow,.tiny-label){color:var(--ui-muted)}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(button,select,input:not([type=range]),.editor-file-menu>div){border-color:var(--ui-line);background:#fff;color:var(--ui-ink);font-size:14px;border-radius:5px}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(select,input){accent-color:var(--prl-blue);min-height:40px}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(input[type=checkbox]){min-height:0}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(button):hover{background:var(--ui-soft)}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(button[aria-pressed=true],button.selected){color:var(--prl-blue);border-color:var(--prl-blue);background:var(--ui-tint)}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(button,input,select,summary,canvas):focus-visible{outline:3px solid var(--prl-blue);outline-offset:2px}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(.primary-button){color:#fff;background:var(--prl-red-action);border-color:transparent;font-size:14px}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(.primary-button):hover{background:#b81029}
+:is(#preferences-content,#garage-content,#result-content,#track-kit-content) :where(.text-button,.vehicle-download){color:var(--prl-blue)}
+.preferences-modal{width:min(620px,100%);max-height:calc(100dvh - 40px)}
+.preferences-heading{padding:20px 24px}.preferences-heading h2{font-size:34px;margin-top:5px}
+.preferences-heading>button{min-width:44px;min-height:44px}
+.preferences-tabs{padding-inline:24px;gap:24px;flex-shrink:0}
+.preferences-tabs button{min-height:48px;padding:10px 6px;font-size:15px;border:0;border-bottom:3px solid transparent}
+#preferences-content .preferences-tabs button[aria-pressed=true]{border-bottom-color:var(--prl-blue)}
+.preferences-body{padding:22px 24px;min-height:0}
+.preferences-grid{gap:18px}.preference-field{font-size:13px;gap:9px;letter-spacing:0}.preference-field select{font-size:14px;height:44px}
+.preferences-help{font-size:13px;line-height:1.7}
+#preferences-content :is(.graphics-readout,.preferences-section-label,.graphics-presets small,.preferences-footer>span,.trackpad-explanation p,.preference-sound span){color:var(--ui-muted);font-size:12px;line-height:1.6}
+.preferences-section-label{font-size:11px;letter-spacing:1px}.graphics-presets{gap:8px;margin:20px 0}.graphics-presets button{min-height:54px}
+#preferences-content .preferences-basic{background:var(--ui-soft);border-color:var(--ui-line)}
+#preferences-content .preferences-basic p{font-size:13px;line-height:1.7}.preferences-footer{padding:14px 24px;flex-shrink:0}
+.preferences-footer>span{max-width:none}.preferences-footer .primary-button{min-height:46px}
+.touch-mode-options button{padding:16px;min-height:84px}
+#preferences-content .touch-mode-options :is(strong,span){color:inherit}.touch-mode-options strong{font-size:15px}.touch-mode-options span{font-size:13px}
+.preferences-advanced summary{font-size:14px;min-height:48px}
+.preferences-basic strong,.preference-sound strong{font-size:14px}
+
+/* Garage: header and close button remain reachable, even in landscape. */
+#garage-content{display:flex;flex-direction:column;width:min(1180px,100%);height:min(840px,calc(100dvh - 40px));max-height:none;overflow:hidden;padding:20px}
+#garage-content>.modal-heading{flex-shrink:0}
+.modal-heading h2{font:600 34px 'Barlow Condensed',sans-serif;letter-spacing:-.3px}
+.modal-heading .eyebrow{font-size:10px;letter-spacing:1px}
+.modal-heading .icon-button{height:44px;min-width:44px;font-size:25px}
+.collection-count{font-size:24px;margin-left:12px}.collection-count small{font-size:13px}
+.collection-batches{flex-shrink:0;gap:6px;margin-top:14px;padding-bottom:8px}
+#garage-content .collection-batches button{font-size:15px;min-height:54px;padding:9px 22px 9px 10px}
+#garage-content .collection-batches button>span{font-size:9px;letter-spacing:.6px}.collection-batches button>small{font-size:10px}
+.collection-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;flex:1;min-height:0;gap:22px;margin-top:10px}
+.collection-showroom{display:flex;flex-direction:column;min-height:0;min-width:0;gap:10px}
+.collection-viewport{height:auto;flex:1;min-height:130px;overflow:hidden;border-radius:6px;border:1px solid var(--ui-line)}
+#garage-content .collection-view-switch{background:#fff;border:1px solid var(--ui-line)}
+#garage-content .collection-view-switch button{min-height:38px;font-size:12px}
+.showroom-edition{display:none}
+#garage-content .showroom-hint{color:#334a62;text-shadow:0 1px 4px #fff;font-size:11px}
+.collection-roster{flex-shrink:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-height:130px;overflow:auto;gap:6px}
+#garage-content .collection-car{padding:10px;min-height:72px;border:1px solid var(--ui-line);text-align:left}
+.collection-car strong{font:600 21px 'Barlow Condensed',sans-serif;white-space:normal}.collection-car small{font-size:9px;line-height:1.5}
+.collection-number{font-size:10px}.collection-detail{min-height:0;max-height:none;overflow:auto;padding-right:6px}
+.collection-detail h3{font:600 34px 'Barlow Condensed',sans-serif;margin:14px 0}.detail-category{font-size:11px}.detail-description{font-size:13px;line-height:1.65}
+#garage-content :is(.collection-ownership>span,.collection-ownership p,.detail-note,.garage-footnote,.vehicle-stats>div){color:var(--ui-muted);font-size:12px;line-height:1.6}
+#garage-content .collection-ownership>span{color:var(--prl-blue)}
+.collection-detail .primary-button{width:100%;min-height:46px;margin-block:12px}
+.collection-detail .text-button{min-height:40px}
+.garage-footnote{display:none}.vehicle-stats{margin-block:18px}
+#garage-content .vehicle-stats i{background:#dde6ee}
+.vehicle-workshop summary{font-size:18px;min-height:40px}
+.workshop-fields label{font-size:12px}.workshop-fields :is(input,select){height:40px}.wrap-upload{font-size:13px}
+#garage-content :is(.vehicle-workshop>small,.wrap-upload>span,.trail-ready){font-size:11px;line-height:1.6}
+
+/* Results: no dark table headers or hidden actions. */
+#result-content{width:min(860px,100%);max-height:calc(100dvh - 40px);padding:0;overflow:hidden;display:flex;flex-direction:column}
+.report-header{padding:22px 24px 18px}.report-header h2{font-size:36px}.report-header .eyebrow{font-size:11px}.report-header>p{font-size:12px;line-height:1.6}
+.report-summary{margin:0 24px 18px;gap:10px}
+#result-content .report-summary>div{background:var(--ui-soft);border:1px solid var(--ui-line);padding:14px}
+.report-summary span{font-size:10px;line-height:1.5;min-height:0}.report-summary strong{font-size:36px}.report-summary small{font-size:11px;line-height:1.5}
+#result-content .report-summary .personal-record{border-color:var(--prl-blue);background:var(--ui-tint)}
+#result-content :is(.personal-record strong,.personal-record small,.report-place,.report-your-rank>strong,.fast-lap th,.fast-lap td){color:var(--prl-blue)}
+.report-tabs{padding:0 24px 12px;gap:8px}.report-tabs button{font-size:14px;min-height:44px;padding:10px 16px}.report-tabs small{font-size:10px}
+.report-body{padding:0 24px 20px;min-height:60px}.report-table{font-size:14px}
+#result-content .report-table thead{background:#fff}
+#result-content .report-table :is(th,td){font-size:14px;line-height:1.5;padding:12px 10px}
+#result-content .report-table thead th{font-size:11px}.report-table small{font-size:10px}
+.report-note,.report-record-note{font-size:13px;line-height:1.7}
+.report-actions{padding:14px 24px;flex-shrink:0;gap:12px}
+.report-actions .primary-button{min-height:48px;min-width:190px}.report-config-button{min-height:44px;padding:10px 14px}
+#result-content :is(.report-your-rank,.report-table .your-result){background:var(--ui-tint);border-color:var(--prl-blue)}
+.report-metrics button{min-height:44px}.report-ranking-heading h3{font-size:29px}.report-ranking-heading>span{font-size:10px;letter-spacing:0}
+#result-content :is(.report-note,.report-record-note,.report-ranking-status){color:var(--ui-muted)}
+.report-ranking-status{font-size:13px}
+
+/* Editor paint uses the same components; its working layout stays intact. */
+#track-kit-content.track-editor{height:calc(100dvh - 40px);max-height:none;padding:16px;gap:12px}
+#track-kit-content :is(.editor-sidebar,.editor-tabs){background:var(--ui-soft);border-color:var(--ui-line)}
+#track-kit-content .editor-file-menu>div{background:#fff;box-shadow:0 8px 24px #19212c26}
+#track-kit-content .editor-view-tools :is(button,label){background:#fffffff2;color:var(--ui-ink);backdrop-filter:none}
+#track-kit-content .editor-stage-wrap{background:#e5edf3}
+#track-kit-content :is(.editor-help,.editor-select,.editor-field,.editor-checkbox,.editor-name,.editor-panel summary small,.editor-panel h4,.editor-piece-list small,.editor-object-list small,.editor-sequence small){color:var(--ui-muted)}
+#track-kit-content :is(.editor-help,.editor-field,.editor-checkbox,.editor-select,.editor-piece-list button,.editor-prop-palette button){font-size:13px}
+#track-kit-content .editor-accent{background:var(--ui-tint)!important;border-color:var(--prl-blue)!important;color:var(--prl-blue)!important}
+#track-kit-content .editor-live-badge{color:var(--prl-blue);background:#fff;border-color:var(--ui-line)}
+#track-kit-content .editor-scene-hint{color:#334a62;text-shadow:0 1px 5px #fff}
+#track-kit-content .editor-footer p{color:var(--ui-muted);font-size:12px}
+#track-kit-content .editor-footer p.valid{color:var(--prl-blue)}
+#track-kit-content .editor-footer span{font-size:11px;color:var(--ui-muted)}
+#track-kit-content .editor-footer .primary-button{min-height:44px}
+#track-kit-content .editor-view-tools input{accent-color:var(--prl-blue)}
+
+/* Instruments use the same white / ink / blue, with red reserved for actions. */
+body:is([data-state=hub],[data-state=loading]) :is(.session-info,.timing,.minimap-wrap,.bottom-bar,.touch-steering,.race-hud){display:none}
+body[data-state=ready] :is(.session-info,.timing,.minimap-wrap){display:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) :is(.topbar,.session-info,.bottom-left,.driving-status){display:none}
+body[data-state=finished] :is(main,.topbar){visibility:hidden}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .timing{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);left:max(16px,env(safe-area-inset-left));right:auto;transform:none;gap:16px;padding:10px 14px;border-radius:6px;background:#fffffff0;border:1px solid var(--ui-line);border-top:3px solid var(--prl-red);pointer-events:none}
+.timing .tiny-label{font-size:9px;letter-spacing:.7px;color:var(--ui-muted)}
+.timing strong{font-family:'Barlow Condensed',sans-serif;font-size:32px;line-height:1.15;color:var(--ui-ink)}
+.lap-counter{padding-right:16px;border-color:var(--ui-line)}
+.best-time{padding-left:16px;border-color:var(--ui-line)}.best-time strong{color:var(--prl-blue);font-size:24px}
+.best-time>span:last-child{font-size:10px;color:var(--ui-muted)}.record-dot{color:var(--prl-blue)}
+.ghost-status:not([hidden]){font-size:10px;letter-spacing:0;color:var(--prl-blue);line-height:1.4}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .minimap-wrap{position:fixed;display:block;top:calc(env(safe-area-inset-top,0px) + 120px);left:max(16px,env(safe-area-inset-left));width:140px;background:#fffffff0;border:1px solid var(--ui-line);padding:8px;border-radius:6px;opacity:1;pointer-events:none;filter:none}
+.minimap-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:360/250;filter:none}
+.map-heading,.map-footer{display:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .race-hud{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);right:76px;width:auto;min-width:76px;padding:10px 14px;background:#fffffff0;border:1px solid var(--ui-line);border-radius:6px;backdrop-filter:none}
+.race-position>strong{font:600 32px/1.1 'Barlow Condensed',sans-serif;color:var(--prl-blue);margin:0}.race-position small{font-size:16px;color:var(--ui-muted)}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) :is(.race-position>span,.race-position>b,.race-level-summary,.race-nearby){display:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .bottom-bar{position:fixed;inset:0;margin:0;pointer-events:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) #pause-btn{position:fixed;right:max(16px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top,0px) + 16px);width:44px;height:44px;padding:0;margin:0;background:#fffffff0;color:var(--ui-ink);border:1px solid var(--ui-line);border-radius:6px;z-index:6;pointer-events:auto}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .speedometer{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));right:max(18px,env(safe-area-inset-right));margin:0;width:auto;padding:9px 12px;background:#fffffff0;border:1px solid var(--ui-line);border-radius:6px;pointer-events:none}
+.speed-row>strong{font:600 32px/1 'Barlow Condensed',sans-serif;color:var(--ui-ink)}.speed-row>span{color:var(--ui-muted);font-size:9px}.speed-row em,.speed-track{display:none}
+.controls-hint{display:none}
+body:is([data-state=running],[data-state=countdown]) #performance-stats{background:#ffffffda;color:#42566c;border:1px solid var(--ui-line)}
+#performance-stats[data-detailed=true]{background:#fffffff2;color:var(--prl-blue)}
+.toast{background:#fffffff5;color:var(--ui-ink);border-color:var(--ui-line);border-left:3px solid var(--prl-blue);font-size:13px;box-shadow:none;max-width:80vw}
+.countdown{color:#fff;font:700 110px 'Barlow Condensed',sans-serif;text-shadow:0 3px 0 var(--prl-red-action),0 0 20px #19212c90}
+.pause-overlay{background:#19212c80;backdrop-filter:none;padding:16px;overflow:auto}
+.pause-card{background:#fff;color:var(--ui-ink);border-color:var(--ui-line);padding:24px;max-height:calc(100dvh - 32px);overflow:auto;min-width:300px;border-radius:8px}
+.pause-card h2{font:600 46px 'Barlow Condensed',sans-serif;margin:8px 0 20px}.pause-card>.eyebrow,.pause-card>p{display:none}
+.pause-card .text-button{font-size:14px;color:var(--prl-blue);min-height:40px;justify-content:center;margin:6px auto 0}
+.intro{padding:22px;background:#fffffff2;color:var(--ui-ink);border:1px solid var(--ui-line);border-radius:8px;text-shadow:none;max-height:calc(100dvh - 180px);overflow:auto}
+.intro :is(p,.practice-note,.intro-car>span,#loading-status){color:var(--ui-muted);font-size:13px}.intro h2{font-size:46px;color:var(--ui-ink)}.intro-car{border-color:var(--ui-line)}.intro-car strong{color:var(--ui-ink)}.intro-targets{font-size:13px}
+.mobile-touch-guide,.mobile-touch-guide small{color:var(--ui-ink);text-shadow:0 1px 6px #fff}
+#trackpad-feedback{background:#0077b54d}#trackpad-feedback:before{background:#0077b599}#trackpad-feedback>i{background:#0077b5b3;border-color:#bde3fa}#trackpad-feedback>span{color:var(--ui-ink);text-shadow:0 1px 4px #fff}
+.fatal-error{background:#fff;color:var(--ui-ink)}.fatal-error button{background:var(--prl-red-action);color:#fff}
+
+/* Compact landscape and laptop windows retain the same hierarchy. */
+@media(max-width:1050px){
+  .playground-hub{grid-template-columns:minmax(170px,.3fr) minmax(0,1fr);gap:18px;inset-inline:20px}
+  .play-heading,.play-config-footer{padding-inline:18px}.play-config-body{padding:18px}
+  .play-selection-grid{gap:12px}.play-car,.play-track-choice{padding:12px}.play-car{grid-template-columns:52px minmax(0,1fr)}.play-car>.car-illustration{width:52px}
+  .play-track-choice{grid-template-columns:minmax(0,1fr)}.play-track-preview{display:none}
+  .collection-layout{grid-template-columns:minmax(0,1fr) 250px;gap:16px}
+}
+@media(max-height:600px) and (min-width:701px){
+  .topbar{height:56px}.prl-logo{width:174px;height:48px}.toolbar-button{height:40px;min-height:40px;font-size:13px}
+  .playground-hub{inset:68px 16px 12px;gap:16px;grid-template-columns:minmax(150px,.28fr) minmax(0,1fr)}
+  .play-heading{padding:10px 16px}.play-heading h1{font-size:27px;margin:0}.play-heading .eyebrow{display:none}.play-access{font-size:11px}
+  .play-config-body{padding:12px 16px}.play-mode{margin-bottom:12px;gap:8px}.play-mode button{min-height:46px;padding:8px 12px;gap:2px}.play-mode strong{font-size:14px}.play-mode small{font-size:11px}
+  .play-selection-grid{margin-bottom:10px;gap:10px}.play-car,.play-track-choice{padding:10px}.play-car{gap:4px 9px;grid-template-columns:42px minmax(0,1fr)}.play-car>.car-illustration{width:42px;height:34px}.play-car strong{font-size:23px;margin:2px 0}.play-car small{display:none}.play-car button{min-height:34px;padding:5px;font-size:12px}.play-track-choice .play-field select{font-size:20px;min-height:38px}.play-track-meta{font-size:10px;margin-top:6px}
+  .play-disclosure summary{min-height:52px;padding:10px 0}.play-disclosure summary>span{font-size:13px}.play-disclosure summary small{font-size:11px;margin-top:3px}
+  .play-config-footer{padding:10px 16px;gap:12px}.play-config-footer .primary-button{min-height:44px;min-width:180px;padding:10px 16px}.play-config-footer small{font-size:11px}
+  .prl-splash-content{padding:20px 32px}.prl-splash-content>.prl-logo{width:180px;height:49px;margin-bottom:0}.prl-splash-content>.eyebrow{display:none}.prl-splash-content h1{font-size:38px;margin:14px 0}.prl-splash-content>p{display:none}.prl-splash-content>.primary-button{min-height:44px}#prl-splash-status{font-size:11px}
+  .modal-overlay{padding:12px}
+  #garage-content{height:calc(100dvh - 24px);padding:12px}.modal-heading h2{font-size:27px}.modal-heading .eyebrow{display:none}.collection-batches{margin-top:8px;padding-bottom:5px}#garage-content .collection-batches button{min-height:45px;padding-block:6px;font-size:13px}#garage-content .collection-batches button>span{font-size:8px}
+  .collection-layout{gap:12px;margin-top:6px}.collection-roster{max-height:74px}#garage-content .collection-car{min-height:60px;padding:6px}.collection-car strong{font-size:18px}.collection-car small{display:none}.collection-viewport{min-height:90px}.collection-detail h3{font-size:28px;margin:8px 0}.collection-detail .detail-description{font-size:12px}.collection-detail .vehicle-stats{margin:12px 0}
+  .preferences-modal,#result-content{max-height:calc(100dvh - 24px)}.preferences-heading{padding:12px 20px}.preferences-heading h2{font-size:28px;margin:0}.preferences-heading .eyebrow{display:none}.preferences-tabs{padding-inline:20px}.preferences-tabs button{min-height:42px;padding-block:7px}.preferences-body{padding:16px 20px}.preferences-footer{padding:10px 20px}
+  .report-header{padding:14px 20px 12px}.report-header h2{font-size:29px}.report-header>p{margin:0;font-size:11px}.report-summary{margin:0 20px 12px}.report-summary strong{font-size:28px}.report-summary span,.report-summary small{font-size:10px}#result-content .report-summary>div{padding:10px}.report-tabs{padding:0 20px 8px}.report-actions{padding:10px 20px}
+  #track-kit-content.track-editor{height:calc(100dvh - 24px);padding:10px;gap:8px}
+  .editor-workspace{grid-template-columns:minmax(0,1fr) 250px;gap:12px}.editor-brand{min-width:140px}.editor-brand h2{font-size:25px}.editor-brand .eyebrow{display:none}
+}
+@media(max-width:700px){
+  .topbar{height:64px;padding-inline:max(16px,env(safe-area-inset-left));gap:8px}.prl-logo{width:154px;height:43px}.toolbar{gap:6px}.toolbar-button{height:40px;min-height:40px;padding:0 10px;font-size:12px;gap:6px}.toolbar-button>svg{display:none}.toolbar-button kbd{display:none}
+  .playground-hub{inset:80px max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));grid-template-columns:minmax(0,1fr);grid-template-rows:108px minmax(0,1fr);gap:12px}
+
+  .play-heading{padding:12px 14px;gap:8px}.play-heading .eyebrow{display:none}.play-heading h1{font-size:28px;margin:0}.play-access{font-size:10px;line-height:1.5}
+  .play-config-body{padding:14px}.play-mode{gap:8px;margin-bottom:12px}.play-mode button{padding:10px;min-height:56px}.play-mode strong{font-size:13px}.play-mode small{font-size:10px}
+  .play-selection-grid{grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:12px}.play-car{grid-template-columns:64px minmax(0,1fr) auto;padding:12px;gap:10px}.play-car>.car-illustration{width:64px}.play-car button{grid-column:auto;width:auto;min-height:44px;font-size:12px;padding:8px;max-width:92px}.play-car strong{font-size:24px}.play-car small{font-size:10px}
+  .play-track-choice{grid-template-columns:minmax(0,1fr) 74px;padding:12px}.play-track-preview{display:block}.play-track-choice .play-field select{font-size:22px}.play-field{font-size:11px}.play-grid{gap:14px 10px}
+  .play-disclosure summary{min-height:58px;padding:12px 0}.play-disclosure summary>span{font-size:13px}.play-disclosure summary small{font-size:11px}
+  .play-tools{padding-top:12px;gap:8px}.play-tools button{font-size:12px;min-height:44px}
+  .play-config-footer{padding:12px 14px;gap:10px}.play-config-footer>div{display:none}.play-config-footer .primary-button{width:100%;min-width:0;min-height:48px}
+  .prl-splash{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+  .prl-splash-poster>img{object-position:50% 0;object-fit:contain}
+  .prl-splash-content{padding:16px 20px max(18px,env(safe-area-inset-bottom));max-height:none;overflow:visible;width:100%;border-top:1px solid var(--ui-line)}
+  .prl-splash-content>:is(.prl-logo,.eyebrow,h1,p){display:none}
+  #prl-splash-status{font-size:11px}
+  .modal-overlay{padding:10px}.preferences-modal,#result-content{max-height:calc(100dvh - 20px)}
+  .preferences-heading{padding:16px}.preferences-heading h2{font-size:29px}.preferences-tabs{padding-inline:16px;gap:12px}.preferences-tabs button{font-size:14px}.preferences-body{padding:18px 16px}.preferences-grid{gap:16px 12px}.preference-field{font-size:12px}.preferences-footer{padding:12px 16px;gap:10px}.preferences-footer>span{font-size:11px;max-width:160px}.preferences-footer .primary-button{min-width:120px;font-size:13px;padding-inline:12px}
+  #garage-content{height:calc(100dvh - 20px);padding:14px}.modal-heading h2{font-size:28px}.modal-heading .eyebrow{font-size:9px}.collection-count{font-size:20px}.collection-count small{font-size:11px}
+  .collection-layout{display:flex;flex-direction:column;overflow:auto;min-height:0;gap:18px}.collection-showroom{flex:none;min-height:0}.collection-viewport{flex:none;height:240px}.collection-roster{grid-template-columns:repeat(2,minmax(0,1fr));max-height:160px}
+  .collection-detail{display:block;flex:none;max-height:none;overflow:visible;padding:0 2px 4px}
+  .report-header{padding:16px}.report-header h2{font-size:30px}.report-header .eyebrow{font-size:10px}.report-header>p{font-size:11px}
+  .report-summary{margin:0 16px 14px;gap:6px}#result-content .report-summary>div{padding:10px 7px}.report-summary span{font-size:9px;min-height:27px}.report-summary strong{font-size:27px}.report-summary small{font-size:10px}
+  .report-tabs{padding-inline:16px}.report-body{padding-inline:16px}.report-actions{padding:12px 16px;gap:10px}.report-actions .primary-button{min-width:0;flex:1;font-size:13px;padding:10px 12px}.report-config-button{max-width:120px;font-size:12px;padding:8px}
+  #result-content .report-table :is(th,td){font-size:12px;padding:10px 6px}#result-content .report-table thead th{font-size:10px}
+  #track-kit-overlay{padding:0}#track-kit-content.track-editor{height:100dvh;width:100%;border-radius:0;padding:10px}
+  .best-time{display:none}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .timing{top:calc(env(safe-area-inset-top,0px) + 12px);left:max(12px,env(safe-area-inset-left));padding:8px 10px;gap:10px}.timing strong{font-size:27px}.timing .tiny-label{font-size:8px}.lap-counter{padding-right:10px}.ghost-status:not([hidden]){font-size:9px}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .minimap-wrap{top:calc(env(safe-area-inset-top,0px) + 100px);left:max(12px,env(safe-area-inset-left));width:122px;padding:6px}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .race-hud{top:calc(env(safe-area-inset-top,0px) + 12px);right:66px;padding:9px 10px;min-width:58px}.race-position>strong{font-size:28px}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) #pause-btn{top:calc(env(safe-area-inset-top,0px) + 12px);right:max(12px,env(safe-area-inset-right))}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .speedometer{bottom:max(14px,env(safe-area-inset-bottom));right:max(14px,env(safe-area-inset-right));padding:7px 10px}
+}
+@media(max-height:450px){
+  .prl-splash-content{padding-block:14px}.prl-splash-content>.prl-logo{display:none}.prl-splash-content h1{font-size:32px;margin:0 0 12px}
+  .play-heading h1{font-size:26px}.play-access{font-size:10px}
+  .best-time{display:none}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .minimap-wrap{top:calc(env(safe-area-inset-top,0px) + 102px);width:112px}
+}
+@media(max-width:700px) and (orientation:landscape){
+  .topbar{height:54px}.playground-hub{top:64px;bottom:10px;grid-template-rows:minmax(0,1fr)}
+  .play-selection-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.play-car{grid-template-columns:40px minmax(0,1fr)}.play-car>.car-illustration{width:40px}.play-car button{grid-column:1/-1;width:100%;max-width:none;min-height:34px}.play-car small{display:none}.play-track-choice{grid-template-columns:minmax(0,1fr)}.play-track-preview{display:none}
+  .play-config-footer{padding:9px 14px}.play-config-footer .primary-button{min-height:42px}.play-heading{padding-block:9px}
+  .prl-splash{grid-template-columns:.65fr 1fr;grid-template-rows:minmax(0,1fr)}.prl-splash-content{padding:16px;align-self:center;border:0;max-height:100%;overflow:auto}
+}
+@media(max-width:360px){.prl-logo{width:132px;height:37px}.toolbar-button{padding-inline:8px}.play-heading h1{font-size:25px}.play-access{font-size:9px}.play-car{grid-template-columns:44px minmax(0,1fr) auto}.play-car>.car-illustration{width:44px}.play-car strong{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+
+/* A visible scroll cue on short screens, without moving the primary action. */
+.play-scroll-hint[hidden]{display:none}.play-scroll-hint{display:block;color:var(--prl-blue);font-size:11px;font-weight:500;line-height:1.5;margin-bottom:3px}
+.play-config-body:focus-visible{outline:2px solid var(--prl-blue);outline-offset:-3px}
+#preferences-content .preferences-heading>button,#garage-content .modal-heading .icon-button,#track-kit-content .editor-close{width:44px;min-width:44px;height:44px;flex-shrink:0;padding:0;font-size:25px;background:var(--ui-soft);border:1px solid var(--ui-line);border-radius:6px}
+@media(max-width:700px){.play-config-footer:has(.play-scroll-hint:not([hidden]))>div{display:block}.play-config-footer:has(.play-scroll-hint:not([hidden]))>div>strong,.play-config-footer:has(.play-scroll-hint:not([hidden]))>div>small{display:none}.play-config-footer .play-scroll-hint{max-width:90px;margin:0;font-size:10px}.play-config-footer:has(.play-scroll-hint:not([hidden])) .primary-button{width:auto;flex:1}}
+
+/* Game hub and showroom: a live car, rather than a cover/settings website. */
+.playground-hub{grid-template-columns:minmax(260px,.75fr) minmax(0,1fr)}
+.play-showroom{position:relative;min-width:0;min-height:0;overflow:hidden;background:#e8edf3;border-radius:8px}
+.home-car-stage{position:absolute;inset:0;overflow:hidden}
+.home-car-stage>canvas{display:block}
+.home-car-stage>.car-illustration{position:absolute;inset:20%;width:60%;height:60%}
+.home-car-caption{position:absolute;inset:auto 0 0;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fffffff2;border-top:1px solid var(--ui-line)}
+.home-car-caption>div{min-width:0}
+.home-car-caption strong{display:block;font:600 36px/1.1 'Barlow Condensed',sans-serif;margin:5px 0;color:var(--ui-ink)}
+.home-car-caption small{color:var(--ui-muted);font-size:12px}
+.home-car-caption button{min-height:46px;padding:10px 14px;background:#fff;border:1px solid var(--prl-blue);border-radius:5px;color:var(--prl-blue);font-size:13px;white-space:nowrap}
+.home-car-caption button:hover{background:var(--ui-tint)}
+.play-config{background:transparent;border:0;box-shadow:none;border-radius:0}
+.play-heading{padding-top:10px;padding-bottom:24px}
+.play-heading h1{font-size:40px}.play-config-body{background:#fff}
+.play-selection-grid{grid-template-columns:minmax(0,1fr)}
+.play-track-choice{grid-template-columns:minmax(0,1fr) 116px;min-height:130px;border:0;background:var(--ui-soft);border-radius:6px}
+.play-track-preview{display:block}.play-track-preview svg{height:96px}
+.play-config-footer{border-top:1px solid var(--ui-line)}
+.controller-status{display:block;color:var(--ui-muted);font-size:11px;line-height:1.5;margin-bottom:5px}
+.gamepad-context-hint{display:none;color:var(--prl-blue);font-size:12px;line-height:1.6}
+body[data-input=gamepad] :focus{outline:3px solid var(--prl-blue);outline-offset:3px;box-shadow:0 0 0 6px #0077b51a}
+body[data-input=gamepad] .gamepad-context-hint{display:block}
+body[data-input=gamepad] .game-action-bar>span:not(.gamepad-context-hint){display:none}
+body[data-input=touch] .game-action-bar>span:not(.gamepad-context-hint){display:none}
+.game-action-bar{display:flex;align-items:center;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ui-muted);min-height:32px}
+.game-action-bar kbd{display:inline-block;min-width:24px;padding:4px 7px;color:var(--ui-ink);background:#fff;border:1px solid var(--ui-line);border-radius:4px;font-size:11px;margin-right:5px}
+.game-start-hint{display:block;margin-top:16px;color:var(--ui-muted);font-size:12px}
+.controller-guide{padding-bottom:20px;border-bottom:1px solid var(--ui-line);margin-bottom:20px}
+.controller-guide h3,.touch-controls-title{font:600 24px 'Barlow Condensed',sans-serif;margin:0 0 12px}
+.controller-guide p{font-size:13px;line-height:1.7}
+.game-input-prompts{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:65vw;z-index:5;padding:8px 12px;border-radius:5px;background:#ffffffdc;color:#42566c;border:1px solid var(--ui-line);font-size:11px;line-height:1.5;pointer-events:none;text-align:center}
+body:is([data-state=running],[data-state=countdown]):not([data-input=touch]) .game-input-prompts{display:block}
+
+/* The garage replaces the home screen; it is not a dialog stacked on it. */
+body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
+#garage-overlay{position:fixed;inset:0;padding:0;background:var(--ui-bg);overflow:hidden}
+#garage-overlay #garage-content{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;width:100%;height:100dvh;max-height:none;padding:20px 24px 12px;border:0;border-radius:0;overflow:hidden;background:var(--ui-bg);box-shadow:none}
+#garage-content .garage-heading{margin:0;min-height:50px;gap:16px}
+#garage-content .garage-heading h2{font-size:38px;margin:3px 0 0}
+#garage-content .garage-heading .eyebrow{font-size:10px}
+#garage-content .collection-batches{padding:10px 0 8px;margin:0;min-height:64px;gap:0;border-bottom:1px solid var(--ui-line)}
+#garage-content .collection-batches button{min-height:48px;padding:8px 18px;background:transparent;border:0;border-bottom:3px solid transparent;border-radius:0;flex:0 0 auto}
+#garage-content .collection-batches button[aria-pressed=true]{border-bottom-color:var(--prl-blue);color:var(--prl-blue);background:var(--ui-tint)}
+#garage-content .collection-batches button>span{font-size:9px}
+#garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,28%);grid-template-rows:minmax(0,1fr);gap:24px;min-height:0;overflow:hidden;margin:10px 0}
+#garage-content .collection-showroom{display:block;min-height:0;height:100%;overflow:hidden}
+#garage-content .collection-viewport{position:relative;width:100%;height:100%;min-height:0;border:0;border-radius:0;overflow:hidden;background:#e8edf3}
+#garage-content #garage-stage{position:absolute;inset:0;overflow:hidden}
+#garage-stage canvas{display:block}
+#garage-content .showroom-hint{inset:auto 12px 12px;text-align:center;font-size:12px;color:#42566c}
+#garage-content .collection-detail{display:block;min-height:0;height:100%;max-height:none;overflow:auto;border:0;padding:16px 8px 12px 0;background:transparent}
+#garage-content .collection-detail h3{font-size:46px;line-height:1;margin:16px 0}
+#garage-content .detail-category{font-size:12px}.collection-count{white-space:nowrap}
+#garage-content .detail-description{font-size:14px;line-height:1.7}
+#garage-content .collection-ownership{padding-top:12px;margin-bottom:12px}
+#garage-content .collection-ownership p,#garage-content .detail-note{display:none}
+#garage-content .vehicle-stats{gap:13px;margin:22px 0}
+#garage-content .vehicle-stats>div{font-size:13px}
+#garage-content .collection-detail .primary-button{width:100%;min-height:48px;margin:14px 0;font-size:15px}
+#garage-content .collection-footer{min-height:0;border-top:1px solid var(--ui-line);padding-top:10px}
+#garage-content .collection-roster{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overflow-y:hidden;max-height:none;height:84px;min-height:0;padding:3px 3px 8px;scrollbar-width:thin;scrollbar-color:#9aaec2 transparent;scroll-padding-inline:12px}
+#garage-content .collection-roster .collection-car{flex:0 0 155px;min-width:0;min-height:0;height:70px;padding:8px 12px;border:1px solid var(--ui-line);border-radius:5px;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:5px}
+#garage-content .collection-car[aria-pressed=true]{border-color:var(--prl-blue);background:var(--ui-tint)}
+#garage-content .collection-car strong{font-size:22px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#garage-content .collection-car small{display:none}
+#garage-content .collection-number{font-size:10px;line-height:1}
+#garage-content .game-action-bar{padding-top:3px}
+#garage-content .vehicle-workshop summary{font-size:18px;min-height:44px}
+@media(max-width:1050px){
+  .playground-hub{grid-template-columns:minmax(240px,.7fr) minmax(0,1fr)}
+  .home-car-caption{padding:16px;flex-wrap:wrap}.home-car-caption strong{font-size:31px}.home-car-caption button{font-size:12px}
+  #garage-overlay #garage-content{padding:14px 18px 10px}
+  #garage-content .collection-layout{grid-template-columns:minmax(0,1fr) 260px;gap:18px}
+  #garage-content .collection-detail h3{font-size:36px}
+}
+@media(max-height:600px) and (min-width:701px){
+  .playground-hub{grid-template-columns:minmax(190px,.65fr) minmax(0,1fr)}
+  .play-heading{padding:10px 16px}.play-heading h1{font-size:28px}
+  .play-track-choice{min-height:100px;grid-template-columns:minmax(0,1fr) 80px}
+  .play-track-preview svg{height:70px}
+  .home-car-caption{padding:12px;gap:8px}.home-car-caption strong{font-size:28px}.home-car-caption button{min-height:40px;padding:8px 10px}.home-car-caption small{display:none}
+  .controller-status{font-size:10px}.gamepad-context-hint{font-size:10px}
+  #garage-overlay #garage-content{padding:10px 16px 6px}
+  #garage-content .garage-heading{min-height:40px}.garage-heading .eyebrow{display:none}
+  #garage-content .garage-heading h2{font-size:28px;margin:0}
+  #garage-content .collection-batches{min-height:46px;padding:4px 0}
+  #garage-content .collection-batches button{min-height:38px;padding:5px 12px;font-size:13px}
+  #garage-content .collection-batches button>span{display:none}
+  #garage-content .collection-layout{margin-block:6px;gap:16px;grid-template-columns:minmax(0,1fr) 240px}
+  #garage-content .collection-detail{padding-top:4px}
+  #garage-content .collection-detail h3{font-size:29px;margin:8px 0}
+  #garage-content .detail-description{display:none}
+  #garage-content .vehicle-stats{margin:12px 0;gap:7px}
+  #garage-content .vehicle-stats>div{font-size:11px}
+  #garage-content .collection-ownership{display:none}
+  #garage-content .collection-detail .primary-button{min-height:44px;font-size:13px;margin:8px 0}
+  #garage-content .collection-footer{padding-top:5px}
+  #garage-content .collection-roster{height:66px;padding-bottom:5px}
+  #garage-content .collection-roster .collection-car{height:55px;flex-basis:140px;padding:6px 10px}
+  #garage-content .collection-car strong{font-size:20px}
+  #garage-content .game-action-bar{min-height:25px;font-size:11px;gap:18px}
+  #garage-content .showroom-hint{font-size:10px;bottom:8px}
+}
+@media(max-width:700px){
+  .playground-hub{grid-template-columns:minmax(0,1fr);grid-template-rows:180px minmax(0,1fr);gap:12px}
+  .play-showroom{border-radius:6px}
+  .home-car-caption{inset:0 0 auto auto;width:45%;height:100%;padding:12px;background:#fffffff0;border:0;align-content:center;gap:10px}
+  .home-car-caption strong{font-size:27px;margin:3px 0}.home-car-caption small{font-size:10px}
+  .home-car-caption button{font-size:12px;min-height:42px;padding:8px 10px}
+  .home-car-stage{right:28%}
+  .play-heading{padding:10px 14px}.play-heading h1{font-size:28px}
+  .play-track-choice{grid-template-columns:minmax(0,1fr) 78px;min-height:96px}
+  .play-track-preview svg{height:72px}
+  .controller-status{font-size:10px;margin-bottom:3px}
+  .play-config-footer>div{display:block;max-width:42%}
+  .play-config-footer>div>strong,.play-config-footer>div>small{display:none}
+  .play-config-footer .primary-button{width:auto;flex:1;min-width:0}
+  .game-input-prompts{max-width:68vw;bottom:12px;font-size:10px;padding:6px 9px}
+  #garage-overlay #garage-content{padding:10px 12px 6px}
+  #garage-content .garage-heading h2{font-size:28px}.collection-count{font-size:19px}
+  #garage-content .garage-heading .eyebrow{font-size:9px}
+  #garage-content .collection-batches{min-height:53px;padding-block:5px}
+  #garage-content .collection-batches button{min-height:42px;font-size:13px;padding:7px 12px}
+  #garage-content .collection-batches button>span{display:none}
+  #garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(120px,1fr) auto;gap:8px;margin:6px 0}
+  #garage-content .collection-showroom{height:100%;min-height:0}
+  #garage-content .collection-detail{height:auto;max-height:220px;padding:4px 2px;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr) 145px;align-items:center;gap:4px 12px}
+  #garage-content .collection-detail .detail-category{grid-column:1/-1;font-size:10px}
+  #garage-content .collection-detail h3{font-size:32px;margin:5px 0;grid-column:1}
+  #garage-content .detail-description,#garage-content .collection-ownership{display:none}
+  #garage-content .vehicle-stats{grid-column:1;margin:4px 0;gap:5px}
+  #garage-content .vehicle-stats>div{font-size:10px}
+  #garage-content .collection-detail .primary-button{grid-column:2;grid-row:2/4;min-height:46px;font-size:13px;margin:0;padding:10px;gap:10px}
+  #garage-content .vehicle-workshop{grid-column:1/-1;margin-top:8px}
+  #garage-content .collection-roster{height:72px}
+  #garage-content .collection-roster .collection-car{flex-basis:142px;height:60px;padding:6px 10px}
+  #garage-content .collection-car strong{font-size:21px}
+  #garage-content .game-action-bar{min-height:22px}
+  #garage-content .showroom-hint{font-size:10px}
+}
+@media(max-height:700px) and (max-width:700px) and (orientation:portrait){
+  .playground-hub{grid-template-rows:120px minmax(0,1fr)}
+  .home-car-caption strong{font-size:24px}.home-car-caption small,.home-car-caption .play-label{display:none}
+}
+@media(max-width:700px) and (orientation:landscape){
+  .playground-hub{grid-template-columns:minmax(150px,.65fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .play-showroom{display:block}.home-car-stage{right:0}.home-car-caption{inset:auto 0 0;width:auto;height:auto;padding:8px;display:flex;flex-direction:row;align-items:center;background:#fffffff0}
+  .home-car-caption strong{font-size:22px}.home-car-caption .play-label,.home-car-caption small{display:none}.home-car-caption button{min-height:36px;padding:5px 7px;font-size:10px}
+  .play-selection-grid{grid-template-columns:minmax(0,1fr)}.play-track-choice{grid-template-columns:minmax(0,1fr);min-height:80px}.play-track-preview{display:none}
+  .play-heading h1{font-size:24px}.play-access{display:none}.controller-status{font-size:9px}
+  #garage-content .collection-layout{grid-template-columns:minmax(0,1fr) 220px;grid-template-rows:minmax(0,1fr);gap:12px}
+  #garage-content .collection-detail{display:block;height:100%;max-height:none;padding:3px 0}
+  #garage-content .collection-detail h3{font-size:27px;margin:7px 0}
+  #garage-content .collection-detail .primary-button{width:100%;min-height:42px;margin-top:8px}
+  #garage-content .collection-footer{padding-top:5px}
+  #garage-content .collection-roster{height:62px}#garage-content .collection-roster .collection-car{height:52px}
+  #garage-content .game-action-bar{min-height:20px}
+}
+
+/* Navigation is one screen at a time, including the desktop track workbench. */
+body:has(#track-kit-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
+#track-kit-overlay{position:fixed;inset:0;padding:0;background:var(--ui-bg)}
+#track-kit-overlay #track-kit-content.track-editor{height:100dvh;max-height:none;width:100%;border:0;border-radius:0}
+.play-config-footer>div>strong,.play-config-footer>div>small{display:none}
+@media(max-width:700px){#garage-content .collection-batches button{min-height:44px}}
+/* The camera frames only the area above / beside the selection controls. */
+.home-car-stage{bottom:110px}
+@media(max-width:700px) and (orientation:portrait){.home-car-stage{right:45%;bottom:0}}
+@media(max-width:700px) and (orientation:landscape){.home-car-stage{right:0;bottom:82px}}
+/* Keep the options label visible when the compact toolbar hides its icon. */
+#preferences-btn.toolbar-button>span{display:inline}
+#preferences-btn.toolbar-button{width:auto;min-width:76px;flex-shrink:0}
+@media(max-width:700px) and (orientation:portrait){.home-car-caption button{width:100%;white-space:normal;min-height:44px}}
+@media(max-width:360px){
+  .play-track-choice{grid-template-columns:minmax(0,1fr)}.play-track-preview{display:none}.play-track-choice .play-field select{font-size:20px}
+  .play-config-footer{flex-direction:column;align-items:stretch;gap:6px}.play-config-footer>div{max-width:none}.play-config-footer .controller-status{display:none}.play-config-footer .play-scroll-hint{max-width:none}.play-config-footer .primary-button{width:100%;white-space:nowrap;min-height:48px}
+}

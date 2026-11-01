@@ -22,7 +22,7 @@ test('changing cars preserves all driving and race choices',()=>{
   const before=resolvePlayground(options),after=resolvePlayground({...options,vehicleId:'velo'});
   assert.deepEqual(before.settings.track,after.settings.track);
   for(const key of ['mode','surface','weather','pace','camera'])assert.equal(before.settings[key],after.settings[key]);
-  assert.deepEqual(before.settings.raceRules,after.settings.raceRules);assert.equal(after.settings.track.biome,'city');
+  assert.deepEqual(before.settings.raceRules,after.settings.raceRules);assert.equal(after.settings.track.biome,'workshop');
 });
 test('all presets and a custom assembly are available together without duplicating a current track',()=>{
   const tracks=playgroundTracks();assert.equal(tracks.length,TRACKS.length+KIT_PRESETS.length);
@@ -40,7 +40,15 @@ test('preferences survive reload independently of career data and invalid input 
 });
 test('the start screen exposes the complete test setup and no championship gates',()=>{
   const html=renderPlayground({...DEFAULT_PLAYGROUND,mode:'race'},playgroundTracks());
-  for(const key of ['trackId','surface','weather','theme','width','pace','camera','count','laps','difficulty','interaction'])assert.ok(html.includes(`data-playground="${key}"`));
+  for(const key of ['trackId','surface','weather','width','pace','camera','count','laps','difficulty','interaction'])assert.ok(html.includes(`data-playground="${key}"`));
   assert.ok(html.includes(`${VEHICLES.length} coches disponibles`));assert.ok(!html.includes('data-event='));assert.ok(!html.includes('desbloque'));
   assert.equal(resolvePlayground({...DEFAULT_PLAYGROUND,trackId:TRACKS[2].id,width:16}).error!==null,true);
+});
+
+test('saved visual themes always resolve to basic while driving and race settings survive',()=>{
+ const storage=memory();storage.setItem(PLAYGROUND_KEY,JSON.stringify({version:1,options:{...DEFAULT_PLAYGROUND,theme:'tokyo',weather:'rain',vehicleId:'velo',count:8,mode:'race'}}));
+ const options=loadPlayground(storage),resolved=resolvePlayground(options);
+ assert.equal(options.theme,'basic');assert.equal(resolved.settings.track.environmentTheme,'basic');assert.equal(resolved.settings.track.biome,'workshop');
+ assert.equal(options.weather,'rain');assert.equal(options.vehicleId,'velo');assert.equal(options.count,8);assert.equal(options.mode,'race');
+ const html=renderPlayground(options,playgroundTracks());assert.ok(!html.includes('data-playground="theme"'));assert.ok(!html.includes('data-play-action="environment"'));assert.ok(html.includes('data-play-action="preferences"'));
 });

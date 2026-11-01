@@ -12,7 +12,7 @@ export class DriveModel {
     this.circuit = circuit;
     const start = circuit.at(progress,offset);
     Object.assign(this, { x: start.x, y:start.y||0, z: start.z, heading: start.heading, vx: 0, vy:0, vz: 0,
-      grounded:true, airTime:0, pitch:0, roll:0, landing:0,
+      grounded:true, airTime:0, pitch:0, roll:0, landing:0,activeGap:null,recoveries:0,respawned:false,recoveryRewind:0,
       braking:false, brake:0,
       steer: 0, angularSpeed: 0, drift: 0, driftAngle: 0, speed: 0, slip: 0, impact: 0, distance: 0 });
     this.road = circuit.nearest(this.x, this.z, {progress,y:this.y});
@@ -21,16 +21,18 @@ export class DriveModel {
     this.previousPose.heading = this.renderPose.heading = this.heading;
   }
 
-  step(dt, input, surfaceId, weatherId, paceId = 'normal', brakeInput = false) {
+  step(dt, input, surfaceId, weatherId, paceId = 'normal', brakeInput = false, throttleInput = 1) {
     for (const field of POSE_FIELDS) this.previousPose[field] = this[field];
     this.previousPose.heading = this.heading;
+    this.respawned=false;
     const priorRoad=this.road;
     const activeSurface = this.circuit.surfaceAt(this.road.progress, surfaceId);
     const surface = SURFACES[activeSurface], weather = WEATHER[weatherId], vehicle = this.vehicle;
     this.braking=Boolean(brakeInput);
     // Pressure builds while held; releasing immediately restores automatic throttle.
-    this.brake=this.braking?damp(this.brake,1,3.8,dt):0;
-    this.steer = damp(this.steer, this.braking?0:Math.max(-1, Math.min(1, input)), 9 * vehicle.response, dt);
+    const pressure=typeof brakeInput==='number'?Math.max(0,Math.min(1,brakeInput)):1;
+    this.brake=this.braking?damp(this.brake,pressure,3.8,dt):0;
+    this.steer = damp(this.steer, Math.max(-1, Math.min(1, input)), 9 * vehicle.response, dt);
     const speed = Math.hypot(this.vx, this.vz);
     // Break rear traction progressively while cornering at speed. When released,
     // the tires recover over time, so momentum can carry a slide into countersteer.
@@ -47,7 +49,8 @@ export class DriveModel {
     let forward = this.vx * fx + this.vz * fz;
     let lateral = this.vx * fz - this.vz * fx;
     const cruiseSpeed = surface.speed * PACES[paceId].speed * vehicle.speed;
-    const target = cruiseSpeed * (1 - Math.abs(this.steer) * 0.08);
+    const throttle=Math.max(0,Math.min(1,Number.isFinite(throttleInput)?throttleInput:1));
+    const target = cruiseSpeed * (1 - Math.abs(this.steer) * 0.08)*throttle;
     if(this.grounded){
       if(!this.braking)forward = damp(forward, target, 1.45 * vehicle.acceleration, dt);
       // Static holding avoids creeping backwards when braking at rest on a ramp.
@@ -74,7 +77,7 @@ export class DriveModel {
     // Solid track edges: project the car inside and remove outward velocity.
     const limit = this.circuit.widthAt(this.road.progress) / 2 - 0.7;
     this.impact = Math.max(0, this.impact - dt * 4);
-    if (Math.abs(this.road.offset) > limit) {
+    if (this.road.supported!==false&&(!this.activeGap||this.y<this.road.y+1)&&Math.abs(this.road.offset) > limit) {
       const sign = Math.sign(this.road.offset);
       this.x = this.road.x + this.road.nx * limit * sign;
       this.z = this.road.z + this.road.nz * limit * sign;
@@ -101,18 +104,26 @@ export class DriveModel {
 
   stepHeight(dt) {
     const ground=this.road.y,along=this.vx*this.road.tx+this.vz*this.road.tz;
-    const supportVy=(this.road.grade||0)*along;
+    const supportVy=(this.road.grade||0)*along,previousY=this.y,supported=this.road.supported!==false;
+    if(this.road.gap)this.activeGap=this.road.gap;
+    if(!supported)this.grounded=false;
     this.landing=Math.max(0,this.landing-dt*3);
     // Lose contact only at a physical crest; there is no procedural vibration.
     if(this.grounded&&this.vy>1&&supportVy<this.vy-24*dt-.015)this.grounded=false;
     if(this.grounded){this.y=ground;this.vy=supportVy;this.airTime=0;}
     else{
       this.airTime+=dt;this.y+=this.vy*dt-12*dt*dt;this.vy-=24*dt;
-      if(this.y<=ground&&this.vy<=supportVy){
+      const within=Math.abs(this.road.offset)<=this.circuit.widthAt(this.road.progress)/2-.6;
+      if(supported&&within&&(!this.activeGap||previousY>=ground-.2)&&this.y<=ground&&this.vy<=supportVy){
         this.landing=this.airTime>.08?Math.min(1,Math.max(0,(supportVy-this.vy)/12)):0;
         const retain=1-this.landing*.04;this.vx*=retain;this.vz*=retain;
-        this.y=ground;this.vy=supportVy;this.grounded=true;this.airTime=0;
+        this.y=ground;this.vy=supportVy;this.grounded=true;this.airTime=0;this.activeGap=null;
       }
+    }
+    if(this.activeGap&&this.y<ground-1.2){
+      const gap=this.activeGap,circuit=this.circuit,distance=this.distance,recoveries=this.recoveries+1;
+      const rewind=circuit.closed?((this.road.progress-gap.recovery)%1+1)%1:Math.max(0,this.road.progress-gap.recovery);
+      this.reset(circuit,gap.recovery);this.distance=distance;this.recoveries=recoveries;this.respawned=true;this.recoveryRewind=rewind;return;
     }
     const slope=(this.road.grade||0)*(Math.sin(this.heading)*this.road.tx+Math.cos(this.heading)*this.road.tz);
     this.pitch=damp(this.pitch,this.grounded?Math.atan(slope):Math.atan2(this.vy,Math.max(6,Math.hypot(this.vx,this.vz))),10,dt);
@@ -125,7 +136,7 @@ export class DriveModel {
     this.renderPose.heading = this.previousPose.heading + wrap(this.heading - this.previousPose.heading) * t;
     this.renderPose.progress = this.road.progress;
     this.renderPose.grounded=this.grounded;this.renderPose.groundY=this.road.y;this.renderPose.airTime=this.airTime;
-    this.renderPose.braking=this.braking;
+    this.renderPose.braking=this.braking;this.renderPose.roadSupported=this.road.supported!==false;
     return this.renderPose;
   }
 }
@@ -141,6 +152,7 @@ export class LapTracker {
     this.wrongWay = false;
     this.elapsed=0;this.lapTimes=[];this.lapStartedAt=0;
   }
+  rewind(progress){this.previous=progress;this.nextGate=Math.min(this.nextGate,Math.floor(progress*8)+1);this.wrongWay=false;}
   step(dt, progress) {
     this.time += dt;
     this.elapsed += dt;

@@ -5,7 +5,7 @@
     {
       "level": 0,
       "url": "/assets/environment/models/fir_sapling/lod0.gltf",
-      "triangles": 14000,
+      "triangles": 150000,
       "dimensions": [
         0.8611,
         1.3007,
@@ -13,20 +13,21 @@
       ],
       "meshes": 1,
       "materials": 2,
-      "gltfBytes": 4494
+      "gltfBytes": 4509
     },
     {
       "level": 1,
       "url": "/assets/environment/models/fir_sapling/lod1.gltf",
-      "triangles": 4666,
+      "triangles": 4,
       "dimensions": [
         0.8611,
         1.3007,
         0.8222
       ],
-      "meshes": 1,
+      "meshes": 2,
       "materials": 2,
-      "gltfBytes": 4492
+      "impostor": true,
+      "gltfBytes": 3139
     }
   ],
   "qa": [
@@ -36,43 +37,42 @@
         "ok": true,
         "pass": false,
         "errors": [
-          "z-fighting: fir_sapling_a (2 overlapping coplanar tri pairs)"
+          "z-fighting: fir_sapling_a (24 overlapping coplanar tri pairs)"
         ],
         "warnings": [
-          "fir_sapling_a: ~82.67% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
-          "fir_sapling_a: non-manifold edges=0 wire=2",
-          "hidden back-to-back faces: fir_sapling_a (2 pairs) - delete to save tris"
+          "fir_sapling_a: ~88.92% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+          "hidden back-to-back faces: fir_sapling_a (1 pairs) - delete to save tris"
         ],
         "ground_z": 0.0,
         "zfighting": [
           {
             "where": "fir_sapling_a",
-            "tri_pairs": 2
+            "tri_pairs": 24
           }
         ],
         "floating": [],
         "back_to_back": [
           {
             "where": "fir_sapling_a",
-            "tri_pairs": 2
+            "tri_pairs": 1
           }
         ],
         "enclosed": [],
         "objects": {
           "fir_sapling_a": {
-            "verts": 39740,
-            "faces": 14000,
-            "tris": 14000,
+            "verts": 181861,
+            "faces": 150000,
+            "tris": 150000,
             "ngons": 0,
-            "boundary_edges": 39314,
+            "boundary_edges": 177978,
             "nonmanifold_edges": 0,
-            "wire_edges": 2,
+            "wire_edges": 0,
             "loose_verts": 0,
             "degenerate_faces": 0,
             "zero_length_edges": 0,
             "inconsistent_normals_edges": 0,
             "duplicate_verts": 0,
-            "islands": 13091,
+            "islands": 17882,
             "inside_out_islands": 0,
             "scale": [
               1.0,
@@ -81,15 +81,15 @@
             ],
             "materials": 2,
             "uv_maps": 1,
-            "uv_oob_pct": 0.96,
+            "uv_oob_pct": 0.73,
             "uv_zero_area_faces": 0,
-            "uv_overlap_pct": 82.67,
-            "uv_coverage_pct": 12.5
+            "uv_overlap_pct": 88.92,
+            "uv_coverage_pct": 11.6
           }
         }
       },
       "acceptedSourceFindings": [
-        "z-fighting: fir_sapling_a (2 overlapping coplanar tri pairs)"
+        "z-fighting: fir_sapling_a (24 overlapping coplanar tri pairs)"
       ],
       "blocking": []
     },
@@ -97,73 +97,74 @@
       "level": 1,
       "raw": {
         "ok": true,
-        "pass": false,
-        "errors": [
-          "floating/detached part in fir_sapling_a (4 verts at [-0.018, 0.297, 0.136])",
-          "floating/detached part in fir_sapling_a (4 verts at [0.067, -0.027, 0.899])"
-        ],
+        "pass": true,
+        "errors": [],
         "warnings": [
-          "fir_sapling_a: ~76.82% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
-          "fir_sapling_a: non-manifold edges=0 wire=1"
+          "asset lowest point z=-0.039 (not resting on ground plane z=0)"
         ],
-        "ground_z": 0.0,
+        "ground_z": -0.039,
         "zfighting": [],
-        "floating": [
-          {
-            "object": "fir_sapling_a",
-            "island_verts": 4,
-            "center": [
-              -0.018,
-              0.297,
-              0.136
-            ]
-          },
-          {
-            "object": "fir_sapling_a",
-            "island_verts": 4,
-            "center": [
-              0.067,
-              -0.027,
-              0.899
-            ]
-          }
-        ],
+        "floating": [],
         "back_to_back": [],
         "enclosed": [],
         "objects": {
-          "fir_sapling_a": {
-            "verts": 12952,
-            "faces": 4666,
-            "tris": 4666,
+          "front_card": {
+            "verts": 4,
+            "faces": 1,
+            "tris": 2,
             "ngons": 0,
-            "boundary_edges": 12768,
+            "boundary_edges": 4,
             "nonmanifold_edges": 0,
-            "wire_edges": 1,
+            "wire_edges": 0,
             "loose_verts": 0,
             "degenerate_faces": 0,
             "zero_length_edges": 0,
             "inconsistent_normals_edges": 0,
             "duplicate_verts": 0,
-            "islands": 4244,
+            "islands": 1,
             "inside_out_islands": 0,
             "scale": [
               1.0,
               1.0,
               1.0
             ],
-            "materials": 2,
+            "materials": 1,
             "uv_maps": 1,
-            "uv_oob_pct": 1.89,
+            "uv_oob_pct": 0.0,
             "uv_zero_area_faces": 0,
-            "uv_overlap_pct": 76.82,
-            "uv_coverage_pct": 11.3
+            "uv_overlap_pct": 0.0,
+            "uv_coverage_pct": 100.0
+          },
+          "side_card": {
+            "verts": 4,
+            "faces": 1,
+            "tris": 2,
+            "ngons": 0,
+            "boundary_edges": 4,
+            "nonmanifold_edges": 0,
+            "wire_edges": 0,
+            "loose_verts": 0,
+            "degenerate_faces": 0,
+            "zero_length_edges": 0,
+            "inconsistent_normals_edges": 0,
+            "duplicate_verts": 0,
+            "islands": 1,
+            "inside_out_islands": 0,
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "materials": 1,
+            "uv_maps": 1,
+            "uv_oob_pct": 0.0,
+            "uv_zero_area_faces": 0,
+            "uv_overlap_pct": 0.0,
+            "uv_coverage_pct": 100.0
           }
         }
       },
-      "acceptedSourceFindings": [
-        "floating/detached part in fir_sapling_a (4 verts at [-0.018, 0.297, 0.136])",
-        "floating/detached part in fir_sapling_a (4 verts at [0.067, -0.027, 0.899])"
-      ],
+      "acceptedSourceFindings": [],
       "blocking": []
     }
   ]

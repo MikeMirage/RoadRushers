@@ -31,7 +31,8 @@ export function applyEnvironmentPbr(material, id, { repeat = [1, 1], normalStren
   const path = `/assets/environment/materials/${id}`;
   material.map = texture(`${path}/color.webp`, true, repeat);
   material.normalMap = texture(`${path}/normal.webp`, false, repeat);
-  material.roughnessMap = material.aoMap = texture(`${path}/arm.webp`, false, repeat);
+  material.roughnessMap = material.aoMap = material.metalnessMap = texture(`${path}/arm.webp`, false, repeat);
+  material.metalness=1;
   material.normalScale.setScalar(normalStrength);
   material.aoMapIntensity = .65;
   material.color.set('#ffffff');
@@ -53,6 +54,9 @@ export function applyEnvironmentPbr(material, id, { repeat = [1, 1], normalStren
         #endif
         #ifdef USE_AOMAP
           vAoMapUv=rrSurfaceUv;
+        #endif
+        #ifdef USE_METALNESSMAP
+          vMetalnessMapUv=rrSurfaceUv;
         #endif`);
     };
     const previousKey = material.customProgramCacheKey.bind(material);
@@ -80,6 +84,7 @@ export function loadEnvironmentModel(id, level = 0) {
   if (!models.has(key)) models.set(key, loader.loadAsync(assetUrl(`/assets/environment/models/${id}/lod${level}.gltf`))
     .then(gltf => {
       gltf.scene.updateMatrixWorld(true);
+      gltf.scene.traverse(o=>{if(o.userData.roadrushersImpostor)Object.assign(gltf.scene.userData,o.userData);});
       return gltf.scene;
     }).catch(error => { models.delete(key); throw error; }));
   return models.get(key);
@@ -89,13 +94,18 @@ export function loadEnvironmentModel(id, level = 0) {
 export function instanceEnvironmentModel(template, placements, { height = 1, name = 'scanned-props' } = {}) {
   const group = new THREE.Group(); group.name = name;
   const bounds = new THREE.Box3().setFromObject(template), size = bounds.getSize(new THREE.Vector3());
-  const unit = height / Math.max(size.y, .01), transform = new THREE.Object3D(), matrix = new THREE.Matrix4();
+  const unit = height / Math.max(template.userData.assetHeight??size.y, .01), transform = new THREE.Object3D(), matrix = new THREE.Matrix4();
   template.traverse(part => {
     if (!part.isMesh) return;
-    const materials = Array.isArray(part.material) ? part.material.map(m => m.clone()) : part.material.clone();
+    const cloneMaterial=m=>{
+      if(!template.userData.roadrushersImpostor)return m.clone();
+      const material=new THREE.MeshBasicMaterial({map:m.map,color:m.color,alphaTest:.4,side:THREE.DoubleSide,fog:true});
+      material.userData.treeImpostor=true;return material;
+    };
+    const materials = Array.isArray(part.material) ? part.material.map(cloneMaterial) : cloneMaterial(part.material);
     const batch = new THREE.InstancedMesh(part.geometry.clone(), materials, placements.length);
     batch.name = `${name}-${part.name}`;
-    batch.castShadow = batch.receiveShadow = true;
+    batch.castShadow = !template.userData.roadrushersImpostor;batch.receiveShadow = true;
     placements.forEach((p, index) => {
       const scale = (p.scale ?? 1) * unit;
       transform.position.set(p.x, p.y ?? -.045, p.z);

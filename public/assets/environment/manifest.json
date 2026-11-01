@@ -663,16 +663,17 @@
         "pyrenees",
         "norway"
       ],
-      "targetTriangles": 14000,
+      "targetTriangles": 150000,
       "kind": "model",
       "source": "https://polyhaven.com/a/fir_sapling",
       "license": "CC0-1.0",
       "sourceTriangles": 433021,
+      "impostor": true,
       "lods": [
         {
           "level": 0,
           "url": "/assets/environment/models/fir_sapling/lod0.gltf",
-          "triangles": 14000,
+          "triangles": 150000,
           "dimensions": [
             0.8611,
             1.3007,
@@ -680,23 +681,24 @@
           ],
           "meshes": 1,
           "materials": 2,
-          "gltfBytes": 4494
+          "gltfBytes": 4509
         },
         {
           "level": 1,
           "url": "/assets/environment/models/fir_sapling/lod1.gltf",
-          "triangles": 4666,
+          "triangles": 4,
           "dimensions": [
             0.8611,
             1.3007,
             0.8222
           ],
-          "meshes": 1,
+          "meshes": 2,
           "materials": 2,
-          "gltfBytes": 4492
+          "impostor": true,
+          "gltfBytes": 3139
         }
       ],
-      "acceptedSourceFindings": 3,
+      "acceptedSourceFindings": 1,
       "blockingFindings": 0,
       "files": [
         {
@@ -730,27 +732,37 @@
           "sha256": "dfbe4dd50247169623dbe5eb8125741d75c1b5c9df3dbac1f3d4676d329f6555"
         },
         {
+          "url": "/assets/environment/models/fir_sapling/impostor_front.webp",
+          "bytes": 241956,
+          "sha256": "af681c3e57983499b8cd3bce59c245a48deb9695c0d2b363734f353264aaf80b"
+        },
+        {
+          "url": "/assets/environment/models/fir_sapling/impostor_side.webp",
+          "bytes": 208858,
+          "sha256": "91e9c444bddad8bf5cfa98e05be6b29d33e255b06e226eea524901a18cae71b5"
+        },
+        {
           "url": "/assets/environment/models/fir_sapling/lod0.bin",
-          "bytes": 1368612,
-          "sha256": "ed24a7eb6dfb9c97a8522eb4bb90d6d9812d3d593a69d230e5139c369264d671"
+          "bytes": 7651524,
+          "sha256": "a27c61c4a64896b359903e4575fb1314fc042a45355f85272cc836e9f8603c38"
         },
         {
           "url": "/assets/environment/models/fir_sapling/lod0.gltf",
-          "bytes": 3665,
-          "sha256": "12ea6af94265ea3b095deb11714fc81d8a647035a6d43737d03a0a53c679d4b5"
+          "bytes": 3680,
+          "sha256": "ce85ec4a1c91b6b6c482f9a2a2d0fdc7465c46f3b6d4f9ffae154cf65329d532"
         },
         {
           "url": "/assets/environment/models/fir_sapling/lod1.bin",
-          "bytes": 451776,
-          "sha256": "7288d5cb10c4887725ecb0a4dfc3a485476964675893cb5d481ece60783cb774"
+          "bytes": 268,
+          "sha256": "7a04460df9a2c458a6abeec3a977bb3d166befde4e1bfc2c500fa96e6a2966fe"
         },
         {
           "url": "/assets/environment/models/fir_sapling/lod1.gltf",
-          "bytes": 3663,
-          "sha256": "4c0c65f9c7c1cf2d2ee0484ffd88e6c58f613429ab85f1797dac8e334b977085"
+          "bytes": 2413,
+          "sha256": "c91d5c8f115f92b46e2932723211d50f6a9f7a9b86cfcb095aa7c222d243513a"
         }
       ],
-      "bytes": 6712692,
+      "bytes": 12993675,
       "preview": "/assets/environment/previews/fir_sapling.webp"
     },
     {
@@ -977,16 +989,17 @@
         "reunion",
         "amalfi"
       ],
-      "targetTriangles": 18000,
+      "targetTriangles": 100000,
       "kind": "model",
       "source": "https://polyhaven.com/a/island_tree_02",
       "license": "CC0-1.0",
       "sourceTriangles": 1072213,
+      "impostor": true,
       "lods": [
         {
           "level": 0,
           "url": "/assets/environment/models/island_tree_02/lod0.gltf",
-          "triangles": 17999,
+          "triangles": 100000,
           "dimensions": [
             4.2077,
             3.4066,
@@ -994,25 +1007,36 @@
           ],
           "meshes": 3,
           "materials": 3,
-          "gltfBytes": 7400
+          "gltfBytes": 7424
         },
         {
           "level": 1,
           "url": "/assets/environment/models/island_tree_02/lod1.gltf",
-          "triangles": 6821,
+          "triangles": 4,
           "dimensions": [
             4.2077,
             3.4066,
             4.0707
           ],
-          "meshes": 3,
-          "materials": 3,
-          "gltfBytes": 7390
+          "meshes": 2,
+          "materials": 2,
+          "impostor": true,
+          "gltfBytes": 3135
         }
       ],
-      "acceptedSourceFindings": 2047,
+      "acceptedSourceFindings": 26,
       "blockingFindings": 0,
       "files": [
+        {
+          "url": "/assets/environment/models/island_tree_02/impostor_front.webp",
+          "bytes": 418122,
+          "sha256": "f3432e74c7a94aa3b7b0d2716be8f330181d674fdba2f2184c50de13a03613ce"
+        },
+        {
+          "url": "/assets/environment/models/island_tree_02/impostor_side.webp",
+          "bytes": 439340,
+          "sha256": "dcd108f25a380c8fea6bc21a2a8c2d288be6b32eeb3aa5b105454bd900e62362"
+        },
         {
           "url": "/assets/environment/models/island_tree_02/island_tree_02_arm_1k.webp",
           "bytes": 1130954,
@@ -1060,26 +1084,26 @@
         },
         {
           "url": "/assets/environment/models/island_tree_02/lod0.bin",
-          "bytes": 1554364,
-          "sha256": "d88754cd52482740d92454ac17c160f8a1ce35cc7643da02b5b42eb97193ae8e"
+          "bytes": 6319648,
+          "sha256": "bde5d324c967296d82329e7f7666588c560c7a5d84c455c1ebd36536ce6cf47d"
         },
         {
           "url": "/assets/environment/models/island_tree_02/lod0.gltf",
-          "bytes": 5836,
-          "sha256": "24149ea1c7976bedd393fb01d71038474724de4faff1197dd3fe7c8a4675326c"
+          "bytes": 5860,
+          "sha256": "1f93c54be05ffa6bf4aa12203d8495bf4f76b2bcd02e0b34df05c7a421b941f1"
         },
         {
           "url": "/assets/environment/models/island_tree_02/lod1.bin",
-          "bytes": 592256,
-          "sha256": "d5013c97b5268c6aa420d25f1c02458833cbabc3e18b2eac7f103867b601710c"
+          "bytes": 268,
+          "sha256": "a189c59d3374807127e1ad5bb5dc1cd1d80775c522a190c982b73d40f6d08306"
         },
         {
           "url": "/assets/environment/models/island_tree_02/lod1.gltf",
-          "bytes": 5826,
-          "sha256": "5748e15b03d06f59fe72ecc7ca2f4d7d77f3f5732f964a864042bb8c3c4ff1d9"
+          "bytes": 2409,
+          "sha256": "88bfe7704a740b2618e81d2d2f213440db3beda593667beddf7a45ab01fec13f"
         }
       ],
-      "bytes": 9831018,
+      "bytes": 14858383,
       "preview": "/assets/environment/previews/island_tree_02.webp"
     },
     {
@@ -1456,16 +1480,17 @@
         "pyrenees",
         "norway"
       ],
-      "targetTriangles": 16000,
+      "targetTriangles": 150000,
       "kind": "model",
       "source": "https://polyhaven.com/a/pine_sapling_small",
       "license": "CC0-1.0",
       "sourceTriangles": 398144,
+      "impostor": true,
       "lods": [
         {
           "level": 0,
           "url": "/assets/environment/models/pine_sapling_small/lod0.gltf",
-          "triangles": 15999,
+          "triangles": 142506,
           "dimensions": [
             0.7877,
             1.299,
@@ -1473,44 +1498,55 @@
           ],
           "meshes": 1,
           "materials": 2,
-          "gltfBytes": 4816
+          "gltfBytes": 4832
         },
         {
           "level": 1,
           "url": "/assets/environment/models/pine_sapling_small/lod1.gltf",
-          "triangles": 5333,
+          "triangles": 4,
           "dimensions": [
             0.7877,
             1.299,
             0.7274
           ],
-          "meshes": 1,
+          "meshes": 2,
           "materials": 2,
-          "gltfBytes": 4813
+          "impostor": true,
+          "gltfBytes": 3138
         }
       ],
       "acceptedSourceFindings": 1,
       "blockingFindings": 0,
       "files": [
         {
+          "url": "/assets/environment/models/pine_sapling_small/impostor_front.webp",
+          "bytes": 251614,
+          "sha256": "3887e22d5a8a8233e6f8bf3de9cc8d412309627c958c75fd2b8a0929986b5c32"
+        },
+        {
+          "url": "/assets/environment/models/pine_sapling_small/impostor_side.webp",
+          "bytes": 215118,
+          "sha256": "7fc470d6f387c166667cdf92c420b1c5027b95ca01ce57f6df31bb389d49c1fd"
+        },
+        {
           "url": "/assets/environment/models/pine_sapling_small/lod0.bin",
-          "bytes": 1085340,
-          "sha256": "f03864ba8701ed322d5c7a137575e34443621bdf77656dd1a1d233e7cb91425f"
+          "bytes": 6375184,
+          "sha256": "0efa926f93107d3be47b76c38dc68cf8b5704f479381706f9517bb9ee620a40a"
         },
         {
           "url": "/assets/environment/models/pine_sapling_small/lod0.gltf",
-          "bytes": 3920,
-          "sha256": "3fb0ac20661fb17340cf660fd8d16ff735f12762f0ecb14d8c51b393d13e9f97"
+          "bytes": 3936,
+          "sha256": "9c14f28b4fe6a04575d5970a212e7c1fd49c94fccdba0b6232b13c47578206bc"
         },
         {
           "url": "/assets/environment/models/pine_sapling_small/lod1.bin",
-          "bytes": 465376,
-          "sha256": "d08b09b705bc35b6bc61f7718dc35562b3b1ac74ca3e6e1dbadfd21648cb9bf3"
+          "bytes": 268,
+          "sha256": "4160aaba49fca2a08e6fa60338b051f0a388d560b96552095218331dd7ed2f48"
         },
         {
           "url": "/assets/environment/models/pine_sapling_small/lod1.gltf",
-          "bytes": 3917,
-          "sha256": "e181d92ed2e0c5c4ecc8aae81187efbca1e64801b7da39af4fec8b14f4a9a8b9"
+          "bytes": 2412,
+          "sha256": "57267829fe60b710175013c2636cbcbc79da1dd4f49a20845abcadff3588100e"
         },
         {
           "url": "/assets/environment/models/pine_sapling_small/pine_sapling_small_bark_arm_1k.webp",
@@ -1543,7 +1579,7 @@
           "sha256": "5c91e407a205d3790fa8fa5645c7c841cdf02bb4c6d57efb84a23f9c8e194b47"
         }
       ],
-      "bytes": 7368471,
+      "bytes": 12658450,
       "preview": "/assets/environment/previews/pine_sapling_small.webp"
     },
     {
@@ -1887,16 +1923,17 @@
         "grandprix",
         "amalfi"
       ],
-      "targetTriangles": 18000,
+      "targetTriangles": 200000,
       "kind": "model",
       "source": "https://polyhaven.com/a/tree_small_02",
       "license": "CC0-1.0",
       "sourceTriangles": 2062487,
+      "impostor": true,
       "lods": [
         {
           "level": 0,
           "url": "/assets/environment/models/tree_small_02/lod0.gltf",
-          "triangles": 53957,
+          "triangles": 199999,
           "dimensions": [
             2.9167,
             4.5567,
@@ -1904,44 +1941,55 @@
           ],
           "meshes": 3,
           "materials": 3,
-          "gltfBytes": 7806
+          "gltfBytes": 7847
         },
         {
           "level": 1,
           "url": "/assets/environment/models/tree_small_02/lod1.gltf",
-          "triangles": 13217,
+          "triangles": 4,
           "dimensions": [
             2.9167,
             4.5567,
             4.2925
           ],
-          "meshes": 3,
-          "materials": 3,
-          "gltfBytes": 7790
+          "meshes": 2,
+          "materials": 2,
+          "impostor": true,
+          "gltfBytes": 3135
         }
       ],
-      "acceptedSourceFindings": 3019,
+      "acceptedSourceFindings": 3,
       "blockingFindings": 0,
       "files": [
         {
+          "url": "/assets/environment/models/tree_small_02/impostor_front.webp",
+          "bytes": 295952,
+          "sha256": "d47439f4a29c342b7ae93b74611a7923edba1fbf534c468a5a2c0fca8034d739"
+        },
+        {
+          "url": "/assets/environment/models/tree_small_02/impostor_side.webp",
+          "bytes": 434918,
+          "sha256": "ddb4073b4abb263f95d41c38d11093b0d653989e14d7e74decb900ce6befa524"
+        },
+        {
           "url": "/assets/environment/models/tree_small_02/lod0.bin",
-          "bytes": 4472392,
-          "sha256": "845382c5448ecfa06178779ceccbc4739e27d37d69d1c3be9a9582e7277536e5"
+          "bytes": 16814196,
+          "sha256": "7d29553fe48cb601936b0b56d6465f2981fd04fd0df6511957282bc7d36b3c5a"
         },
         {
           "url": "/assets/environment/models/tree_small_02/lod0.gltf",
-          "bytes": 6123,
-          "sha256": "e59a70a58fa033946fbc4545d51f6bd54e7df275c4114e36ebd28f24a9d00f77"
+          "bytes": 6164,
+          "sha256": "24a9f76079468c03a17d255e970a14afcf14605c4ec912b46aea4cdfc363d407"
         },
         {
           "url": "/assets/environment/models/tree_small_02/lod1.bin",
-          "bytes": 927984,
-          "sha256": "3227cd483a23e1698ec0d7a951cc1879f77dd5a545be9f2ab730b3c6bb347045"
+          "bytes": 268,
+          "sha256": "e75c6d56c31b7fa1b1105ab4345b0b902ae380ba0509f8a0dd6f9a13bffcd4f1"
         },
         {
           "url": "/assets/environment/models/tree_small_02/lod1.gltf",
-          "bytes": 6107,
-          "sha256": "94a502228122a0b5328b67e19da04c1924269cb8de61306665e6b2cb0327c42f"
+          "bytes": 2409,
+          "sha256": "bfd5a2b3d06a64835029042f8787129b451ba5c7b918d1286294e58edcf52dbf"
         },
         {
           "url": "/assets/environment/models/tree_small_02/tree_small_02_arm_1k.webp",
@@ -1989,7 +2037,7 @@
           "sha256": "7f7f97144c29a157be5d1bd342ab500423ca78854d335de7b47e28cd48878937"
         }
       ],
-      "bytes": 13877864,
+      "bytes": 26019165,
       "preview": "/assets/environment/previews/tree_small_02.webp"
     },
     {

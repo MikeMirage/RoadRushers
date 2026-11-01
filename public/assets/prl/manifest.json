@@ -1,0 +1,28 @@
+{
+  "provider": "Higgsfield",
+  "sourceManifest": "art/splash-screens/prl-family-2026-11-02-v1/manifest.json",
+  "usage": "Fixed garage loading illustration; remaining source artwork retained, with no cover selection UI",
+  "outputs": [
+    {
+      "source": "art/splash-screens/prl-family-2026-11-02-v1/01-garage.png",
+      "file": "garage.webp",
+      "width": 1140,
+      "height": 2016,
+      "bytes": 432714
+    },
+    {
+      "source": "art/splash-screens/prl-family-2026-11-02-v1/02-helmet.png",
+      "file": "helmet.webp",
+      "width": 1140,
+      "height": 2016,
+      "bytes": 254694
+    },
+    {
+      "source": "art/splash-screens/prl-family-2026-11-02-v1/03-ambassador.png",
+      "file": "ambassador.webp",
+      "width": 1140,
+      "height": 2016,
+      "bytes": 263678
+    }
+  ]
+}

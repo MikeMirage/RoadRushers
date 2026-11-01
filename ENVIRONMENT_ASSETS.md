@@ -30,7 +30,7 @@ Miniaturas de calidad con materiales naturales: siluetas orgánicas, corteza y r
 
 Los originales conservan variantes que no se cargan en la carrera. La versión de juego del set de rocas y de cada planta utiliza una variante. La valla se ensambla con un panel y dos postes; el kit completo sigue disponible en la fuente. Las máscaras de transparencia de las hojas se descargan por separado y se conectan antes de exportar.
 
-Los LOD son archivos independientes para no descargar la geometría cercana en el perfil móvil. El manifiesto registra **los triángulos realmente exportados**, no el objetivo solicitado al simplificador. En árboles con miles de hojas separadas el mínimo útil puede superar ese objetivo. La vegetación se repite mediante `InstancedMesh`, con límites diferentes por calidad; los LOD se asignan por proximidad al circuito al construir el paisaje.
+Los LOD son archivos independientes para no descargar la geometría cercana en el perfil móvil. Los cuatro árboles conservan una malla cercana detallada; el LOD lejano usa **dos imágenes recortadas del árbol completo sobre planos cruzados: cuatro triángulos por árbol**. Las imágenes se renderizan desde dos ángulos con transparencia. Así la copa no desaparece al simplificar. El perfil móvil usa esos impostores; equilibrado limita a tres árboles cercanos y alta a siete. La vegetación se repite mediante `InstancedMesh`, con límites diferentes por calidad; los LOD se asignan por proximidad al circuito al construir el paisaje. El manifiesto registra los triángulos realmente exportados.
 
 ## Primera integración en el juego
 
@@ -47,6 +47,7 @@ La biblioteca también contiene props de circuito y materiales arquitectónicos 
 ```sh
 python3 scripts/fetch-environment-assets.py
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python scripts/prepare-environment-models.py
+/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python scripts/bake-environment-impostors.py
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python scripts/review-environment-assets.py
 python3 scripts/finalize-environment-assets.py
 npm test

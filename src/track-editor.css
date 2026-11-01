@@ -18,3 +18,5 @@
 #track-kit-overlay{padding:16px;overflow:hidden}
 @media(max-height:500px) and (min-width:761px){#track-kit-overlay{padding:10px}.track-kit-modal.track-editor{height:calc(100dvh - 20px)}}
 @media(max-width:760px){#track-kit-overlay{padding:0}}
+
+.editor-finish-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.editor-finish-actions>button{min-height:44px}.editor-finish-actions>[hidden]{display:none}@media(max-width:760px){.editor-footer{flex-wrap:wrap}.editor-footer>div:first-child{flex:1 1 100%}.editor-finish-actions{margin-left:auto}}

@@ -14,7 +14,9 @@ OUTPUT=ROOT/'public/assets/environment/previews';OUTPUT.mkdir(parents=True,exist
 REVIEWS=ROOT/'art/reviews';REVIEWS.mkdir(parents=True,exist_ok=True)
 
 
+args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 for entry in SELECTION['models']:
+    if args and entry['id'] not in args:continue
     asset_id=entry['id']
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(ROOT/f'public/assets/environment/models/{asset_id}/lod0.gltf'))

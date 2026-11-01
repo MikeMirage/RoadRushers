@@ -49,6 +49,12 @@ for entry in source['assets']:
         for path in folder.rglob('*'):
             if path.suffix.lower() in {'.jpg','.jpeg','.png'}:
                 path.unlink()
+        referenced=set()
+        for path in folder.glob('*.gltf'):
+            data=json.loads(path.read_text())
+            referenced.update((folder/im['uri']).resolve() for im in data.get('images',[]) if 'uri' in im)
+        for path in folder.rglob('*.webp'):
+            if path.resolve() not in referenced:path.unlink()
     files = []
     folder = BASE / ('models' if entry['kind'] == 'model' else 'materials') / entry['id']
     for path in sorted(folder.rglob('*')):

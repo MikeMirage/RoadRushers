@@ -40,6 +40,7 @@ export class RivalFleet {
       }
       if((source.brakeMaterials||[]).includes(part.material))part.geometry.setAttribute('aBrake',this.brakes);
       const mesh=new THREE.InstancedMesh(part.geometry,material,count);mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.frustumCulled=false;mesh.receiveShadow=true;
+      mesh.castShadow=!ghost&&!material.transparent;
       if(paint)for(let i=0;i<count;i++){const color=new THREE.Color(session.rivals[i].color);if(session.vehicle.id==='coda')color.lerp(new THREE.Color('#ffffff'),.1);mesh.setColorAt(i,color);}
       this.parts.push(mesh);this.group.add(mesh);
     }

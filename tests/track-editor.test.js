@@ -33,12 +33,11 @@ test('import rejects malformed layouts and duplicate or excessive props without 
   assert.throws(()=>parseEditorFile('x'.repeat(1024*1024+1)));assert.throws(()=>normalizeProps([prop(),prop()]));assert.throws(()=>normalizeProps(Array.from({length:MAX_MANUAL_PROPS+1},(_,i)=>prop(`p${i}`))));
   assert.throws(()=>normalizeProps([prop('p','unknown')]));assert.throws(()=>normalizeProps([prop('p','pine',[NaN,0,0])]));assert.equal(escapeHTML('<img onerror="x">'),'&lt;img onerror=&quot;x&quot;&gt;');
 });
-test('the playable config retains props, sun and grading through quickplay and weather overrides',()=>{
+test('playing an editor track uses the basic theme and preserves the authored document',()=>{
   const doc=new TrackEditorDocument();doc.addProp('chalet',[40,0,30]);doc.change(d=>{d.environment={...themePreset('amalfi'),solarMode:'manual',sunAzimuth:97,sunElevation:19,contrast:1.2,weather:'sunset',hour:17.3};});
-  const config=editorTrackConfig(doc.value),resolved=resolvePlayground({trackId:config.id,theme:'track',weather:'track',width:'original'},playgroundTracks(config)).settings.track;
-  assert.deepEqual(resolved.manualProps,doc.value.props);assert.deepEqual(environmentForTrack(resolved),doc.value.environment);assert.ok(new Circuit(resolved).closed);
-  const rain=environmentForTrack(resolved,'rain');assert.equal(rain.weather,'rain');assert.equal(rain.wetness,.9);assert.equal(rain.sunAzimuth,97);assert.equal(rain.contrast,1.2);
-  const changed=resolvePlayground({trackId:config.id,theme:'norway'},playgroundTracks(config)).settings.track;assert.equal(environmentForTrack(changed).theme,'norway');assert.deepEqual(changed.manualProps,doc.value.props);
+  const before=structuredClone(doc.value),config=editorTrackConfig(doc.value),resolved=resolvePlayground({trackId:config.id,weather:'rain',width:'original'},playgroundTracks(config));
+  assert.equal(resolved.settings.track.environmentTheme,'basic');assert.equal(resolved.settings.weather,'rain');assert.ok(new Circuit(resolved.settings.track).closed);
+  assert.deepEqual(doc.value,before);assert.deepEqual(environmentForTrack(config),doc.value.environment);
   doc.change(d=>d.pieces.pop());assert.throws(()=>editorTrackConfig(doc.value));
 });
 test('all manual prop prefabs have finite geometry and their base on the ground',()=>{

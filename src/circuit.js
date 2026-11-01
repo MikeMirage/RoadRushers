@@ -20,13 +20,14 @@ class ModularCurve {
 /** Shared centerline for rendering, wall collisions, minimap and lap gates. */
 export class Circuit {
   constructor(config) {
-    this.config = config;
+    this.config = config;this.gaps=[];
     this.closed=config.closed!==false;
     if(config.layout){
       this.layout=compileLayout(config.layout,config.width,config.startHeight||0);
       if(!this.layout.points.length)throw new Error('El montaje está vacío');
       this.closed=this.layout.closed;
       this.curve=new ModularCurve(this.layout);this.length=this.layout.length;
+      this.gaps=this.layout.gaps.map(g=>({...g,from:g.from/this.length,to:g.to/this.length,recovery:Math.max(0,g.launchFrom-5)/this.length}));
       this.count=Math.max(720,Math.ceil(this.length/.6));this.samples=this.curve.getSpacedPoints(this.count);
       return;
     }
@@ -81,6 +82,21 @@ export class Circuit {
     return this.config.zones?.find(zone => u >= zone.from && u < zone.to)?.surface || this.config.surface;
   }
 
+  gapAt(progress){
+    const u=this.closed?((progress%1)+1)%1:Math.max(0,Math.min(1,progress));
+    return this.gaps.find(g=>u>g.from+1e-9&&u<g.to-1e-9)||null;
+  }
+  hasRoad(progress){return !this.gapAt(progress);}
+  roadRanges(range=[0,1]){
+    const ranges=[];let start=range[0];
+    for(const gap of this.gaps){
+      if(gap.to<=start||gap.from>=range[1])continue;
+      if(gap.from>start)ranges.push([start,Math.min(gap.from,range[1])]);
+      start=Math.max(start,gap.to);if(start>=range[1])break;
+    }
+    if(start<range[1])ranges.push([start,range[1]]);return ranges;
+  }
+
   nearest(x, z, options = {}) {
     let best = Infinity, bestX = 0, bestY = 0, bestZ = 0, bestDx = 0, bestDz = 1, bestProgress = 0, bestDistance=0;
     const difference=(a,b)=>{const d=Math.abs(a-b);return this.closed?Math.min(d,1-d):d;};
@@ -103,7 +119,8 @@ export class Circuit {
     const len = Math.hypot(bestDx, bestDz), nx = bestDz / len, nz = -bestDx / len;
     const frame=this.layout?this.curve.frame(bestProgress):null;
     const offset=(x-bestX)*nx+(z-bestZ)*nz;
-    return { x: bestX, y: bestY+Math.tan(frame?.bank||0)*offset, z: bestZ, grade:frame?.grade||0, bank:frame?.bank||0, distance: Math.sqrt(bestDistance), offset: (x - bestX) * nx + (z - bestZ) * nz,
+    const gap=this.gapAt(bestProgress);
+    return {supported:!gap,gap, x: bestX, y: bestY+Math.tan(frame?.bank||0)*offset, z: bestZ, grade:frame?.grade||0, bank:frame?.bank||0, distance: Math.sqrt(bestDistance), offset: (x - bestX) * nx + (z - bestZ) * nz,
       nx, nz, tx: bestDx / len, tz: bestDz / len, progress: bestProgress };
   }
 }

@@ -150,6 +150,7 @@ def prepare(entry):
     before = sum(triangles(ob) for ob in obs)
     report = {"id": asset_id, "sourceVariantTriangles": before, "lods": [], "qa": []}
     for level, budget in enumerate([entry['targetTriangles'], max(700, entry['targetTriangles'] // 3)]):
+        if level and entry.get('impostor'):break
         for attempt in range(1 if asset_id in ['tree_small_02','island_tree_02'] else 4):
             total = sum(triangles(ob) for ob in obs)
             ratio = min(1.0, budget / max(total, 1))

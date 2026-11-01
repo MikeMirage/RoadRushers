@@ -9,22 +9,21 @@ import '@fontsource/dm-sans/700.css';
 import './style.css';
 import './career.css';
 import './vehicle-collection.css';
-import './environment-studio.css';
 import './track-kit.css';
 import './track-editor.css';
 import './race.css';
-import './playground.css';
 import './mobile-gameplay.css';
 import './results.css';
 import './ghost.css';
-import './minimal-ui.css';
 import './preferences.css';
+import './prl-theme.css';
+import { mountBrandUI } from './prl-brand.js';
 import {loadPreferences,savePreferences,normalizePreferences,selectGraphicsPreset,graphicsPolicy} from './preferences.js';
 import {renderPreferences} from './preferences-ui.js';
 import { ResultRecords,resultContext,createReport } from './results.js';
 import { renderSessionResult } from './results-ui.js';
 import { loadAILeaderboard } from './leaderboard.js';
-import { TRACKS, SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
+import { SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
 import { Circuit } from './circuit.js';
 import { DriveModel, LapTracker, formatTime } from './physics.js';
 import { World } from './world.js';
@@ -37,19 +36,17 @@ import { renderGarage,renderGarageDetail } from './vehicle-collection-ui.js';
 import { renderPlayground } from './playground-ui.js';
 import { loadPlayground,savePlayground,normalizePlayground,resolvePlayground,playgroundTracks } from './playground.js';
 import { carIllustration } from './vehicles.js';
-import { GarageView } from './garage.js';
 import { renderGarageRoster } from './vehicle-collection-ui.js';
-import { EnvironmentStudio } from './environment-studio.js';
-import { TrackWorkbench } from './track-workbench.js';
-import { readDrivingInput,bindTouchSteering } from './input.js';
-import { RaceSession,makeRaceTrack } from './race.js';
-import { availableRaceTracks,renderRaceSetup,renderRaceHUD } from './race-ui.js';
+import { readDrivingInput,bindTouchSteering,bindMouseDriving } from './input.js';
+import {GamepadReader,createMenuNavigation} from './gamepad.js';
+import { RaceSession } from './race.js';
+import { readSavedEditorDocument,savedEditorTrackId } from './track-editor-state.js';
+import { renderRaceHUD } from './race-ui.js';
 
 const $ = id => document.getElementById(id);
+const brandUI=mountBrandUI();
 const icons = {
   camera: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 4L5.5 6H3.5A1.5 1.5 0 002 7.5v7A1.5 1.5 0 003.5 16h13a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0016.5 6H14l-1-2H7Z" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10.5" r="3" stroke="currentColor" stroke-width="1.3"/></svg>',
-  mute: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M9 4L5 7H2v6h3l4 3V4ZM13 8L17 12M17 8L13 12" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>',
-  sound: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M9 4L5 7H2v6h3l4 3V4ZM12 7c2 1.5 2 4.5 0 6M15 4c4 3 4 9 0 12" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>',
 };
 let storage;
 try { storage = localStorage; } catch { storage = null; }
@@ -58,33 +55,82 @@ let preferences=loadPreferences(storage),preferencesOpen=false,preferencesTab='g
 const resultRecords=new ResultRecords(storage);
 const ghostRecords=new GhostRecords(storage);
 let ghostRecorder,ghostLap=null;
-const settings=resolvePlayground(playgroundOptions).settings;
+const initialPlayground=resolvePlayground(playgroundOptions,playgroundTracks(undefined,storage));
+const settings=(initialPlayground.error?resolvePlayground({}):initialPlayground).settings;
 let world, circuit, drive, laps, best = null, state = 'loading', countdown = 0, toastTime = 0, finishedTime = null;
-let lastFrame = performance.now(), uiTimer = 0, mapProjection, modalFocus, garage;
-let workbench,kitFocus,touchControls,garageContext='session';
+let lastFrame = performance.now(), uiTimer = 0, mapProjection, mapBackground, modalFocus, garage;
+let workbench,kitFocus,touchControls,mouseControls,garageContext='session',garageSurface=null;
 let timingContext,previousPersonalLap=null,activeReport=null,leaderboardAbort;
-let environmentStudio,environmentFocus;
-let race=null,raceSetupOpen=false,raceSetupFocus,raceTracks=[];
-const raceOptions={count:12,interaction:'ghost',laps:3,width:'original',trackId:null,difficulty:'club',fieldLevels:'mixed'};
+let garageLoading=false,kitLoading=false;
+let race=null;
 const keys = new Set(), pointers = new Map(), audio = new EngineAudio();
 const performanceStats = new PerformanceStats(), simulationClock = new FixedStepClock(), resolution = new AdaptiveResolution(devicePixelRatio,graphicsPolicy(preferences,devicePixelRatio));
 const startButton = $('start-btn'); startButton.disabled = true;
-$('camera-icon').innerHTML = icons.camera; $('sound-btn').innerHTML = icons.mute;
-const thumbnails = new Map();
+$('camera-icon').innerHTML = icons.camera;
+const gamepadReader=new GamepadReader();
+let gamepadState=null,padFamily='standard',inputDevice=matchMedia('(pointer:coarse)').matches?'touch':'keyboard';
+const inputPrompts=document.createElement('div');inputPrompts.id='game-input-prompts';inputPrompts.className='game-input-prompts';document.body.append(inputPrompts);
+function fullGarage(){return !$('garage-overlay').classList.contains('hidden');}
+function menuRoot(){
+  if(!$('prl-splash').hidden)return $('prl-splash');
+  if(preferencesOpen)return $('preferences-content');
+  if(fullGarage())return $('garage-content');
+  if(workbench?.visible)return $('track-kit-content');
+  if(state==='finished')return $('result-content');
+  if(state==='paused')return $('pause-overlay');
+  if(state==='hub')return $('playground-hub');
+  if(state==='ready')return $('intro');
+  return null;
+}
+function updateInputPrompts(){
+  document.body.dataset.input=inputDevice;
+  const ps=padFamily==='playstation',confirm=ps?'✕':'A',back=ps?'○':'B';
+  const menuHint=inputDevice==='gamepad'?`${confirm} Confirmar · ${back} Volver · ${ps?'L1 / R1':'LB / RB'} Cambiar categoría`:'← → Seleccionar · Enter Confirmar · Esc Volver';
+  for(const node of document.querySelectorAll('.gamepad-context-hint'))node.textContent=menuHint;
+  for(const node of document.querySelectorAll('.controller-status'))node.textContent=inputDevice==='gamepad'?(ps?'DualSense / PlayStation':'Mando estándar'):inputDevice==='touch'?'Controles táctiles':'Teclado y ratón · Mando: pulsa un botón';
+  inputPrompts.textContent=inputDevice==='gamepad'?'Stick Girar · R2 / RT Acelerar · L2 / LT Frenar · Options / Menu Pausa':inputDevice==='mouse'?'Mantén clic izquierdo y mueve para girar · Clic derecho: freno':inputDevice==='touch'?'':'← → / A D Girar · ↓ / S Frenar · Esc Pausa';
+}
+function setInputDevice(device,family){const changed=device!==inputDevice||family&&family!==padFamily;if(family)padFamily=family;if(!changed)return;inputDevice=device;updateInputPrompts();}
+function backFromMenu(){
+  if(!$('prl-splash').hidden){if(state!=='loading')brandUI.dismiss();return;}
+  if(preferencesOpen){closePreferences();return;}
+  if(fullGarage()){closeGarage();return;}
+  if(workbench?.visible){closeKit();return;}
+  if(state==='finished'||state==='ready'){showHub();return;}
+  if(state==='paused'){setState('running');return;}
+  if(state==='running'||state==='countdown')pause();
+}
+const menuNavigation=createMenuNavigation({root:menuRoot,onBack:backFromMenu,onDevice:setInputDevice,
+  onConfirm:element=>{if(fullGarage()&&element.dataset.inspect){selectVehicle(element.dataset.inspect);return true;}return false;},
+  onTab:direction=>{
+    const root=menuRoot(),selector=fullGarage()?'[data-collection-page]':preferencesOpen?'[data-preferences-tab]':state==='finished'?'[data-results-tab]':'[data-play-mode]';
+    const tabs=[...root.querySelectorAll(selector)],index=tabs.findIndex(button=>button.getAttribute('aria-pressed')==='true');
+    tabs[(index+direction+tabs.length)%tabs.length]?.click();
+  }});
+function pollGamepad(now,dt){
+  let pads=[];try{pads=navigator.getGamepads?.()||[];}catch{/* Keyboard, mouse and touch remain available. */}
+  const sample=gamepadReader.sample(pads,now);gamepadState=sample.pad;
+  if(sample.disconnected&&inputDevice==='gamepad'&&['running','countdown'].includes(state)){setState('paused');toast('Mando desconectado · Carrera en pausa');}
+  if(sample.active)setInputDevice('gamepad',sample.pad.family);
+  for(const action of sample.actions){
+    if(action==='pause'){if(['running','paused','countdown'].includes(state))pause();else if(state==='hub'&&!fullGarage())openPreferences();continue;}
+    if(menuRoot()){menuNavigation.action(action);continue;}
+    if(action==='back')pause();if(action==='reset')reset();if(action==='camera')toggleCamera();
+  }
+  if(inputDevice==='gamepad'&&gamepadState){
+    if(garage?.visible&&!preferencesOpen&&!workbench?.visible)garage.orbit(gamepadState.orbitX,gamepadState.orbitY,dt);
+    else{const area=menuRoot()?.querySelector('.preferences-body,.report-body,.play-config-body,.editor-panel');if(area)area.scrollTop+=gamepadState.orbitY*dt*450;}
+  }
+}
+updateInputPrompts();
 
 function applyGraphics(){
   const policy=graphicsPolicy(preferences,devicePixelRatio);resolution.configure(policy);
   for(const view of [world,garage,workbench]){
     if(!view?.renderer)continue;
-    const renderer=view.renderer;renderer.setPixelRatio(resolution.ratio);view.atmosphere?.setGraphics(policy);
-    if(view.sun){
-      const wasEnabled=renderer.shadowMap.enabled;renderer.shadowMap.enabled=policy.shadowSize>0;
-      if(policy.shadowSize&&view.sun.shadow.mapSize.x!==policy.shadowSize){view.sun.shadow.map?.dispose();view.sun.shadow.map=null;view.sun.shadow.mapSize.set(policy.shadowSize,policy.shadowSize);}
-      renderer.shadowMap.needsUpdate=true;
-      if(wasEnabled!==renderer.shadowMap.enabled)view.scene.traverse(node=>{for(const m of Array.isArray(node.material)?node.material:[node.material])if(m)m.needsUpdate=true;});
-    }
+    const renderer=view.renderer;renderer.setPixelRatio(resolution.ratio);view.atmosphere?.setGraphics(policy);view.setGraphics?.(policy);
+    if(!view.setGraphics)renderer.shadowMap.enabled=policy.shadowSize>0;
   }
-  if(world){const changed=world.graphicsQuality!==policy.detail;world.graphicsQuality=policy.detail;if(changed&&world.environmentSettings)world.applyEnvironment(world.environmentSettings,false);}
   if(garage?.visible)garage.resize();if(workbench?.visible)workbench.resize();
   updatePreferencesReadout();
 }
@@ -92,13 +138,18 @@ function updatePreferencesReadout(){
   const output=$('graphics-readout');if(!preferencesOpen||!output||!world)return;
   const canvas=world.renderer.domElement;
   const samples=Math.min(preferences.samples,world.renderer.capabilities.maxSamples);
-  output.textContent=`${canvas.width} × ${canvas.height} px · ${world.renderer.getPixelRatio().toFixed(2)}×${preferences.resolution==='auto'?' · Automática':' · Fija'} · ${samples?'MSAA '+samples+'×':'Sin MSAA'}`;
+  output.textContent=`Objetivo ${preferences.targetFPS} fps · ${(1000/preferences.targetFPS).toFixed(1)} ms por frame · ${canvas.width} × ${canvas.height} px · ${world.renderer.getPixelRatio().toFixed(2)}×${preferences.resolution==='auto'?' · Automática':' · Fija'} · ${samples?'MSAA '+samples+'×':'Sin MSAA'}`;
 }
 function updateTouchGuide(){
   $('touch-guide').innerHTML=preferences.touchMode==='trackpad'?'<span>← TOCA PARA GIRAR →</span><span>CENTRO = RECTO</span><small>Segundo dedo para frenar</small>':'<span>← TOCA A LA IZQUIERDA</span><span>TOCA A LA DERECHA →</span><small>Las dos zonas a la vez para frenar</small>';
   $('touch-steering').setAttribute('aria-label',preferences.touchMode==='trackpad'?'Trackpad analógico de ancho completo en la mitad inferior; la posición marca el giro y el segundo dedo frena':'Dirección táctil: mitad inferior izquierda y derecha');
 }
-function paintPreferences(){$('preferences-content').innerHTML=renderPreferences(preferences,preferencesTab);updatePreferencesReadout();}
+function paintPreferences(){
+  const host=$('preferences-content'),open=host.querySelector('.preferences-advanced')?.open,scroll=host.querySelector('.preferences-body')?.scrollTop||0;
+  host.innerHTML=renderPreferences(preferences,preferencesTab,{soundEnabled:audio.enabled});
+  const advanced=host.querySelector('.preferences-advanced');if(advanced&&open)advanced.open=true;
+  host.querySelector('.preferences-body').scrollTop=scroll;updatePreferencesReadout();
+}
 function openPreferences(){
   if(!world||state==='loading'||preferencesOpen)return;
   preferencesFocus=document.activeElement;if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
@@ -113,8 +164,8 @@ function closePreferences(){
 }
 function changePreferences(next){
   const before=preferences;preferences=normalizePreferences(next);clearPointers();
-  const graphicsChanged=['quality','resolution','detail','shadows','samples','postProcessing'].some(k=>before[k]!==preferences[k]);
-  if(graphicsChanged)applyGraphics();updateTouchGuide();const saved=savePreferences(storage,preferences);paintPreferences();
+  const graphicsChanged=['quality','resolution','samples','effects','shadows','targetFPS'].some(k=>before[k]!==preferences[k]);
+  if(graphicsChanged)applyGraphics();applyHUDPreferences();updateTouchGuide();const saved=savePreferences(storage,preferences);paintPreferences();
   $('preferences-save-status').textContent=saved?'Ajustes guardados.':'Aplicado durante esta sesión.';
 }
 
@@ -126,129 +177,109 @@ function readBest() {
   $('best-time').textContent = formatTime(best);
 }
 
-function trackSVG(config) {
-  if (thumbnails.has(config.id)) return thumbnails.get(config.id);
-  const c = new Circuit(config), points = c.samples.filter((_, i) => i % 8 === 0);
-  const xs = points.map(p => p.x), zs = points.map(p => p.z);
-  const minX = Math.min(...xs), minZ = Math.min(...zs), w = Math.max(...xs)-minX, h = Math.max(...zs)-minZ, scale = Math.min(44/w,30/h);
-  const coords = points.map(p => `${((p.x-minX)*scale+(50-w*scale)/2).toFixed(1)},${((p.z-minZ)*scale+(36-h*scale)/2).toFixed(1)}`).join(' ');
-  const svg = `<svg class="track-thumbnail" viewBox="0 0 50 36" fill="none" aria-hidden="true"><polygon points="${coords}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
-  thumbnails.set(config.id, svg); return svg;
+function applyHUDPreferences(){
+  document.body.dataset.minimap=String(preferences.showMinimap);
+  document.body.dataset.speed=String(preferences.showSpeed);
+  performanceStats.setEnabled(preferences.showStats,{detailed:preferences.statsDetailed});
 }
+function toggleSound(){audio.toggle();if(preferencesOpen){paintPreferences();$('preferences-content').querySelector('[data-sound-toggle]').focus();}}
 
 function refreshPlayground(){
-  const hub=$('playground-hub'),opened=[...hub.querySelectorAll('details[open]')].map(d=>d.dataset.playDetails),scroll=hub.scrollTop;
-  hub.innerHTML=renderPlayground(playgroundOptions,playgroundTracks(settings.track),state!=='loading');
+  if(garageSurface==='home'){garage?.hide();garageSurface=null;}
+  const hub=$('playground-hub'),opened=[...hub.querySelectorAll('details[open]')].map(d=>d.dataset.playDetails),scroll=hub.querySelector('.play-config-body')?.scrollTop||0;
+  hub.innerHTML=renderPlayground(playgroundOptions,playgroundTracks(settings.track,storage),state!=='loading');
   for(const detail of hub.querySelectorAll('details'))detail.open=opened.includes(detail.dataset.playDetails);
-  hub.scrollTop=scroll;
+  hub.querySelector('.play-config-body').scrollTop=scroll;
+  requestAnimationFrame(syncPlaygroundScroll);
+  updateInputPrompts();if(state==='hub')mountHomeGarage();
 }
+function syncPlaygroundScroll(){
+  const area=$('playground-hub').querySelector('.play-config-body'),hint=$('playground-hub').querySelector('.play-scroll-hint');
+  if(area&&hint)hint.hidden=area.scrollHeight-area.scrollTop-area.clientHeight<8;
+}
+function hubFocusMode(mode){$('playground-hub').querySelector(`[data-play-mode="${mode}"]`)?.focus({preventScroll:true});}
 function showHub(){
   if(!world||state==='loading')return;
-  stopResultCalculation();closeGarage();closeKit();closeRaceSetup();if(environmentStudio?.visible)closeEnvironment();setLab(false);refreshPlayground();setState('hub');
+  stopResultCalculation();closeGarage();closeKit();refreshPlayground();setState('hub');
 }
 function launchPlayground(startNow=true){
   if(!world||state==='loading')return;
-  const prepared=resolvePlayground(playgroundOptions,playgroundTracks(settings.track));if(prepared.error)return;
+  const prepared=resolvePlayground(playgroundOptions,playgroundTracks(settings.track,storage));if(prepared.error)return;
   Object.assign(playgroundOptions,prepared.options);savePlayground(storage,playgroundOptions);
-  Object.assign(settings,prepared.settings);Object.assign(raceOptions,playgroundOptions);
-  closeGarage();closeRaceSetup();makeSession(true);setLab(false);if(startNow)start();
+  Object.assign(settings,prepared.settings);
+  closeGarage();makeSession(true);if(startNow)start();
 }
 function selectVehicle(vehicleId){
   const vehicle=VEHICLES.find(v=>v.id===vehicleId);if(!world||state==='loading'||!vehicle)return;
   const destination=garageContext;settings.vehicle=vehicle;playgroundOptions.vehicleId=vehicleId;savePlayground(storage,playgroundOptions);
-  closeGarage();makeSession(false);setLab(false);
-  if(destination==='hub'){refreshPlayground();setState('hub');}else if(destination==='race-setup')openRaceSetup();
+  closeGarage();makeSession(false);
+  if(destination==='hub'){refreshPlayground();setState('hub');$('playground-hub').querySelector('.primary-button')?.focus({preventScroll:true});}
 }
-function cancelGarage(){const destination=garageContext;closeGarage();if(destination==='race-setup')openRaceSetup();}
-function openGarage(inspectId,context) {
+function cancelGarage(){closeGarage();}
+async function getGarage(){
+  const {GarageView}=await import('./garage.js');
+  garage ||= new GarageView(id=>{if(garageSurface==='home')openGarage(id,'hub');else inspectVehicle(id);});
+  return garage;
+}
+async function mountHomeGarage(){
+  const host=$('home-car-stage');if(!host||state!=='hub'||fullGarage())return;
+  try{const view=await getGarage();if(!host.isConnected||state!=='hub'||fullGarage())return;
+    host.innerHTML='';garageSurface='home';view.mount(host,playgroundOptions.vehicleId);applyGraphics();
+  }catch{/* The selected car illustration remains usable if the 3D preview fails. */}
+}
+async function openGarage(inspectId,context) {
   if (!world || state === 'loading') return;
-  if (garage?.visible) return;
+  if (fullGarage()||garageLoading) return;
+  garageLoading=true;
+  try{await getGarage();}catch{toast('No se ha podido abrir el garaje.');return;}finally{garageLoading=false;}
   garageContext=context||(state==='hub'?'hub':'session');
   modalFocus = document.activeElement;
   if (state === 'running') setState('paused'); else if (state === 'countdown') setState('ready');
   $('garage-content').innerHTML = renderGarage(null,playgroundOptions.vehicleId,{testing:true});
   $('garage-overlay').classList.remove('hidden');
-  garage ||= new GarageView(inspectVehicle);
+  garageSurface='garage';
   garage.mount($('garage-stage'),playgroundOptions.vehicleId);
   applyGraphics();
   if(typeof inspectId==='string'&&VEHICLES.some(v=>v.id===inspectId))inspectVehicle(inspectId);
   for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=true;
-  $('garage-content').querySelector('[data-action="close-garage"]').focus();
+  $('garage-content').querySelector(`[data-inspect="${garage.selectedId}"]`)?.focus({preventScroll:true});updateInputPrompts();
 }
 function closeGarage() {
   const wasOpen = !$('garage-overlay').classList.contains('hidden');
   $('garage-overlay').classList.add('hidden');
-  garage?.hide();
+  if(garageSurface==='garage'){garage?.hide();garageSurface=null;}
   for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=false;
   if (wasOpen && modalFocus?.isConnected) modalFocus.focus();
+  if(wasOpen&&state==='hub')mountHomeGarage();
 }
-function openKit() {
-  if(!world||state==='loading'||workbench?.visible)return;
+async function openKit() {
+  if(!world||state==='loading'||workbench?.visible||kitLoading)return;
+  kitLoading=true;
+  let TrackWorkbench;
+  try{({TrackWorkbench}=await import('./track-workbench.js'));}catch{toast('No se ha podido abrir el editor.');return;}finally{kitLoading=false;}
   closeGarage();kitFocus=document.activeElement;
   if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
   workbench ||= new TrackWorkbench(config=>{
-    closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'track',weather:'track',surface:'track'});settings.track=config;launchPlayground();
-  },closeKit);
+    closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'basic',weather:'clear',surface:'track'});settings.track=config;launchPlayground();
+  },closeKit,{basicOnly:true});
+  const savedDocument=readSavedEditorDocument(storage,playgroundOptions.trackId);
+  if(savedDocument)workbench.loadDocument(savedDocument);
   $('track-kit-overlay').classList.remove('hidden');workbench.mount($('track-kit-content'));
   applyGraphics();
   for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
   $('track-kit-content').querySelector('[data-kit="close"]').focus();
 }
-function openEnvironment(){
-  if(!world||state==='loading')return;if(environmentStudio?.visible){closeEnvironment();return;}
-  closeGarage();closeKit();closeRaceSetup();environmentFocus=document.activeElement;
-  if(state==='hub')launchPlayground(false);else if(state!=='ready')setState('ready');setLab(false);
-  environmentStudio??=new EnvironmentStudio((visual,final)=>{
-    const surface=visual.theme==='reunion'?'mud':settings.surface==='mud'?'track':settings.surface;
-    if(settings.weather!==visual.weather||settings.surface!==surface){settings.weather=visual.weather;settings.surface=surface;makeSession(false);}
-    Object.assign(playgroundOptions,{theme:visual.theme,weather:visual.weather,surface});savePlayground(storage,playgroundOptions);
-    world.applyEnvironment(visual,final);
-  },closeEnvironment,()=>world.fitEnvironmentView(),world.environmentSettings);
-  $('environment-studio').classList.remove('hidden');document.body.dataset.environmentStudio='true';$('environment-btn').setAttribute('aria-expanded','true');
-  for(const n of document.querySelectorAll('main,header.topbar'))n.inert=true;
-  environmentStudio.mount($('environment-studio'),`${settings.track.id}:${settings.track.environmentTheme||'free'}`,world.environmentSettings);world.setEditorView(true,drive);$('environment-studio').querySelector('[data-env-action="close"]').focus();
-}
-function closeEnvironment(){
-  environmentStudio?.hide();$('environment-studio').classList.add('hidden');delete document.body.dataset.environmentStudio;$('environment-btn').setAttribute('aria-expanded','false');
-  world?.setEditorView(false);
-  for(const n of document.querySelectorAll('main,header.topbar'))n.inert=false;
-  if(environmentFocus?.isConnected)environmentFocus.focus();
-}
 function closeKit() {
   const open=workbench?.visible;$('track-kit-overlay').classList.add('hidden');workbench?.hide();
-  if(open){for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;if(kitFocus?.isConnected)kitFocus.focus();}
-}
-function refreshRaceSetup(){
-  const active=document.activeElement,attribute=['raceCount','raceLaps','raceInteraction','raceWidth','raceDifficulty'].find(key=>active?.dataset?.[key]!=null);
-  const focusId=active?.id,focusValue=attribute?active.dataset[attribute]:null;
-  $('race-setup-content').innerHTML=renderRaceSetup(raceOptions,raceTracks,settings.vehicle);
-  if(focusId)$('race-setup-content').querySelector(`#${focusId}`)?.focus();
-  else if(attribute){const key=attribute.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`);$('race-setup-content').querySelector(`[data-${key}="${focusValue}"]`)?.focus();}
-}
-function openRaceSetup(useCurrent=false){
-  if(!world||state==='loading'||raceSetupOpen)return;
-  closeGarage();closeKit();raceSetupFocus=document.activeElement;
-  if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
-  raceTracks=availableRaceTracks(settings.track);
-  if(useCurrent||!raceOptions.trackId)raceOptions.trackId=(settings.track.raceBaseConfig||settings.track).id;
-  if(!raceTracks.some(t=>t.id===raceOptions.trackId))raceOptions.trackId=raceTracks[0].id;
-  raceSetupOpen=true;refreshRaceSetup();$('race-setup-overlay').classList.remove('hidden');
-  for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
-  $('race-setup-content').querySelector('[data-race-action="close"]').focus();
-}
-function closeRaceSetup(){
-  const wasOpen=raceSetupOpen;raceSetupOpen=false;$('race-setup-overlay').classList.add('hidden');
-  if(wasOpen){for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;if(raceSetupFocus?.isConnected)raceSetupFocus.focus();}
-}
-function launchRace(){
-  const base=raceTracks.find(t=>t.id===raceOptions.trackId)||raceTracks[0],variant=makeRaceTrack(base,raceOptions.width);
-  if(variant.error)return;
-  Object.assign(playgroundOptions,raceOptions,{mode:'race',vehicleId:settings.vehicle.id});closeRaceSetup();launchPlayground();
+  if(open){
+    if(workbench.document.value.pieces.length){playgroundOptions.trackId=savedEditorTrackId(workbench.document.value);playgroundOptions.width='original';savePlayground(storage,playgroundOptions);}
+    for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;refreshPlayground();if(kitFocus?.isConnected)kitFocus.focus();}
 }
 function inspectVehicle(id) {
   garage.select(id); updateGarage();
 }
 function updateGarage() {
+  const focused=document.activeElement?.dataset.inspect;
   $('garage-detail').innerHTML=renderGarageDetail(null,garage.selectedId,garage.mode,garage.modelData.get(garage.selectedId)?.customization,{testing:true});
   $('collection-roster').innerHTML=renderGarageRoster(null,garage.selectedId,garage.page,true);
   for(const button of document.querySelectorAll('[data-collection-page]'))button.setAttribute('aria-pressed',String(button.dataset.collectionPage===garage.page));
@@ -259,39 +290,16 @@ function updateGarage() {
     button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));
   }
   for(const button of document.querySelectorAll('.collection-view-switch [data-garage-view]'))button.setAttribute('aria-pressed',String(button.dataset.garageView===garage.mode));
-}
-
-function setupOptions() {
-  $('track-options').innerHTML = TRACKS.map(t=>`<button class="track-option" data-track="${t.id}" aria-label="Circuito ${t.name}" aria-pressed="false">${trackSVG(t)}<span class="track-copy"><strong>${t.name}</strong><span>${t.region}</span></span><span class="track-check"></span></button>`).join('');
-  $('surface-options').innerHTML = Object.entries(SURFACES).map(([id,s])=>`<button class="surface-option" data-surface="${id}" aria-label="Superficie ${s.name}" title="${s.label}" aria-pressed="false"><span class="surface-symbol">${s.symbol}</span><span>${s.name}</span></button>`).join('');
-  $('weather-options').innerHTML = Object.entries(WEATHER).map(([id,w])=>`<button class="weather-option" data-weather="${id}" aria-label="Clima ${w.name}" aria-pressed="false"><span>${w.icon}</span><span>${w.name}</span></button>`).join('');
-  $('pace-options').innerHTML = Object.entries(PACES).map(([id,p])=>`<button data-pace="${id}" aria-label="Ritmo ${p.name}" aria-pressed="false">${p.name}</button>`).join('');
-  for (const button of document.querySelectorAll('[data-track]')) button.addEventListener('click',()=>{
-    if (state === 'loading' || settings.mode !== 'practice') return;
-    const track = TRACKS.find(t=>t.id===button.dataset.track); if(track===settings.track)return;
-    settings.track=track;settings.surface='track';settings.weather=track.weather;makeSession(true);
-  });
-  for (const field of ['surface','weather','pace']) for (const button of document.querySelectorAll(`[data-${field}]`)) button.addEventListener('click',()=>{
-    if (state==='loading'||settings.mode!=='practice'||settings[field]===button.dataset[field])return;
-    settings[field]=button.dataset[field];makeSession(false);
-  });
-  $('track-surface-btn').addEventListener('click',()=>{if(settings.mode==='practice'){settings.surface='track';makeSession(false);}});
+  if(focused){const button=$('collection-roster').querySelector(`[data-inspect="${focused}"]`);button?.focus({preventScroll:true});button?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});}
+  updateInputPrompts();
 }
 
 function updateOptions() {
-  for(const field of ['track','surface','weather','pace']) for(const button of document.querySelectorAll(`[data-${field}]`)) {
-    const selected=button.dataset[field]===(field==='track'?settings.track.id:settings[field]);
-    button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));
-    if(field==='track')button.querySelector('.track-check').textContent=selected?'✓':'';
-  }
-  $('track-surface-btn').classList.toggle('selected',settings.surface==='track');
-  $('track-surface-btn').setAttribute('aria-pressed',String(settings.surface==='track'));
   $('track-name').textContent=settings.track.name;
   const label=settings.surface==='track'?(settings.track.zones.length?'Trazado mixto':'Asfalto'):SURFACES[settings.surface].name;
   $('conditions-label').textContent=`${settings.vehicle.name} · ${label} · ${WEATHER[settings.weather].name}`;
   $('difficulty').textContent=settings.track.difficulty.toUpperCase();
   $('track-length').textContent=`${(circuit.length/1000).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})} km`;
-  $('grip-label').textContent=settings.surface==='track'?'POR SECTOR':`AGARRE ${SURFACES[settings.surface].grip>6?'ALTO':SURFACES[settings.surface].grip>2.5?'MEDIO':'BAJO'}`;
   const competing=settings.mode==='race';
   document.body.dataset.mode=settings.mode;
   $('camera-label').textContent=settings.camera==='chase'?'3ª persona':'Aérea';
@@ -306,13 +314,11 @@ function updateOptions() {
   document.querySelector('.current-time>.tiny-label').textContent=competing?'TIEMPO DE CARRERA':'TIEMPO ACTUAL';
 }
 
-function setLab(open) {
-  if(settings.mode!=='practice' && open)return;
-  $('lab').classList.toggle('hidden',!open);$('lab-btn').classList.toggle('active',open);$('lab-btn').setAttribute('aria-expanded',String(open));
-}
-function clearPointers(){if(touchControls)touchControls.clear();else pointers.clear();}
+function clearPointers(){touchControls?.clear();mouseControls?.clear();pointers.clear();}
 function setState(next) {
+  if(next!=='hub'&&garageSurface==='home'){garage?.hide();garageSurface=null;}
   state=next;document.body.dataset.state=next;
+  if(next==='running')performanceStats.reset();
   $('intro').classList.toggle('hidden',next!=='ready');
   $('playground-hub').classList.toggle('hidden',next!=='hub'&&next!=='loading');
   $('driving-status').classList.toggle('hidden',next!=='running');
@@ -324,6 +330,7 @@ function setState(next) {
   $('end-session-btn').textContent=race?'Retirarse y ver tiempos':'Finalizar y ver tiempos';$('end-session-btn').disabled=(race?race.elapsed:laps?.elapsed||0)<=0;
   $('footer-label').textContent=next==='running'?`${settings.vehicle.name.toUpperCase()} · TU SIGUIENTE CURVA`:'BUSCA TU PROPIA TRAZADA';
   audio.update(drive?.speed||0,next==='running');keys.clear();clearPointers();
+  updateInputPrompts();if(next==='hub')mountHomeGarage();
 }
 function makeSession(rebuild) {
   stopResultCalculation();
@@ -332,6 +339,7 @@ function makeSession(rebuild) {
     circuit=new Circuit(settings.track);world.build(circuit,settings.surface,settings.weather);
     const xs=circuit.samples.map(p=>p.x),zs=circuit.samples.map(p=>p.z),minX=Math.min(...xs),maxX=Math.max(...xs),minZ=Math.min(...zs),maxZ=Math.max(...zs);
     const scale=Math.min(290/(maxX-minX),180/(maxZ-minZ));mapProjection={minX,minZ,scale,dx:(360-(maxX-minX)*scale)/2,dz:(250-(maxZ-minZ)*scale)/2};
+    cacheMap();
   }else world.setConditions(settings.surface,settings.weather);
   race=settings.mode==='race'?new RaceSession(circuit,settings.vehicle,settings.raceRules):null;
   drive=race?race.player.drive:new DriveModel(circuit,settings.vehicle);laps=new LapTracker();finishedTime=null;world.setRivals(race);
@@ -340,7 +348,7 @@ function makeSession(rebuild) {
   world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();readBest();updateOptions();setState('ready');updateHUD();drawMap();
 }
 function toast(message){$('toast').textContent=message;$('toast').classList.remove('hidden');toastTime=3.2;}
-function start(){if(state!=='ready')return;setLab(false);setState('countdown');countdown=3;$('countdown').textContent='3';}
+function start(){if(state!=='ready')return;setState('countdown');countdown=3;$('countdown').textContent='3';}
 function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;resetGhost();readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
 
 function resetGhost(){
@@ -404,14 +412,20 @@ function updateHUD(){
   const underpass=circuit.layout?.crossings.some(c=>drive.y<c.upperY-3&&Math.hypot(drive.x-c.x,drive.z-c.z)<circuit.config.width*.9);
   $('status-text').textContent=wrongWay?'SENTIDO CONTRARIO':!drive.grounded?'EN EL AIRE':drive.braking?'FRENANDO':drive.impact>.15?'ABRE LA TRAZADA':underpass?'PASO INFERIOR':drive.slip>.3?'DERRAPANDO':drive.y>4?'TRAMO ELEVADO':`${SURFACES[surface].name.toUpperCase()} · EN PISTA`;
 }
+function cacheMap(){
+  mapBackground=document.createElement('canvas');mapBackground.width=360;mapBackground.height=250;
+  const ctx=mapBackground.getContext('2d'),p=mapProjection,project=(x,z)=>[p.dx+(x-p.minX)*p.scale,p.dz+(z-p.minZ)*p.scale];
+  ctx.clearRect(0,0,360,250);ctx.beginPath();circuit.samples.forEach((v,i)=>{const[x,y]=project(v.x,v.z);if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.closePath();ctx.lineWidth=14;ctx.strokeStyle='#0077b51c';ctx.stroke();ctx.lineWidth=4;ctx.strokeStyle='#477394';ctx.stroke();
+  for(const crossing of circuit.layout?.crossings||[]){const a=circuit.at(crossing.upperProgress-.015),b=circuit.at(crossing.upperProgress+.015);ctx.beginPath();ctx.moveTo(...project(a.x,a.z));ctx.lineTo(...project(b.x,b.z));ctx.lineWidth=11;ctx.strokeStyle='#19212c';ctx.stroke();ctx.lineWidth=5;ctx.strokeStyle='#009de2';ctx.stroke();}
+  const start=circuit.at(0),[sx,sy]=project(start.x,start.z);ctx.beginPath();ctx.moveTo(sx-start.normal.x*9,sy-start.normal.z*9);ctx.lineTo(sx+start.normal.x*9,sy+start.normal.z*9);ctx.strokeStyle='#19212c';ctx.lineWidth=4;ctx.stroke();
+}
 function drawMap(){
+  if(!preferences.showMinimap)return;
   const ctx=$('minimap').getContext('2d'),p=mapProjection,project=(x,z)=>[p.dx+(x-p.minX)*p.scale,p.dz+(z-p.minZ)*p.scale];
-  ctx.clearRect(0,0,360,250);ctx.beginPath();circuit.samples.forEach((v,i)=>{const[x,y]=project(v.x,v.z);if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.closePath();ctx.lineWidth=14;ctx.strokeStyle='#9eb58f22';ctx.stroke();ctx.lineWidth=4;ctx.strokeStyle='#d7e8c580';ctx.stroke();
-  for(const crossing of circuit.layout?.crossings||[]){const a=circuit.at(crossing.upperProgress-.015),b=circuit.at(crossing.upperProgress+.015);ctx.beginPath();ctx.moveTo(...project(a.x,a.z));ctx.lineTo(...project(b.x,b.z));ctx.lineWidth=11;ctx.strokeStyle='#203c32';ctx.stroke();ctx.lineWidth=5;ctx.strokeStyle='#a5d5d1';ctx.stroke();}
-  const start=circuit.at(0),[sx,sy]=project(start.x,start.z);ctx.beginPath();ctx.moveTo(sx-start.normal.x*9,sy-start.normal.z*9);ctx.lineTo(sx+start.normal.x*9,sy+start.normal.z*9);ctx.strokeStyle='#f8ffe3';ctx.lineWidth=4;ctx.stroke();
+  ctx.clearRect(0,0,360,250);ctx.drawImage(mapBackground,0,0);
   for(const rival of race?.rivals||[]){const[x,y]=project(rival.drive.x,rival.drive.z);ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fillStyle=rival.color;ctx.fill();}
   const ghost=!race&&['countdown','running','paused'].includes(state)&&sampleGhost(ghostLap,laps.time);
-  if(ghost){const[x,y]=project(ghost.x,ghost.z);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.strokeStyle='#8be1ee';ctx.lineWidth=1.5;ctx.stroke();}
+  if(ghost){const[x,y]=project(ghost.x,ghost.z);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.strokeStyle='#0077b5';ctx.lineWidth=1.5;ctx.stroke();}
   const[x,y]=project(drive.x,drive.z);ctx.save();ctx.translate(x,y);ctx.rotate(-drive.heading);ctx.beginPath();ctx.moveTo(0,9);ctx.lineTo(-6,-5);ctx.lineTo(6,-5);ctx.closePath();ctx.fillStyle=settings.vehicle.color;ctx.fill();ctx.restore();
 }
 
@@ -425,16 +439,6 @@ function setupInput(){
     if(state==='finished'){
       if(e.code==='Escape'){e.preventDefault();showHub();}
       if(e.code==='Tab'){const items=[...$('result-content').querySelectorAll('button:not(:disabled),[tabindex="0"]')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
-      return;
-    }
-    if(environmentStudio?.visible){
-      if(e.code==='Escape'){e.preventDefault();closeEnvironment();}
-      if(e.code==='Tab'){const items=[...$('environment-studio').querySelectorAll('button:not(:disabled),select,input:not(:disabled)')].filter(n=>n.getClientRects().length),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
-      return;
-    }
-    if(raceSetupOpen){
-      if(e.code==='Escape'){e.preventDefault();closeRaceSetup();}
-      if(e.code==='Tab'){const items=[...$('race-setup-content').querySelectorAll('button:not(:disabled),select')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }
     if(workbench?.visible){
@@ -452,7 +456,8 @@ function setupInput(){
       }
       return;
     }
-    if(['ArrowLeft','ArrowRight','Space','KeyA','KeyD','KeyC','KeyR','Escape','Enter'].includes(e.code)){
+    if(state==='hub'||state==='loading')return;
+    if(['ArrowLeft','ArrowRight','ArrowDown','Space','KeyA','KeyD','KeyS','KeyC','KeyR','Escape','Enter'].includes(e.code)){
       if(['Enter','Space'].includes(e.code)&&document.activeElement?.tagName==='BUTTON')return;
       e.preventDefault();if(!e.repeat){if(e.code==='KeyC')toggleCamera();if(e.code==='KeyR')reset();if(e.code==='Space'||e.code==='Escape')pause();if(e.code==='Enter')start();}keys.add(e.code);
     }
@@ -461,40 +466,34 @@ function setupInput(){
   const blur=()=>{keys.clear();clearPointers();if(state==='running')setState('paused');if(state==='countdown')setState('ready');};
   window.addEventListener('blur',blur);document.addEventListener('visibilitychange',()=>{if(document.hidden)blur();});
   touchControls=bindTouchSteering($('touch-steering'),pointers,()=>state==='running',()=>preferences);
-  window.addEventListener('resize',()=>{clearPointers();applyGraphics();});
-  $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('garage-btn').addEventListener('click',openGarage);$('intro-back').addEventListener('click',showHub);$('pause-hub-btn').addEventListener('click',showHub);
-  $('track-kit-btn').addEventListener('click',openKit);
-  $('environment-btn').addEventListener('click',openEnvironment);
+  mouseControls=bindMouseDriving($('game'),pointers,()=>state==='running');
+  window.addEventListener('resize',()=>{clearPointers();applyGraphics();syncPlaygroundScroll();});
+  $('playground-hub').addEventListener('scroll',syncPlaygroundScroll,true);
+  $('playground-hub').addEventListener('toggle',()=>requestAnimationFrame(syncPlaygroundScroll),true);
+  document.fonts.ready.then(syncPlaygroundScroll);
+  $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('intro-back').addEventListener('click',showHub);$('pause-hub-btn').addEventListener('click',showHub);
   $('end-session-btn').addEventListener('click',()=>{if(state==='paused')showTimingResults(false);});
-  $('intro-race-btn').addEventListener('click',()=>openRaceSetup(true));
-  $('race-setup-overlay').addEventListener('click',e=>{
-    const button=e.target.closest('button');if(!button||button.disabled)return;
-    const action=button.dataset.raceAction;
-    if(action==='close')closeRaceSetup();if(action==='garage'){closeRaceSetup();openGarage(undefined,'race-setup');}if(action==='launch')launchRace();
-    for(const [key,field]of [['raceCount','count'],['raceLaps','laps'],['raceInteraction','interaction'],['raceWidth','width'],['raceDifficulty','difficulty']])if(button.dataset[key]!=null){const value=button.dataset[key];raceOptions[field]=field==='count'||field==='laps'||field==='width'&&value!=='original'?Number(value):value;refreshRaceSetup();}
-  });
-  $('race-setup-overlay').addEventListener('change',e=>{if(e.target.id==='race-track-select'){raceOptions.trackId=e.target.value;refreshRaceSetup();}if(e.target.id==='race-levels-select'){raceOptions.fieldLevels=e.target.value;refreshRaceSetup();}});
-  $('lab-btn').addEventListener('click',()=>setLab($('lab').classList.contains('hidden')));$('lab-close').addEventListener('click',()=>setLab(false));
+  $('intro-race-btn').addEventListener('click',()=>{playgroundOptions.mode='race';savePlayground(storage,playgroundOptions);showHub();});
   for(const id of['reset-btn','restart-pause-btn'])$(id).addEventListener('click',()=>reset());$('pause-btn').addEventListener('click',pause);$('resume-btn').addEventListener('click',()=>setState('running'));
-  $('sound-btn').addEventListener('click',()=>{const enabled=audio.toggle();$('sound-btn').innerHTML=enabled?icons.sound:icons.mute;$('sound-btn').setAttribute('aria-label',enabled?'Silenciar sonido':'Activar sonido');$('sound-btn').title=enabled?'Silenciar sonido':'Activar sonido';$('sound-btn').setAttribute('aria-pressed',String(enabled));});
   $('preferences-btn').addEventListener('click',openPreferences);$('pause-preferences-btn').addEventListener('click',openPreferences);
   $('preferences-overlay').addEventListener('click',e=>{
     if(e.target===$('preferences-overlay')||e.target.closest('[data-preferences-close]')){closePreferences();return;}
+    if(e.target.closest('[data-sound-toggle]'))toggleSound();
     const tab=e.target.closest('[data-preferences-tab]')?.dataset.preferencesTab;if(tab){preferencesTab=tab;paintPreferences();$('preferences-content').querySelector(`[data-preferences-tab="${tab}"]`).focus();}
     const preset=e.target.closest('[data-graphics-preset]')?.dataset.graphicsPreset;if(preset){changePreferences(selectGraphicsPreset(preferences,preset));$('preferences-content').querySelector(`[data-graphics-preset="${preset}"]`).focus();}
     const mode=e.target.closest('[data-touch-mode]')?.dataset.touchMode;if(mode){changePreferences({...preferences,touchMode:mode});$('preferences-content').querySelector(`[data-touch-mode="${mode}"]`).focus();}
   });
-  $('preferences-overlay').addEventListener('change',e=>{const key=e.target.dataset.preference;if(!key)return;const value=key==='samples'||key==='sensitivity'?Number(e.target.value):key==='postProcessing'?e.target.value==='true':e.target.value;changePreferences({...preferences,[key]:value});$('preferences-content').querySelector(`[data-preference="${key}"]`)?.focus();});
+  $('preferences-overlay').addEventListener('change',e=>{const key=e.target.dataset.preference;if(!key)return;const value=['samples','sensitivity','targetFPS'].includes(key)?Number(e.target.value):typeof preferences[key]==='boolean'?e.target.value==='true':e.target.value;changePreferences({...preferences,[key]:value});$('preferences-content').querySelector(`[data-preference="${key}"]`)?.focus();});
   $('playground-hub').addEventListener('click',e=>{
-    const mode=e.target.closest('[data-play-mode]');if(mode){playgroundOptions.mode=mode.dataset.playMode;savePlayground(storage,playgroundOptions);refreshPlayground();}
+    const mode=e.target.closest('[data-play-mode]');if(mode){playgroundOptions.mode=mode.dataset.playMode;savePlayground(storage,playgroundOptions);refreshPlayground();hubFocusMode(mode.dataset.playMode);}
     const action=e.target.closest('[data-play-action]')?.dataset.playAction;
-    if(action==='garage')openGarage();if(action==='kit')openKit();if(action==='environment')openEnvironment();
+    if(action==='garage')openGarage();if(action==='kit')openKit();if(action==='preferences')openPreferences();
   });
   $('playground-hub').addEventListener('change',e=>{
     const key=e.target.dataset.playground;if(!key)return;
     const value=['width','count','laps'].includes(key)&&e.target.value!=='original'?Number(e.target.value):e.target.value;
-    Object.assign(playgroundOptions,normalizePlayground({...playgroundOptions,[key]:value},playgroundTracks(settings.track)));
-    if(key==='trackId'&&resolvePlayground(playgroundOptions,playgroundTracks(settings.track)).error)playgroundOptions.width='original';
+    Object.assign(playgroundOptions,normalizePlayground({...playgroundOptions,[key]:value},playgroundTracks(settings.track,storage)));
+    if(key==='trackId'&&resolvePlayground(playgroundOptions,playgroundTracks(settings.track,storage)).error)playgroundOptions.width='original';
     savePlayground(storage,playgroundOptions);refreshPlayground();$('playground-hub').querySelector(`[data-playground="${key}"]`)?.focus();
   });
   $('playground-hub').addEventListener('submit',e=>{e.preventDefault();launchPlayground();});
@@ -506,6 +505,10 @@ function setupInput(){
     const view=e.target.closest('[data-garage-view]');if(view){garage.setView(view.dataset.garageView);updateGarage();}
     const pilot=e.target.closest('[data-pilot]');if(pilot&&!pilot.disabled)selectVehicle(pilot.dataset.pilot);
   });
+  $('garage-overlay').addEventListener('focusin',e=>{
+    const id=e.target.dataset.inspect;if(id&&garage?.selectedId!==id)inspectVehicle(id);
+  });
+  $('garage-overlay').addEventListener('dblclick',e=>{const id=e.target.closest('[data-inspect]')?.dataset.inspect;if(id)selectVehicle(id);});
   $('garage-overlay').addEventListener('input',e=>{
     const key=e.target.dataset.custom;if(!key)return;
     const value=key==='glassOpacity'?Number(e.target.value):e.target.value;
@@ -527,10 +530,13 @@ function setupInput(){
 }
 
 function frame(now){
+  if(document.hidden){lastFrame=now;requestAnimationFrame(frame);return;}
+  if(!['running','countdown'].includes(state)&&!workbench?.visible&&now-lastFrame<1000/(garage?.visible?60:30)){requestAnimationFrame(frame);return;}
   const cpuStart=performance.now(),rawDt=(now-lastFrame)/1000,dt=Math.min(rawDt,.25);lastFrame=now;
+  pollGamepad(now,dt);
   if(state==='countdown'){countdown-=dt;$('countdown').textContent=countdown>0?String(Math.ceil(countdown)):'';if(countdown<=0){setState('running');toast(matchMedia('(pointer:coarse),(max-width:760px),(max-width:1000px) and (max-height:500px)').matches?'¡A rodar!':'¡A rodar! ← → para girar');}}
   if(state==='running'){
-    const input=readDrivingInput(keys,pointers),steps=simulationClock.advance(dt);
+    const input=inputDevice==='gamepad'&&gamepadState?{steer:gamepadState.steer,brake:gamepadState.brake>.05?gamepadState.brake:0,throttle:gamepadState.throttle}:readDrivingInput(keys,pointers),steps=simulationClock.advance(dt);
     for(let i=0;i<steps;i++){
       if(race){
         const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace);
@@ -540,7 +546,8 @@ function frame(now){
         if(done){finish(race.player.finishTime);break;}
       }
       else{
-        drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake);
+        drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake,input.throttle??1);
+        if(drive.respawned){laps.rewind(drive.road.progress);toast('No has alcanzado la recepción · Reintenta el salto con más velocidad');}
         const lap=laps.step(FIXED_STEP,drive.road.progress);
         recordGhost(laps.elapsed,lap?laps.lapStartedAt:null);
         if(lap){finish(lap);if(state!=='running')break;}
@@ -548,7 +555,7 @@ function frame(now){
     }
   }
   if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').classList.add('hidden');}
-  uiTimer+=dt;if(uiTimer>1/20){updateHUD();drawMap();updatePreferencesReadout();uiTimer=0;}
+  uiTimer+=dt;if(uiTimer>1/20){if(['running','countdown'].includes(state)){updateHUD();drawMap();}updatePreferencesReadout();uiTimer=0;}
   audio.update(drive.speed,state==='running');const renderDrive=drive.interpolated(state==='running'||state==='paused'?simulationClock.alpha:1);
   if(workbench?.visible)workbench.update(dt);
   else if(garage?.visible)garage.update(dt);
@@ -558,13 +565,13 @@ function frame(now){
     world.update(dt,renderDrive,settings.camera,state==='running',state!=='paused',state==='running'||state==='paused'?simulationClock.alpha:1);
     const ratio=state==='running'?resolution.sample(rawDt):resolution.ratio;if(Math.abs(world.renderer.getPixelRatio()-ratio)>.01)world.renderer.setPixelRatio(ratio);
   }
-  performanceStats.sample(rawDt,performance.now()-cpuStart,workbench?.visible?workbench.renderer:garage?.visible?garage.renderer:world.renderer);
+  if(state==='running')performanceStats.sample(rawDt,performance.now()-cpuStart,workbench?.visible?workbench.renderer:garage?.visible?garage.renderer:world.renderer);
   requestAnimationFrame(frame);
 }
 async function init(){
   try{
-    setupOptions();setupInput();updateTouchGuide();refreshPlayground();world=new World($('game'));applyGraphics();await world.loadCar(settings.vehicle);makeSession(true);setLab(false);startButton.disabled=false;
-    $('loading-status').textContent=innerWidth<=760?'Mitad inferior izquierda / derecha · Ambas: freno':'← → / A D girar · Ambas: frenar · R reintentar';refreshPlayground();setState('hub');lastFrame=performance.now();requestAnimationFrame(frame);
-  }catch(error){console.error(error);$('fatal-error').classList.remove('hidden');$('error-message').textContent=`No se ha podido preparar la carrera. ${error.message}`;}
+    setupInput();applyHUDPreferences();updateTouchGuide();refreshPlayground();world=new World($('game'),graphicsPolicy(preferences,devicePixelRatio));applyGraphics();await world.loadCar(settings.vehicle);makeSession(true);startButton.disabled=false;
+    $('loading-status').textContent=innerWidth<=760?'Mitad inferior izquierda / derecha · Ambas: freno':'← → / A D girar · Ambas: frenar · R reintentar';refreshPlayground();setState('hub');brandUI.setReady();lastFrame=performance.now();requestAnimationFrame(frame);
+  }catch(error){brandUI.dismiss();console.error(error);$('fatal-error').classList.remove('hidden');$('error-message').textContent=`No se ha podido preparar la carrera. ${error.message}`;}
 }
 init();

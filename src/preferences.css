@@ -6,3 +6,26 @@
 
 @media(max-width:760px){.preferences-heading{padding:20px 18px}.preferences-heading h2{font-size:32px}.preferences-tabs{padding:0 18px}.preferences-body{padding:20px 18px}.preferences-footer{padding:15px 18px}.preferences-grid{gap:18px 12px}.preference-field{font-size:9px}.preference-field select{font-size:11px}.preferences-footer>span{font-size:8px}}
 @media(max-height:500px){.preferences-heading{padding:13px 20px}.preferences-heading h2{font-size:29px}.preferences-tabs button{padding:7px 0 10px}.preferences-body{padding:15px 20px}.preferences-footer{padding:10px 20px}.graphics-presets{margin-bottom:15px}.preferences-help{margin-top:13px}}
+
+.preferences-section-label{margin:0 0 15px;font-size:9px;letter-spacing:1.4px;color:#9cb0a8}
+.graphics-presets{margin:20px 0}.graphics-presets button{min-height:48px}.graphics-presets small{display:block;font-size:8px;margin-top:5px;color:#92a880}
+.preferences-advanced{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.preferences-advanced summary{cursor:pointer;padding:16px 0;font-size:12px;color:#c1d2c7}.preferences-advanced .preferences-grid{padding:3px 0 20px}
+.preference-sound{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:23px 0;margin-top:6px;border-bottom:1px solid var(--line)}.preference-sound strong{display:block;font-size:12px;font-weight:500;color:#dce7df}.preference-sound span{display:block;font-size:10px;color:#8fa69a;margin-top:6px}.preference-sound button{min-height:44px;padding:0 13px;background:transparent;border:1px solid var(--line);color:#a4b4aa;font-size:11px}.preference-sound button[aria-pressed=true]{color:var(--lime);border-color:#d4fb7888}
+.preferences-basic{margin-top:24px;padding:16px;border:1px solid var(--line);background:#ffffff03}.preferences-basic strong{font-size:12px;font-weight:500;color:#cbe0c4}.preferences-basic p{font-size:11px;line-height:1.8;color:#8fa69a;margin:8px 0 0}
+.play-baseline{display:flex;align-items:center;gap:8px;font-size:8px;letter-spacing:1.2px;color:var(--lime);margin:0 0 15px}.play-baseline i{width:5px;height:5px;background:var(--lime);border-radius:50%}.play-baseline span{margin-left:auto;color:#8fa49d;letter-spacing:.2px;font-size:9px}.play-grip-help{margin:0 0 20px;font-size:10px}
+body[data-minimap=false] .minimap-wrap{display:none!important}
+body[data-speed=false] .speed-row>strong,body[data-speed=false] .speed-row>span,body[data-speed=false] .speed-track{display:none!important}
+body[data-speed=true]:is([data-state=running],[data-state=countdown],[data-state=paused]) .speed-row>strong{display:block}
+body[data-speed=true]:is([data-state=running],[data-state=countdown],[data-state=paused]) .speed-row>span{display:block}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) :is(.vignette,.controls-hint){display:none}
+@media(max-width:760px),(pointer:coarse){body:is([data-state=running],[data-state=countdown],[data-state=paused]) .speedometer{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom))}}
+body:has(#preferences-overlay:not(.hidden)) #performance-stats,
+body:is([data-state=hub],[data-state=loading],[data-state=ready]) #performance-stats{display:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .minimap-wrap{background:#111c2280;border:0;border-radius:3px;padding:8px;box-shadow:none;filter:none}
+@media(max-width:360px){.preferences-tabs{gap:18px}.preferences-tabs button{font-size:12px}}
+
+/* FPS stays a small passive readout; technical diagnostics are explicitly enabled. */
+#performance-stats{position:fixed;left:calc(env(safe-area-inset-left,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:6;padding:4px 6px;border:0;border-radius:3px;background:#111c2266;color:#e7eee2b8;font:500 10px/1.2 'DM Sans',sans-serif;font-variant-numeric:tabular-nums;white-space:pre;pointer-events:none;user-select:none}
+#performance-stats[data-detailed=true]{padding:8px 10px;background:#111c22d9;color:#d4fb78;font:10px/1.6 monospace}
+body:not([data-state=running]):not([data-state=countdown]) #performance-stats{display:none}
+body:has(.modal-overlay:not(.hidden)) #performance-stats{display:none}

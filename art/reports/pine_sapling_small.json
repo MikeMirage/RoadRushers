@@ -5,7 +5,7 @@
     {
       "level": 0,
       "url": "/assets/environment/models/pine_sapling_small/lod0.gltf",
-      "triangles": 15999,
+      "triangles": 142506,
       "dimensions": [
         0.7877,
         1.299,
@@ -13,20 +13,21 @@
       ],
       "meshes": 1,
       "materials": 2,
-      "gltfBytes": 4816
+      "gltfBytes": 4832
     },
     {
       "level": 1,
       "url": "/assets/environment/models/pine_sapling_small/lod1.gltf",
-      "triangles": 5333,
+      "triangles": 4,
       "dimensions": [
         0.7877,
         1.299,
         0.7274
       ],
-      "meshes": 1,
+      "meshes": 2,
       "materials": 2,
-      "gltfBytes": 4813
+      "impostor": true,
+      "gltfBytes": 3138
     }
   ],
   "qa": [
@@ -36,34 +37,28 @@
         "ok": true,
         "pass": false,
         "errors": [
-          "z-fighting: pine_sapling_small_a (3 overlapping coplanar tri pairs)"
+          "z-fighting: pine_sapling_small_a (260 overlapping coplanar tri pairs)"
         ],
         "warnings": [
-          "pine_sapling_small_a: ~9.38% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
-          "hidden back-to-back faces: pine_sapling_small_a (4 pairs) - delete to save tris"
+          "pine_sapling_small_a: ~22.47% UV overlap (ok only if mirrored/stacked on purpose; bakes break)"
         ],
         "ground_z": 0.0,
         "zfighting": [
           {
             "where": "pine_sapling_small_a",
-            "tri_pairs": 3
+            "tri_pairs": 260
           }
         ],
         "floating": [],
-        "back_to_back": [
-          {
-            "where": "pine_sapling_small_a",
-            "tri_pairs": 4
-          }
-        ],
+        "back_to_back": [],
         "enclosed": [],
         "objects": {
           "pine_sapling_small_a": {
-            "verts": 30219,
-            "faces": 15999,
-            "tris": 15999,
+            "verts": 145446,
+            "faces": 142506,
+            "tris": 142506,
             "ngons": 0,
-            "boundary_edges": 29679,
+            "boundary_edges": 130140,
             "nonmanifold_edges": 0,
             "wire_edges": 0,
             "loose_verts": 0,
@@ -71,7 +66,7 @@
             "zero_length_edges": 0,
             "inconsistent_normals_edges": 0,
             "duplicate_verts": 0,
-            "islands": 7380,
+            "islands": 9123,
             "inside_out_islands": 0,
             "scale": [
               1.0,
@@ -80,15 +75,15 @@
             ],
             "materials": 2,
             "uv_maps": 1,
-            "uv_oob_pct": 0.21,
+            "uv_oob_pct": 0.1,
             "uv_zero_area_faces": 0,
-            "uv_overlap_pct": 9.38,
-            "uv_coverage_pct": 43.5
+            "uv_overlap_pct": 22.47,
+            "uv_coverage_pct": 15.0
           }
         }
       },
       "acceptedSourceFindings": [
-        "z-fighting: pine_sapling_small_a (3 overlapping coplanar tri pairs)"
+        "z-fighting: pine_sapling_small_a (260 overlapping coplanar tri pairs)"
       ],
       "blocking": []
     },
@@ -99,26 +94,20 @@
         "pass": true,
         "errors": [],
         "warnings": [
-          "pine_sapling_small_a: ~13.29% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
-          "hidden back-to-back faces: pine_sapling_small_a (2 pairs) - delete to save tris"
+          "asset lowest point z=-0.039 (not resting on ground plane z=0)"
         ],
-        "ground_z": 0.0,
+        "ground_z": -0.039,
         "zfighting": [],
         "floating": [],
-        "back_to_back": [
-          {
-            "where": "pine_sapling_small_a",
-            "tri_pairs": 2
-          }
-        ],
+        "back_to_back": [],
         "enclosed": [],
         "objects": {
-          "pine_sapling_small_a": {
-            "verts": 13105,
-            "faces": 5333,
-            "tris": 5333,
+          "front_card": {
+            "verts": 4,
+            "faces": 1,
+            "tris": 2,
             "ngons": 0,
-            "boundary_edges": 13131,
+            "boundary_edges": 4,
             "nonmanifold_edges": 0,
             "wire_edges": 0,
             "loose_verts": 0,
@@ -126,19 +115,46 @@
             "zero_length_edges": 0,
             "inconsistent_normals_edges": 0,
             "duplicate_verts": 0,
-            "islands": 3873,
+            "islands": 1,
             "inside_out_islands": 0,
             "scale": [
               1.0,
               1.0,
               1.0
             ],
-            "materials": 2,
+            "materials": 1,
             "uv_maps": 1,
-            "uv_oob_pct": 0.39,
+            "uv_oob_pct": 0.0,
             "uv_zero_area_faces": 0,
-            "uv_overlap_pct": 13.29,
-            "uv_coverage_pct": 34.7
+            "uv_overlap_pct": 0.0,
+            "uv_coverage_pct": 100.0
+          },
+          "side_card": {
+            "verts": 4,
+            "faces": 1,
+            "tris": 2,
+            "ngons": 0,
+            "boundary_edges": 4,
+            "nonmanifold_edges": 0,
+            "wire_edges": 0,
+            "loose_verts": 0,
+            "degenerate_faces": 0,
+            "zero_length_edges": 0,
+            "inconsistent_normals_edges": 0,
+            "duplicate_verts": 0,
+            "islands": 1,
+            "inside_out_islands": 0,
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "materials": 1,
+            "uv_maps": 1,
+            "uv_oob_pct": 0.0,
+            "uv_zero_area_faces": 0,
+            "uv_overlap_pct": 0.0,
+            "uv_coverage_pct": 100.0
           }
         }
       },

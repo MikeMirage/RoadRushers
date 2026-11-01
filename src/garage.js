@@ -17,7 +17,7 @@ export class GarageView {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.renderer.domElement.setAttribute('aria-label', 'Colección 3D de micromachines. Arrastra para girar y selecciona un coche para ampliarlo.');
-    this.scene = new THREE.Scene(); this.scene.background = new THREE.Color('#dbe1d3');
+    this.scene = new THREE.Scene(); this.scene.background = new THREE.Color('#e8edf3');
     this.camera = new THREE.PerspectiveCamera(40, 1, .05, 160);
     const studio = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(this.renderer);
     this.environmentTarget = pmrem.fromScene(studio, .05);
@@ -27,9 +27,9 @@ export class GarageView {
     this.scene.add(new THREE.HemisphereLight('#f6f7eb', '#8b9689', 1.6));
     const key = new THREE.DirectionalLight('#fff1d5', 2); key.position.set(-4, 8, 6); this.scene.add(key);
     const fill = new THREE.DirectionalLight('#d4e7f1', 1.2); fill.position.set(7, 5, -4); this.scene.add(fill);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshStandardMaterial({ color: '#d5ddce', roughness: .85 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshStandardMaterial({ color: '#e0e7ef', roughness: .85 }));
     floor.rotation.x = -Math.PI / 2; floor.position.y = -.06; this.scene.add(floor);
-    this.models = new Map(); this.displays = new Map(); this.visible = false; this.mode = 'overview';
+    this.models = new Map(); this.displays = new Map(); this.visible = false; this.mode = 'detail';
     this.selectedId = VEHICLES[0].id; this.targetPosition = new THREE.Vector3(); this.targetLook = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster(); this.pointer = new THREE.Vector2();
     this.modelData=new Map();this.page=null;
@@ -71,7 +71,7 @@ export class GarageView {
     for (const [index, vehicle] of vehicles.entries()) {
       const display = new THREE.Group();
       display.userData.vehicleId = vehicle.id;
-      const base = new THREE.Mesh(new RoundedBoxGeometry(4.05, .22, 4.6, 2, .11), new THREE.MeshStandardMaterial({ color: '#e9ebdf', roughness: .6 }));
+      const base = new THREE.Mesh(new RoundedBoxGeometry(4.05, .22, 4.6, 2, .11), new THREE.MeshStandardMaterial({ color: '#edf1f7', roughness: .6 }));
       base.position.y = .07; display.add(base);
       const data=buildVehicle(vehicle),model=data.group;
       model.position.y = .19; model.rotation.y = -.22;
@@ -91,7 +91,7 @@ export class GarageView {
   }
 
   showPage(page){
-    this.loadPage(page);this.mode='overview';this.resize();
+    this.loadPage(page);this.mode='detail';this.resize();
   }
 
   customize(patch){
@@ -110,10 +110,17 @@ export class GarageView {
     this.host=host; host.appendChild(this.renderer.domElement);
     this.resizeObserver.disconnect();this.resizeObserver.observe(host);
     this.visible=true;this.loadPage(collectionPage(selectedId)); this.selectedId=selectedId;
-    this.resize(); this.setView('overview',true);
+    this.resize(); this.setView('detail',true);
   }
 
   hide() { this.visible=false; this.controls.enabled=false; this.resizeObserver.disconnect(); }
+
+  orbit(x,y,dt){
+    if(!this.visible||this.transition||Math.abs(x)+Math.abs(y)<.01)return;
+    const offset=this.camera.position.clone().sub(this.controls.target),spherical=new THREE.Spherical().setFromVector3(offset);
+    spherical.theta-=x*dt*1.8;spherical.phi=Math.max(this.controls.minPolarAngle,Math.min(this.controls.maxPolarAngle,spherical.phi+y*dt*1.3));
+    this.camera.position.copy(this.controls.target).add(offset.setFromSpherical(spherical));this.controls.update();
+  }
 
   resize() {
     if(!this.host||!this.visible)return;
@@ -136,8 +143,10 @@ export class GarageView {
     for(const [id,{display,base}]of this.displays){display.visible=mode==='overview'||id===this.selectedId;base.material.color.set(id===this.selectedId?'#f2f2df':'#e3e8dc');}
     if(mode==='detail') {
       this.targetLook.copy(selected.position).add(new THREE.Vector3(0,.75,0));
-      this.targetPosition.copy(this.targetLook).add(new THREE.Vector3(2.8,1.6,3.2).multiplyScalar(portrait?1.5:1));
-      this.controls.minDistance=3.4;this.controls.maxDistance=13;
+      // Fit the full car to a narrow phone panel as well as a wide showroom.
+      const distance=Math.max(4.8,5.3/Math.min(1,this.camera.aspect));
+      this.targetPosition.copy(this.targetLook).add(new THREE.Vector3(2.8,1.6,3.2).normalize().multiplyScalar(distance));
+      this.controls.minDistance=distance*.65;this.controls.maxDistance=Math.max(13,distance*2);
     } else {
       this.targetLook.set(0,.4,portrait?-.1:0);
       const large=this.displays.size>3;

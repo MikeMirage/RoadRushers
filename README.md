@@ -10,6 +10,31 @@ La entrada del juego es un configurador libre: los 53 coches, todos los circuito
 
 ## Ejecutar
 
+### Jugar desde el móvil
+
+Abre **[Pocket Racing League](https://mikemirage.github.io/RoadRushers/)** en Safari (iPhone/iPad) o Chrome (Android). No necesitas instalar Node.js en el teléfono ni mantener el ordenador encendido para jugar a la versión publicada.
+
+Para probar los cambios locales antes de publicarlos:
+
+1. Conecta el móvil y el ordenador al mismo Wi-Fi.
+2. En el Mac, abre **`Jugar en movil.command`** con doble clic.
+3. Abre en el navegador del teléfono la dirección que aparece en Terminal bajo **Móvil** (por ejemplo, `http://192.168.1.25:5174/`). Deja Terminal abierto mientras juegas.
+
+También puedes usar `npm run dev:mobile` o `./"Jugar RoadRushers.command" --mobile`. Si el lanzador cambia de puerto, usa la dirección exacta que muestra. Si no conecta, comprueba que ambos dispositivos comparten red, que no es una red de invitados con aislamiento y que el firewall permite la conexión a Node.js.
+
+El coche acelera solo: toca la mitad inferior izquierda o derecha para girar y ambas a la vez para frenar. En **Opciones → Controles** puedes elegir el trackpad analógico. El juego admite vertical y horizontal; los tiempos y ajustes se guardan en el navegador de cada dispositivo.
+
+### Ejecutar en el ordenador
+
+En macOS puedes hacer doble clic en los lanzadores de la carpeta principal:
+
+- **`Jugar RoadRushers.command`** abre en el navegador el código actual de esta carpeta, incluidos los cambios locales. Prepara las dependencias automáticamente; requiere Node.js (recomendado: 24 LTS) e Internet la primera vez. Deja la ventana de Terminal abierta mientras juegas y pulsa `Ctrl+C` para detenerlo. Si el puerto habitual está ocupado, utiliza otro disponible.
+- **`Descargar versiones.command`** consulta GitHub y permite elegir la última versión de `main`, una etiqueta o una revisión anterior por fecha y descripción. También acepta una rama, etiqueta o SHA escrito a mano. Guarda cada copia en `versiones/RoadRushers-fecha-SHA/`, con su propio **`Jugar RoadRushers.command`** y un registro `VERSION-DESCARGADA.json`. Las copias son independientes de la carpeta de trabajo y no se incluyen en Git. Al terminar, Finder muestra el lanzador de la versión descargada.
+
+La descarga contiene el código y los recursos del juego web. Las dependencias se preparan al abrir el lanzador de cada copia. Para descargar directamente desde Terminal: `./"Descargar versiones.command" --ref main` (también admite etiquetas o SHA).
+
+También puedes ejecutarlo manualmente:
+
 ```sh
 npm ci
 npm run dev
@@ -21,6 +46,7 @@ Abrir `http://127.0.0.1:5174/` en un navegador con WebGL. Los modelos, el humo y
 npm test          # Conducción, vueltas, cámaras y progresión
 npm run build    # Compilar a dist/
 npm run preview  # Probar la compilación
+npm run preview:mobile # Probar dist/ desde otro dispositivo del mismo Wi-Fi
 ```
 
 ## Publicación en GitHub Pages
@@ -145,3 +171,16 @@ Abre **Editor** en la barra superior. Combina 122 módulos de pista, 17 tipos de
 ## Biblioteca de arte de entornos
 
 `/asset-library.html` permite revisar **16 modelos 3D y 20 materiales PBR gratuitos**, comparar LODs, ver sus mallas y probar agua animada. El juego incorpora los suelos y superficies PBR, vegetación texturizada, rocas y helechos con carga local e instancias. Véase [ENVIRONMENT_ASSETS.md](ENVIRONMENT_ASSETS.md) para el inventario por bioma, preparación, procedencia y límites de la primera integración.
+
+## Interfaz y controles PRL
+
+Interfaz clara de blanco, rojo y azul, con foco visible y navegación de juego. La ilustración de arranque es fija: no hay selector de covers. El inicio muestra el coche 3D actual; el garaje y el editor ocupan su propia pantalla, con controles accesibles y zonas de desplazamiento internas.
+
+- **Móvil:** dos zonas táctiles o trackpad analógico; aceleración automática. Ambas zonas o segundo dedo para frenar.
+- **Teclado:** flechas o A/D para girar; ↓ o S para frenar. Aceleración automática. Esc/Espacio para pausa, R para reiniciar, C para cámara. Menús con flechas, Tab, Enter y Esc.
+- **Ratón:** mantén clic izquierdo sobre la pista y mueve horizontalmente para girar; clic derecho para frenar. Menús y editor con controles nativos y arrastre 3D.
+- **Mando estándar:** stick izquierdo / cruceta para girar; R2/RT para acelerar, L2/LT para frenar; Options/Menu para pausa. Triángulo/Y cambia cámara; cuadrado/X reinicia. Los menús se recorren con cruceta/stick; ✕/A confirma, ○/B vuelve y L1/R1 cambia de categoría. Stick derecho gira el coche del garaje.
+
+El mando se lee con la [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API) y el [mapeo estándar del navegador](https://w3c.github.io/gamepad/#remapping). Pulsa un botón después de conectarlo para que el navegador lo exponga. La desconexión del mando activo pausa la carrera. La detección depende del navegador y del mapeo que publique el dispositivo; los tests usan instantáneas simuladas, no sustituyen una prueba física del mando.
+
+El editor conserva sus atajos de teclado, órbita, zoom y edición con ratón. Los originales de Higgsfield siguen en `art/splash-screens/prl-family-2026-11-02-v1/`; los recursos de carga locales están en `public/assets/prl/`. La interfaz compartida vive en `src/prl-theme.css`; la navegación de mando, en `src/gamepad.js`.

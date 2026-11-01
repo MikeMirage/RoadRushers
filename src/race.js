@@ -20,7 +20,7 @@ export function makeRaceTrack(base,width='original') {
     const a=circuit.at((i-1)/circuit.count),b=circuit.at((i+1)/circuit.count),angle=Math.abs(wrap(b.heading-a.heading));
     if(circuit.length*2/circuit.count/Math.max(angle,1e-7)<w/2+.7)error='Este ancho doblaría el borde interior de una curva. Elige uno menor.';
   }
-  return {config,circuit,error,minWidth,maxWidth};
+  return {config,circuit,error,warnings:circuit.layout?.warnings||[],minWidth,maxWidth};
 }
 
 /** Ordered eighth-lap gates, starting behind the line on a real staggered grid. */
@@ -72,6 +72,7 @@ export function resolveCarContacts(racers,circuit,iterations=3) {
     contacts++;
     for(const car of [a,b]){
       car.road=circuit.nearest(car.x,car.z,{progress:car.road.progress,y:car.y});
+      if(car.road.supported===false||car.activeGap&&car.y>car.road.y+1){car.speed=Math.hypot(car.vx,car.vz);continue;}
       const limit=circuit.widthAt(car.road.progress)/2-.7,offset=clamp(car.road.offset,-limit,limit);
       if(offset!==car.road.offset){car.x=car.road.x+car.road.nx*offset;car.z=car.road.z+car.road.nz*offset;car.road.offset=offset;}
       if(Math.abs(offset)>=limit-.002){const outward=(car.vx*car.road.nx+car.vz*car.road.nz)*Math.sign(offset);if(outward>0){car.vx-=car.road.nx*Math.sign(offset)*outward;car.vz-=car.road.nz*Math.sign(offset)*outward;}}
@@ -107,10 +108,13 @@ export class RaceSession {
   step(dt,input,surface='track',weather='clear',pace='normal'){
     if(this.finished)return false;this.elapsed+=dt;
     const decisions=this.racers.map(r=>r.isPlayer?input:r.controller.decide(dt,r,this.racers,this.circuit,this.interaction,surface,weather,pace));
-    this.racers.forEach((r,i)=>r.drive.step(dt,decisions[i].steer,surface,weather,pace,decisions[i].brake));
+    this.racers.forEach((r,i)=>r.drive.step(dt,decisions[i].steer,surface,weather,pace,decisions[i].brake,decisions[i].throttle??1));
     if(this.interaction==='contact')this.contacts+=resolveCarContacts(this.racers,this.circuit);
     const arrivals=[];
-    for(const r of this.racers)if(r.tracker.step(dt,r.drive.road.progress,this.elapsed,this.lapCount)){r.finishTime=r.tracker.finishTime;arrivals.push(r);}
+    for(const r of this.racers){
+      if(r.drive.respawned){r.tracker.absolute-=r.drive.recoveryRewind;r.tracker.previous=r.drive.road.progress;r.tracker.nextGate=Math.max(r.tracker.completed*8+1,Math.min(r.tracker.nextGate,Math.floor(r.tracker.absolute*8)+1));}
+      if(r.tracker.step(dt,r.drive.road.progress,this.elapsed,this.lapCount)){r.finishTime=r.tracker.finishTime;arrivals.push(r);}
+    }
     arrivals.sort((a,b)=>a.finishTime-b.finishTime||a.slot-b.slot);
     for(const r of arrivals){r.place=this.finishers.length+1;this.finishers.push(r);}
     if(this.player.finishTime!=null){this.finished=true;return true;}

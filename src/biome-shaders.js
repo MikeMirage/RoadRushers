@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BIOMES } from './environment-config.js';
+import { BIOMES, solarPosition } from './environment-config.js';
 import { applyEnvironmentPbr, groundPbrId } from './environment-assets.js';
 
 // Original GLSL, using Shadertoy-style iTime and world-space noise. No remote shaders.
@@ -83,5 +83,9 @@ export function buildGrass(group,circuit,state){
 }
 
 export function updateBiomeMaterials(group,state,time){
-  group.traverse(o=>{if(!o.material)return;const materials=Array.isArray(o.material)?o.material:[o.material];for(const m of materials){const u=m.userData.envUniforms;if(!u)continue;u.iTime.value=time;u.rrWind.value=state.wind;u.rrWet.value=state.wetness;u.rrSnow.value=state.snow;u.rrCloud.value=state.clouds;if(m.name==='biome-ground')m.roughness=.95-state.wetness*.32;}});
+  const day=THREE.MathUtils.smoothstep(solarPosition(state).elevation,-7,12),light=day*(1-state.clouds*.22);
+  group.traverse(o=>{if(!o.material)return;const materials=Array.isArray(o.material)?o.material:[o.material];for(const m of materials){
+    if(m.userData.treeImpostor)m.color.setRGB(.035+light*.965,.055+light*.945,.085+light*.915);
+    const u=m.userData.envUniforms;if(!u)continue;u.iTime.value=time;u.rrWind.value=state.wind;u.rrWet.value=state.wetness;u.rrSnow.value=state.snow;u.rrCloud.value=state.clouds;if(m.name==='biome-ground')m.roughness=.95-state.wetness*.32;
+  }});
 }
