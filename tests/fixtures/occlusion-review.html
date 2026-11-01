@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PRL · Comprobación de pasos elevados</title>
+<style>body{margin:0;background:#8faaa1;font:14px system-ui}canvas{display:block}#controls{position:fixed;bottom:16px;left:16px;right:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px;background:#f3f1e7;color:#182b26;border-radius:10px}button,select,input{font:inherit}label{display:flex;gap:6px;align-items:center}input[type=range]{width:180px}button,select{padding:6px}output{min-width:125px}</style></head>
+<body><div id="game"></div><div id="controls"><select aria-label="Escena"><option value="lower">Paso inferior</option><option value="upper">Paso superior</option><option value="tunnel">Túnel</option><option value="ramp">Rampa</option></select><label>Recorrido <input type="range" aria-label="Recorrido" min="-18" max="18" step=".25" value="0"></label><button id="play">Recorrer</button><label><input type="checkbox" id="effect" checked>Ventana local</label><label><input type="checkbox" id="msaa">MSAA 4×</label><select aria-label="Cámara"><option value="topdown">Cenital</option><option value="chase">Seguimiento</option></select><button id="capture">Guardar captura</button><output aria-live="polite">Cargando…</output></div>
+<script type="module">
+import {World} from '../../src/world.js';
+import {Circuit} from '../../src/circuit.js';
+import {kitConfig,KIT_PRESETS} from '../../src/track-pieces.js';
+import {VEHICLES} from '../../src/config.js';
+const policy={maximum:Math.min(devicePixelRatio,1.5),samples:0,effects:false,shadowSize:1024,shadowHz:60};
+const world=new World(document.getElementById('game'),policy);await world.loadCar(VEHICLES.find(v=>v.id==='rotor'));
+const scenario=document.querySelector('select'),slider=document.querySelector('input[type=range]'),camera=document.querySelector('[aria-label="Cámara"]'),effect=document.querySelector('#effect'),output=document.querySelector('output'),play=document.querySelector('#play');
+let circuit,center=0,playing=false,last=performance.now();
+function build(){
+  const id=scenario.value==='tunnel'?'kit-gallery-v2':'kit-eight-v1',preset=KIT_PRESETS.find(p=>p.id===id);circuit=new Circuit(kitConfig(preset.pieces));world.build(circuit,'track','clear');
+  if(scenario.value==='tunnel'){const s=circuit.layout.sections.find(s=>s.spec.kind==='tunnel');center=(s.from+s.to)/2/circuit.length;}
+  else if(scenario.value==='ramp'){const s=circuit.layout.sections.find(s=>s.spec.kind==='ramp');center=(s.from+s.to)/2/circuit.length;}
+  else center=circuit.layout.crossings[0][scenario.value==='upper'?'upperProgress':'lowerProgress'];
+  slider.value='0';playing=false;play.textContent='Recorrer';world.cameraReady=false;
+}
+scenario.addEventListener('change',build);camera.addEventListener('change',()=>world.cameraReady=false);
+slider.addEventListener('input',()=>{playing=false;play.textContent='Recorrer';world.cameraReady=false;world.occlusion.reset();});
+play.onclick=()=>{playing=!playing;if(playing)slider.value='-18';play.textContent=playing?'Pausar':'Recorrer';};
+document.querySelector('#msaa').onchange=e=>world.setGraphics({...policy,samples:e.target.checked?4:0});
+document.querySelector('#capture').onclick=()=>{world.renderPipeline.render(0);const a=document.createElement('a');a.download='prl-occlusion-integrada.png';a.href=world.renderer.domElement.toDataURL('image/png');a.click();};
+build();
+function frame(now){const dt=Math.min((now-last)/1000,.06);last=now;if(playing){slider.value=String(Math.min(18,Number(slider.value)+dt*6));if(Number(slider.value)>=18){playing=false;play.textContent='Recorrer';}}
+  const progress=center+Number(slider.value)/circuit.length,p=circuit.at(progress);
+  const drive={...p,progress,groundY:p.y,vx:Math.sin(p.heading)*16,vz:Math.cos(p.heading)*16,speed:16,steer:0,braking:false,brake:0};
+  const render=world.occlusion.render;
+  if(!effect.checked)world.occlusion.render=(renderer,scene,camera)=>renderer.render(scene,camera);
+  world.update(dt,drive,camera.value,playing);world.occlusion.render=render;
+  const text=`${world.occlusion.covered?'Bajo estructura':'Vía despejada'} · ${Math.round(world.occlusion.strength*100)} %`;
+  if(output.value!==text)output.value=text;requestAnimationFrame(frame);
+}requestAnimationFrame(frame);
+</script></body></html>

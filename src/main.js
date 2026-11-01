@@ -17,6 +17,7 @@ import './results.css';
 import './ghost.css';
 import './preferences.css';
 import './prl-theme.css';
+import './camera-controls.css';
 import { mountBrandUI } from './prl-brand.js';
 import {loadPreferences,savePreferences,normalizePreferences,selectGraphicsPreset,graphicsPolicy} from './preferences.js';
 import {renderPreferences} from './preferences-ui.js';
@@ -27,6 +28,7 @@ import { SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
 import { Circuit } from './circuit.js';
 import { DriveModel, LapTracker, formatTime } from './physics.js';
 import { World } from './world.js';
+import { cameraView,nextCameraMode } from './camera-views.js';
 import { EngineAudio } from './audio.js';
 import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
@@ -106,6 +108,7 @@ const menuNavigation=createMenuNavigation({root:menuRoot,onBack:backFromMenu,onD
     const root=menuRoot(),selector=fullGarage()?'[data-collection-page]':preferencesOpen?'[data-preferences-tab]':state==='finished'?'[data-results-tab]':'[data-play-mode]';
     const tabs=[...root.querySelectorAll(selector)],index=tabs.findIndex(button=>button.getAttribute('aria-pressed')==='true');
     tabs[(index+direction+tabs.length)%tabs.length]?.click();
+    if(fullGarage())$('collection-roster').querySelector('[aria-pressed="true"]')?.focus({preventScroll:true});
   }});
 function pollGamepad(now,dt){
   let pads=[];try{pads=navigator.getGamepads?.()||[];}catch{/* Keyboard, mouse and touch remain available. */}
@@ -113,7 +116,11 @@ function pollGamepad(now,dt){
   if(sample.disconnected&&inputDevice==='gamepad'&&['running','countdown'].includes(state)){setState('paused');toast('Mando desconectado · Carrera en pausa');}
   if(sample.active)setInputDevice('gamepad',sample.pad.family);
   for(const action of sample.actions){
-    if(action==='pause'){if(['running','paused','countdown'].includes(state))pause();else if(state==='hub'&&!fullGarage())openPreferences();continue;}
+    if(action==='pause'){
+      if(preferencesOpen)closePreferences();else if(fullGarage())closeGarage();else if(workbench?.visible)closeKit();
+      else if(['running','paused','countdown'].includes(state))pause();else if(state==='hub')openPreferences();
+      continue;
+    }
     if(menuRoot()){menuNavigation.action(action);continue;}
     if(action==='back')pause();if(action==='reset')reset();if(action==='camera')toggleCamera();
   }
@@ -148,7 +155,7 @@ function paintPreferences(){
   const host=$('preferences-content'),open=host.querySelector('.preferences-advanced')?.open,scroll=host.querySelector('.preferences-body')?.scrollTop||0;
   host.innerHTML=renderPreferences(preferences,preferencesTab,{soundEnabled:audio.enabled});
   const advanced=host.querySelector('.preferences-advanced');if(advanced&&open)advanced.open=true;
-  host.querySelector('.preferences-body').scrollTop=scroll;updatePreferencesReadout();
+  host.querySelector('.preferences-body').scrollTop=scroll;updatePreferencesReadout();updateInputPrompts();
 }
 function openPreferences(){
   if(!world||state==='loading'||preferencesOpen)return;
@@ -302,8 +309,7 @@ function updateOptions() {
   $('track-length').textContent=`${(circuit.length/1000).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})} km`;
   const competing=settings.mode==='race';
   document.body.dataset.mode=settings.mode;
-  $('camera-label').textContent=settings.camera==='chase'?'3ª persona':'Aérea';
-  $('camera-btn').setAttribute('aria-label',`Cámara ${settings.camera==='chase'?'tercera persona':'aérea'}, cambiar con C`);
+  updateCameraUI();
   $('session-kind').innerHTML=competing?`<i></i> CARRERA IA · ${race.count} COCHES`:'<i></i> PRUEBAS DE CONDUCCIÓN';
   $('intro-kicker').textContent=competing?`PARRILLA IA · ${race.lapCount} VUELTAS`:'ENTRENAMIENTO LIBRE';
   $('intro-title').textContent=settings.track.name;$('intro-description').textContent=settings.track.subtitle;
@@ -360,7 +366,18 @@ function recordGhost(elapsed,crossing){
   if(recorded&&ghostRecords.recordLap(timingContext,recorded)&&!race)ghostLap=recorded;
 }
 function pause(){if(state==='running')setState('paused');else if(state==='paused')setState('running');else if(state==='countdown')setState('ready');}
-function toggleCamera(){settings.camera=settings.camera==='topdown'?'chase':'topdown';playgroundOptions.camera=settings.camera;savePlayground(storage,playgroundOptions);$('camera-label').textContent=settings.camera==='chase'?'3ª persona':'Aérea';$('camera-btn').setAttribute('aria-label',`Cámara ${settings.camera==='chase'?'tercera persona':'aérea'}, cambiar con C`);if(state==='hub')refreshPlayground();}
+function updateCameraUI(){
+  const current=cameraView(settings.camera),next=cameraView(nextCameraMode(settings.camera)),button=$('camera-btn');
+  $('camera-label').textContent=current.shortLabel;
+  button.dataset.camera=current.id;
+  button.setAttribute('aria-label',`Cámara: ${current.label}. Cambiar a ${next.label} (C)`);
+  button.title=`${current.label} · Cambiar a ${next.label} (C)`;
+}
+function toggleCamera(){
+  if(!world||state==='loading')return;
+  settings.camera=nextCameraMode(settings.camera);playgroundOptions.camera=settings.camera;
+  savePlayground(storage,playgroundOptions);updateCameraUI();if(state==='hub')refreshPlayground();
+}
 
 function stopResultCalculation(){leaderboardAbort?.abort();leaderboardAbort=null;activeReport=null;}
 function paintResult(resetScroll=false){

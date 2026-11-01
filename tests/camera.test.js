@@ -40,3 +40,25 @@ test('portrait framing leaves additional space around the car', () => {
   const portrait = new CameraRig().update(1 / 60, drive, 'topdown', false, 9 / 16);
   assert.ok(portrait.position.distanceTo(portrait.look) > landscape.position.distanceTo(landscape.look) * 1.2);
 });
+
+test('overhead zooms magnify the existing view exactly without changing its angle or target',()=>{
+  for(const aspect of [16/9,9/16]){
+    const base=new CameraRig().update(1/120,drive,'topdown',true,aspect),offset=base.position.clone().sub(base.look);
+    for(const [mode,zoom]of [['topdown-1.2',1.2],['topdown-1.4',1.4]]){
+      const view=new CameraRig().update(1/120,drive,mode,true,aspect),closer=view.position.clone().sub(view.look);
+      assert.ok(Math.abs(offset.length()/closer.length()-zoom)<1e-9);
+      assert.ok(offset.clone().normalize().distanceTo(closer.clone().normalize())<1e-9);
+      assert.ok(base.look.distanceTo(view.look)<1e-9);assert.equal(view.fov,base.fov);
+    }
+  }
+});
+
+test('switching zoom uses the existing smooth follow rather than snapping to the new view',()=>{
+  const rig=new CameraRig().update(1/120,drive),before=rig.position.clone(),target=new CameraRig().update(1/120,drive,'topdown-1.4');
+  rig.update(1/120,drive,'topdown-1.4');
+  assert.ok(rig.position.distanceTo(before)>0);assert.ok(rig.position.distanceTo(before)<1);
+  assert.ok(rig.position.distanceTo(target.position)>1);
+  for(let i=0;i<240;i++)rig.update(1/120,drive,'topdown-1.4');
+  assert.ok(rig.position.distanceTo(target.position)<.02);
+  rig.update(1/120,drive,'chase');assert.ok(rig.position.toArray().every(Number.isFinite));
+});

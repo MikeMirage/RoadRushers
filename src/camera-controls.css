@@ -1,0 +1,14 @@
+.driving-actions{display:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .driving-actions{--hud-edge:max(16px,env(safe-area-inset-right,0px));position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);right:var(--hud-edge);display:flex;align-items:center;gap:8px;z-index:6;pointer-events:none}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .driving-actions :is(#camera-btn,#pause-btn){position:static;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:44px;height:44px;min-height:44px;padding:0;margin:0;border:1px solid var(--ui-line);border-radius:6px;background:#fffffff0;color:var(--ui-ink);pointer-events:auto;touch-action:manipulation}
+#camera-btn #camera-icon{display:block;width:19px;height:19px}
+#camera-btn svg{display:block;width:100%;height:100%}
+#camera-btn #camera-label{font:600 10px/1 'DM Sans',sans-serif;font-variant-numeric:tabular-nums}
+body:is([data-state=running],[data-state=countdown],[data-state=paused]) .race-hud{right:calc(max(16px,env(safe-area-inset-right,0px)) + 108px)}
+@media(max-width:700px){
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .driving-actions{--hud-edge:max(12px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 12px)}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .timing{max-width:calc(100vw - max(12px,env(safe-area-inset-left,0px)) - max(12px,env(safe-area-inset-right,0px)) - 108px)}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .timing .ghost-status{display:none}
+  body:is([data-state=running],[data-state=countdown],[data-state=paused]) .race-hud{top:calc(env(safe-area-inset-top,0px) + 68px);right:max(12px,env(safe-area-inset-right,0px))}
+}
+body[data-speed=false] .speedometer{display:none}

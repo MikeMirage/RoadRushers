@@ -52,3 +52,16 @@ test('saved visual themes always resolve to basic while driving and race setting
  assert.equal(options.weather,'rain');assert.equal(options.vehicleId,'velo');assert.equal(options.count,8);assert.equal(options.mode,'race');
  const html=renderPlayground(options,playgroundTracks());assert.ok(!html.includes('data-playground="theme"'));assert.ok(!html.includes('data-play-action="environment"'));assert.ok(html.includes('data-play-action="preferences"'));
 });
+
+test('all four camera views survive saving, loading and launching a session',async()=>{
+  const {CAMERA_VIEWS,nextCameraMode}=await import('../src/camera-views.js'),storage=memory(),tracks=playgroundTracks();
+  assert.deepEqual(CAMERA_VIEWS.map(v=>v.id),['topdown','topdown-1.2','topdown-1.4','chase']);
+  let mode='topdown';
+  for(const view of CAMERA_VIEWS){
+    assert.equal(mode,view.id);
+    const options={...DEFAULT_PLAYGROUND,camera:mode};savePlayground(storage,options);
+    assert.equal(loadPlayground(storage).camera,mode);assert.equal(resolvePlayground(options).settings.camera,mode);
+    assert.ok(renderPlayground(options,tracks).includes(view.label));mode=nextCameraMode(mode);
+  }
+  assert.equal(mode,'topdown');assert.equal(normalizePlayground({camera:'unknown'}).camera,'topdown');
+});

@@ -496,3 +496,7 @@ body:has(#track-kit-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
   .play-track-choice{grid-template-columns:minmax(0,1fr)}.play-track-preview{display:none}.play-track-choice .play-field select{font-size:20px}
   .play-config-footer{flex-direction:column;align-items:stretch;gap:6px}.play-config-footer>div{max-width:none}.play-config-footer .controller-status{display:none}.play-config-footer .play-scroll-hint{max-width:none}.play-config-footer .primary-button{width:100%;white-space:nowrap;min-height:48px}
 }
+@media(max-width:360px) and (orientation:portrait){
+  .home-car-caption{padding:8px;gap:5px}.home-car-caption strong{font-size:22px;line-height:1.05;margin:3px 0}
+  .home-car-caption button{font-size:11px;padding-inline:7px}.home-car-caption button>span[aria-hidden]{display:none}
+}

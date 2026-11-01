@@ -3,6 +3,7 @@ import { availableRaceTracks } from './race-ui.js';
 import { makeRaceTrack } from './race.js';
 import { AI_LEVELS } from './race-driver.js';
 import { savedEditorTracks } from './track-editor-state.js';
+import { CAMERA_VIEWS } from './camera-views.js';
 
 export const PLAYGROUND_KEY='roadrushers.playground.v1';
 export const DEFAULT_PLAYGROUND={mode:'practice',vehicleId:VEHICLES[0].id,trackId:TRACKS[0].id,
@@ -17,7 +18,7 @@ export function normalizePlayground(input={},tracks=playgroundTracks()){
   const options={...DEFAULT_PLAYGROUND};
   const choices={mode:['practice','race'],vehicleId:VEHICLES.map(v=>v.id),trackId:tracks.map(t=>t.id),
     surface:['track',...Object.keys(SURFACES)],weather:['track',...Object.keys(WEATHER)],theme:['basic'],
-    pace:Object.keys(PACES),camera:['topdown','chase'],width:['original',12,14,16],count:[4,8,12],laps:[1,3,5],
+    pace:Object.keys(PACES),camera:CAMERA_VIEWS.map(view=>view.id),width:['original',12,14,16],count:[4,8,12],laps:[1,3,5],
     interaction:['ghost','contact'],difficulty:Object.keys(AI_LEVELS),fieldLevels:['mixed','uniform']};
   for(const [key,values]of Object.entries(choices))if(values.includes(input?.[key]))options[key]=input[key];
   if(!tracks.some(t=>t.id===options.trackId))options.trackId=tracks[0].id;

@@ -9,6 +9,7 @@ import { RivalFleet } from './rival-fleet.js';
 import { GhostView } from './ghost-view.js';
 import { basicFloor,disposeSceneGroup } from './basic-scene.js';
 import { GameplayRenderer } from './gameplay-renderer.js';
+import { LocalOcclusion,markPlayerOccluder } from './local-occlusion.js';
 
 const temp = new THREE.Object3D();
 const mat = (color, options = {}) => new THREE.MeshStandardMaterial({ color, roughness: 1, ...options });
@@ -40,6 +41,7 @@ export class World {
     this.scene.add(this.sun.target);
     this.scene.background=new THREE.Color('#8faaa1');
     this.renderPipeline=new GameplayRenderer(this.renderer,this.scene,this.camera);
+    this.occlusion=new LocalOcclusion();this.renderPipeline.setOcclusion(this.occlusion);
     this.effectsEnabled=false;
     this.setGraphics(policy);
     this.car = new THREE.Group();
@@ -109,6 +111,7 @@ export class World {
   }
 
   build(circuit, surfaceId, weatherId) {
+    this.occlusion?.clear();
     disposeSceneGroup(this.environment);
     this.circuit = circuit;
     this.environment = new THREE.Group();
@@ -127,6 +130,7 @@ export class World {
     this.environment.updateMatrixWorld(true);
     this.environment.traverse(node=>{node.matrixAutoUpdate=false;});
     this.setConditions(surfaceId, weatherId);
+    this.occlusion?.bind(this.environment,circuit);
     this.cameraReady = false;
     this.resetDrivingEffects();
     this.shadowReady=false;
@@ -136,13 +140,15 @@ export class World {
     const circuit = this.circuit;
     const count = Math.floor(circuit.length / 2.3);
     const curbs = new THREE.InstancedMesh(new THREE.BoxGeometry(0.65, 0.16, 2.36), mat('#efead5'), count * 2);
+    const curbRoutes=new Float32Array(count*2);
     const red = new THREE.Color('#d96f49'), white = new THREE.Color('#f3efdc');
     for (let i = 0; i < count; i++) for (let side = 0; side < 2; side++) {
       const p = circuit.at(i / count, (side ? 1 : -1) * (circuit.widthAt(i / count) / 2 + 0.07));
       temp.position.set(p.x, p.y+0.09, p.z); temp.rotation.set(-p.pitch, p.heading, p.bank, 'YXZ'); temp.scale.setScalar(circuit.hasRoad(i/count-1.2/circuit.length)&&circuit.hasRoad(i/count+1.2/circuit.length)?1:0); temp.updateMatrix();
       curbs.setMatrixAt(i * 2 + side, temp.matrix); curbs.setColorAt(i * 2 + side, i % 2 ? red : white);
+      curbRoutes[i*2+side]=i/count;
     }
-    this.environment.add(curbs);
+    this.environment.add(markPlayerOccluder(curbs,curbRoutes));
     curbs.castShadow=curbs.receiveShadow=true;
     // A checkered start line, without roadside scenery or an overhead gantry.
     const start = new THREE.Group(), spawn = circuit.at(0);
@@ -154,7 +160,7 @@ export class World {
       temp.rotation.set(0, 0, 0); temp.scale.set(1, 1, 1); temp.updateMatrix();
       tiles.setMatrixAt(x * 2 + z, temp.matrix); tiles.setColorAt(x * 2 + z, (x + z) % 2 ? darkTile : lightTile);
     }
-    start.add(tiles);
+    start.add(markPlayerOccluder(tiles,0));
     this.environment.add(start);
     // Roadside arrows communicate the driving direction.
     const arrowShape = new THREE.Shape();
@@ -166,12 +172,13 @@ export class World {
       temp.rotation.set(-p.pitch, p.heading, p.bank, 'YXZ'); temp.rotateX(Math.PI/2); temp.position.set(p.x, p.y+0.065, p.z); temp.scale.setScalar(circuit.hasRoad((i+.35)/20)?1:0); temp.updateMatrix();
       arrows.setMatrixAt(i, temp.matrix);
     }
-    this.environment.add(arrows);
+    this.environment.add(markPlayerOccluder(arrows,Array.from({length:20},(_,i)=>(i+.35)/20)));
     this.directionArrows=arrows;
   }
 
   setGraphics(policy) {
     this.renderPipeline.setGraphics(policy);
+    this.occlusion?.invalidateMaterials();
     const enabled=policy.shadowSize>0,changed=this.renderer.shadowMap.enabled!==enabled;
     this.renderer.shadowMap.enabled=enabled;this.shadowHz=policy.shadowHz||60;
     if(enabled&&this.sun.shadow.mapSize.x!==policy.shadowSize){
@@ -217,8 +224,7 @@ export class World {
       this.contactShadow.position.y=(drive.groundY??drive.y??0)-(drive.y||0)+.025;
       this.contactShadow.material.opacity=.15/Math.max(1,1+((drive.y||0)-(drive.groundY??drive.y??0))*.55);
     }
-    const underpass=this.circuit.layout?.crossings.some(c=>(drive.y||0)<c.upperY-3&&Math.hypot(drive.x-c.x,drive.z-c.z)<this.circuit.config.width*.9);
-    this.underpassMarker.visible=Boolean(underpass||this.fleet);if(this.underpassMarker.visible)this.underpassMarker.position.set(drive.x,(drive.y||0)+.2,drive.z);
+    this.underpassMarker.visible=Boolean(this.fleet);if(this.underpassMarker.visible)this.underpassMarker.position.set(drive.x,(drive.y||0)+.2,drive.z);
     const rig=this.cameraRig.update(dt,drive,cameraMode,!this.cameraReady,this.camera.aspect);
     this.camera.position.copy(rig.position);this.camera.lookAt(rig.look);
     if(this.camera.fov!==rig.fov){this.camera.fov=rig.fov;this.camera.updateProjectionMatrix();}
@@ -226,11 +232,13 @@ export class World {
     if(this.effectsEnabled)this.driftEffects?.update(animateWeather?dt:0,drive,running,this.circuit.surfaceAt(drive.progress||0,this.surfaceId));
     this.brakeEffects.update(drive,this.circuit,running);
     this.fleet?.update(dt,alpha,running);
+    this.occlusion?.update(dt,drive,this.camera,this.renderer);
     this.updateShadows(dt,drive,running);
     this.renderPipeline.render(dt);
   }
 
   resetDrivingEffects() {
+    this.occlusion?.reset();
     this.driftEffects?.reset();
     this.brakeEffects.reset();
   }

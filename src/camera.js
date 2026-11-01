@@ -1,4 +1,5 @@
 import { Vector3, MathUtils } from 'three';
+import { cameraView } from './camera-views.js';
 
 /** Velocity-led framing: rotating the car in a drift must not spin the view. */
 export class CameraRig {
@@ -42,7 +43,7 @@ export class CameraRig {
       fov = 51;
     } else {
       // Fixed azimuth and a 55° elevation, like a small drifting diorama.
-      offset.set(24, 48, 24).multiplyScalar(zoom);
+      offset.set(24, 48, 24).multiplyScalar(zoom/cameraView(mode).zoom);
       fov = 45;
     }
     const desiredPosition = this.desiredPosition.copy(this.focus).add(offset);
