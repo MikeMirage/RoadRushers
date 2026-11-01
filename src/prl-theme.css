@@ -378,14 +378,16 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
 #garage-content .vehicle-stats{gap:13px;margin:22px 0}
 #garage-content .vehicle-stats>div{font-size:13px}
 #garage-content .collection-detail .primary-button{width:100%;min-height:48px;margin:14px 0;font-size:15px}
-#garage-content .collection-footer{min-width:0;min-height:0;border-top:1px solid var(--ui-line);padding-top:10px}
+#garage-content .collection-footer{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,28%);gap:4px 24px;align-items:start;min-width:0;min-height:0;border-top:1px solid var(--ui-line);padding-top:10px}
+#garage-content .garage-confirm{min-width:0;padding-top:3px}
+#garage-content .garage-confirm button{width:100%;min-width:0;min-height:70px;font-size:15px;gap:12px}
 #garage-content .collection-roster{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overflow-y:hidden;max-height:none;height:84px;min-height:0;padding:3px 3px 8px;scrollbar-width:thin;scrollbar-color:#9aaec2 transparent;scroll-padding-inline:12px}
 #garage-content .collection-roster .collection-car{flex:0 0 155px;min-width:0;min-height:0;height:70px;padding:8px 12px;border:1px solid var(--ui-line);border-radius:5px;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:5px}
 #garage-content .collection-car[aria-pressed=true]{border-color:var(--prl-blue);background:var(--ui-tint)}
 #garage-content .collection-car strong{font-size:22px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #garage-content .collection-car small{display:none}
 #garage-content .collection-number{font-size:10px;line-height:1}
-#garage-content .game-action-bar{padding-top:3px}
+#garage-content .game-action-bar{grid-column:1/-1;padding-top:3px}
 #garage-content .vehicle-workshop summary{font-size:18px;min-height:44px}
 @media(max-width:1050px){
   .playground-hub{grid-template-columns:minmax(240px,.7fr) minmax(0,1fr)}
@@ -418,6 +420,7 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
   #garage-content .collection-footer{padding-top:5px}
   #garage-content .collection-roster{height:66px;padding-bottom:5px}
   #garage-content .collection-roster .collection-car{height:55px;flex-basis:140px;padding:6px 10px}
+  #garage-content .garage-confirm button{min-height:55px;font-size:13px}
   #garage-content .collection-car strong{font-size:20px}
   #garage-content .game-action-bar{min-height:25px;font-size:11px;gap:18px}
   #garage-content .showroom-hint{font-size:10px;bottom:8px}
@@ -445,7 +448,7 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
   #garage-content .collection-batches button>span{display:none}
   #garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(120px,1fr) auto;gap:8px;margin:6px 0}
   #garage-content .collection-showroom{height:100%;min-height:0}
-  #garage-content .collection-detail{height:auto;max-height:220px;padding:4px 2px;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr) 145px;align-items:center;gap:4px 12px}
+  #garage-content .collection-detail{height:auto;max-height:220px;padding:4px 2px;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:4px 12px}
   #garage-content .collection-detail .detail-category{grid-column:1/-1;font-size:10px}
   #garage-content .collection-detail h3{font-size:32px;margin:5px 0;grid-column:1}
   #garage-content .detail-description,#garage-content .collection-ownership{display:none}
@@ -455,6 +458,9 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
   #garage-content .vehicle-workshop{grid-column:1/-1;margin-top:8px}
   #garage-content .collection-roster{height:72px}
   #garage-content .collection-roster .collection-car{flex-basis:142px;height:60px;padding:6px 10px}
+  #garage-content .collection-footer{grid-template-columns:minmax(0,1fr);gap:3px}
+  #garage-content .garage-confirm{padding:0}
+  #garage-content .garage-confirm button{min-height:46px;font-size:14px;padding:10px 14px}
   #garage-content .collection-car strong{font-size:21px}
   #garage-content .game-action-bar{min-height:22px}
   #garage-content .showroom-hint{font-size:10px}

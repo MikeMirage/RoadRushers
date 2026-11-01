@@ -1,0 +1,176 @@
+{
+  "version": 2,
+  "name": "Lawson Superstar",
+  "pieces": [
+    {
+      "id": "straight",
+      "length": 112.5
+    },
+    "ramp-up",
+    "ramp-up",
+    "ramp-up",
+    {
+      "id": "curve-wide-left",
+      "radius": 42.5,
+      "bank": -0.4014257279586958,
+      "angle": 180
+    },
+    {
+      "id": "straight-short",
+      "length": 58.5
+    },
+    "curve-medium-left",
+    "straight",
+    "straight",
+    "straight",
+    "jump",
+    "jump",
+    "jump",
+    "arc-12-60-left",
+    "curve-medium-left",
+    "hairpin-right",
+    "bridge",
+    "bridge",
+    "curve-wide-right",
+    {
+      "id": "straight",
+      "length": 93
+    },
+    "curve-wide-right",
+    "hairpin-left",
+    "jump",
+    "jump",
+    "jump",
+    "jump",
+    "ramp-down",
+    "ramp-down",
+    "ramp-down",
+    {
+      "id": "curve-medium-left",
+      "bank": 0,
+      "widthFactorTo": 0.8
+    },
+    "curve-wide-left",
+    "climb-180-right-up",
+    "climb-180-right-up",
+    "climb-180-right-up",
+    "climb-180-right-up",
+    "climb-180-right-up",
+    "bridge-long",
+    "tunnel-24",
+    "bridge-long",
+    "curve-medium-right",
+    "ramp-up",
+    "ramp-up",
+    "crest-soft",
+    "rumble",
+    "ramp-down",
+    "ramp-down",
+    "ramp-down",
+    "ramp-down",
+    {
+      "id": "ramp-down",
+      "rise": -8
+    },
+    "chicane",
+    {
+      "id": "curve-medium-right",
+      "radius": 35.5,
+      "angle": 90
+    },
+    {
+      "id": "straight-long",
+      "length": 152
+    },
+    "straight-long",
+    "curve-wide-right",
+    "curve-tight-right",
+    "straight",
+    "width-16",
+    "straight-long",
+    "tunnel-48",
+    "straight",
+    {
+      "id": "width-10",
+      "surface": "asphalt"
+    },
+    "curve-wide-left",
+    "curve-medium-left",
+    "climb-360-right-up",
+    {
+      "id": "straight-long",
+      "length": 160
+    },
+    "sweep-right",
+    "chicane-mirror",
+    "offset-left",
+    "climb-360-right-down",
+    "curve-medium-left",
+    "curve-medium-left",
+    {
+      "id": "straight",
+      "length": 65
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 72.5
+    },
+    "curve-medium-right",
+    "curve-medium-left",
+    "curve-medium-left",
+    "sweep-right",
+    {
+      "id": "curve-wide-left",
+      "radius": 7,
+      "angle": 37
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 12,
+      "bank": 0,
+      "rise": 0,
+      "angle": 97,
+      "widthFactorTo": 1
+    },
+    {
+      "id": "straight",
+      "length": 39
+    },
+    {
+      "id": "offset-right",
+      "length": 10.552475241642268,
+      "amplitude": -0.5860441052011176,
+      "rise": 0,
+      "widthFactorTo": 1
+    }
+  ],
+  "environment": {
+    "theme": "grandprix",
+    "biome": "meadow",
+    "climate": "temperate",
+    "weather": "clear",
+    "solarMode": "time",
+    "hour": 13,
+    "latitude": 35,
+    "day": 172,
+    "sunAzimuth": 225,
+    "sunElevation": 48,
+    "clouds": 0.22,
+    "fog": 0.08,
+    "precipitation": 0,
+    "wind": 3,
+    "windDirection": 70,
+    "temperature": 20,
+    "wetness": 0,
+    "snow": 0,
+    "exposure": 1.05,
+    "contrast": 1.04,
+    "saturation": 1.06,
+    "warmth": 0,
+    "tint": 0,
+    "vignette": 0.1,
+    "grassDensity": 0.7,
+    "quality": "balanced"
+  },
+  "props": []
+}

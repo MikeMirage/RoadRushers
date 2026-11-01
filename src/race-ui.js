@@ -4,9 +4,10 @@ import { makeRaceTrack } from './race.js';
 import { AI_LEVELS,aiLevel } from './race-driver.js';
 import { formatTime } from './physics.js';
 import { carIllustration } from './vehicles.js';
+import { COMMUNITY_TRACKS } from './community-tracks.js';
 
 export function availableRaceTracks(current){
-  const tracks=[...TRACKS,...KIT_PRESETS.map(presetConfig)],base=current.raceBaseConfig||current;
+  const tracks=[...TRACKS,...KIT_PRESETS.map(presetConfig),...COMMUNITY_TRACKS],base=current.raceBaseConfig||current;
   if(!tracks.some(t=>t.id===base.id))tracks.push(base);return tracks;
 }
 export function renderRaceSetup(options,tracks,vehicle){

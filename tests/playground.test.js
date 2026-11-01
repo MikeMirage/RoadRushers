@@ -6,6 +6,7 @@ import { DEFAULT_PLAYGROUND,PLAYGROUND_KEY,loadPlayground,savePlayground,normali
 import { renderPlayground } from '../src/playground-ui.js';
 import { renderGarageDetail } from '../src/vehicle-collection-ui.js';
 import { kitConfig,KIT_PRESETS } from '../src/track-pieces.js';
+import { COMMUNITY_TRACKS } from '../src/community-tracks.js';
 const memory=()=>{const values=new Map();return {values,getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)};};
 
 test('every car can be selected and driven in testing without changing saved championship progression',()=>{
@@ -25,7 +26,7 @@ test('changing cars preserves all driving and race choices',()=>{
   assert.deepEqual(before.settings.raceRules,after.settings.raceRules);assert.equal(after.settings.track.biome,'workshop');
 });
 test('all presets and a custom assembly are available together without duplicating a current track',()=>{
-  const tracks=playgroundTracks();assert.equal(tracks.length,TRACKS.length+KIT_PRESETS.length);
+  const tracks=playgroundTracks();assert.equal(tracks.length,TRACKS.length+KIT_PRESETS.length+COMMUNITY_TRACKS.length);
   const custom=kitConfig(KIT_PRESETS[0].pieces,'Mi test','custom-test');assert.equal(playgroundTracks(custom).at(-1).id,custom.id);
   assert.equal(playgroundTracks(TRACKS[0]).length,tracks.length);
   const prepared=resolvePlayground({...DEFAULT_PLAYGROUND,trackId:custom.id},playgroundTracks(custom));assert.equal(prepared.settings.track.id,custom.id);

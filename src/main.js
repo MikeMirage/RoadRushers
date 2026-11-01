@@ -34,7 +34,7 @@ import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
 import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
 
-import { renderGarage,renderGarageDetail } from './vehicle-collection-ui.js';
+import { renderGarage,renderGarageDetail,renderGarageConfirm } from './vehicle-collection-ui.js';
 import { renderPlayground } from './playground-ui.js';
 import { loadPlayground,savePlayground,normalizePlayground,resolvePlayground,playgroundTracks } from './playground.js';
 import { carIllustration } from './vehicles.js';
@@ -269,7 +269,8 @@ async function openKit() {
   workbench ||= new TrackWorkbench(config=>{
     closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'basic',weather:'clear',surface:'track'});settings.track=config;launchPlayground();
   },closeKit,{basicOnly:true});
-  const savedDocument=readSavedEditorDocument(storage,playgroundOptions.trackId);
+  const selectedTrack=playgroundTracks(settings.track,storage).find(track=>track.id===playgroundOptions.trackId);
+  const savedDocument=readSavedEditorDocument(storage,playgroundOptions.trackId)||selectedTrack?.editorDocument;
   if(savedDocument)workbench.loadDocument(savedDocument);
   $('track-kit-overlay').classList.remove('hidden');workbench.mount($('track-kit-content'));
   applyGraphics();
@@ -287,7 +288,8 @@ function inspectVehicle(id) {
 }
 function updateGarage() {
   const focused=document.activeElement?.dataset.inspect;
-  $('garage-detail').innerHTML=renderGarageDetail(null,garage.selectedId,garage.mode,garage.modelData.get(garage.selectedId)?.customization,{testing:true});
+  $('garage-detail').innerHTML=renderGarageDetail(null,garage.selectedId,garage.mode,garage.modelData.get(garage.selectedId)?.customization,{testing:true,confirmInFooter:true});
+  $('garage-confirm').innerHTML=renderGarageConfirm(null,garage.selectedId,{testing:true});
   $('collection-roster').innerHTML=renderGarageRoster(null,garage.selectedId,garage.page,true);
   for(const button of document.querySelectorAll('[data-collection-page]'))button.setAttribute('aria-pressed',String(button.dataset.collectionPage===garage.page));
   $('collection-edition-label').textContent=garage.page==='originals'?'MINIATURE SERIES · 01':`TANDA 0${VEHICLES.find(v=>v.id===garage.selectedId).batchIndex+1} · 10 MODELOS`;
