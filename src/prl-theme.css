@@ -355,7 +355,7 @@ body:is([data-state=running],[data-state=countdown]):not([data-input=touch]) .ga
 /* The garage replaces the home screen; it is not a dialog stacked on it. */
 body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
 #garage-overlay{position:fixed;inset:0;padding:0;background:var(--ui-bg);overflow:hidden}
-#garage-overlay #garage-content{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;width:100%;height:100dvh;max-height:none;padding:20px 24px 12px;border:0;border-radius:0;overflow:hidden;background:var(--ui-bg);box-shadow:none}
+#garage-overlay #garage-content{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;width:100%;height:100dvh;max-height:none;padding:20px 24px 12px;border:0;border-radius:0;overflow:hidden;background:var(--ui-bg);box-shadow:none}
 #garage-content .garage-heading{margin:0;min-height:50px;gap:16px}
 #garage-content .garage-heading h2{font-size:38px;margin:3px 0 0}
 #garage-content .garage-heading .eyebrow{font-size:10px}
@@ -363,7 +363,7 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
 #garage-content .collection-batches button{min-height:48px;padding:8px 18px;background:transparent;border:0;border-bottom:3px solid transparent;border-radius:0;flex:0 0 auto}
 #garage-content .collection-batches button[aria-pressed=true]{border-bottom-color:var(--prl-blue);color:var(--prl-blue);background:var(--ui-tint)}
 #garage-content .collection-batches button>span{font-size:9px}
-#garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,28%);grid-template-rows:minmax(0,1fr);gap:24px;min-height:0;overflow:hidden;margin:10px 0}
+#garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,28%);grid-template-rows:minmax(0,1fr);gap:24px;min-width:0;min-height:0;overflow:hidden;margin:10px 0}
 #garage-content .collection-showroom{display:block;min-height:0;height:100%;overflow:hidden}
 #garage-content .collection-viewport{position:relative;width:100%;height:100%;min-height:0;border:0;border-radius:0;overflow:hidden;background:#e8edf3}
 #garage-content #garage-stage{position:absolute;inset:0;overflow:hidden}
@@ -378,7 +378,7 @@ body:has(#garage-overlay:not(.hidden)) :is(.topbar,main){visibility:hidden}
 #garage-content .vehicle-stats{gap:13px;margin:22px 0}
 #garage-content .vehicle-stats>div{font-size:13px}
 #garage-content .collection-detail .primary-button{width:100%;min-height:48px;margin:14px 0;font-size:15px}
-#garage-content .collection-footer{min-height:0;border-top:1px solid var(--ui-line);padding-top:10px}
+#garage-content .collection-footer{min-width:0;min-height:0;border-top:1px solid var(--ui-line);padding-top:10px}
 #garage-content .collection-roster{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overflow-y:hidden;max-height:none;height:84px;min-height:0;padding:3px 3px 8px;scrollbar-width:thin;scrollbar-color:#9aaec2 transparent;scroll-padding-inline:12px}
 #garage-content .collection-roster .collection-car{flex:0 0 155px;min-width:0;min-height:0;height:70px;padding:8px 12px;border:1px solid var(--ui-line);border-radius:5px;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:5px}
 #garage-content .collection-car[aria-pressed=true]{border-color:var(--prl-blue);background:var(--ui-tint)}

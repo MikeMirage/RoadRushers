@@ -8,6 +8,19 @@ import { collectionPage, vehiclesOnPage } from './vehicle-catalog.js';
 import { disposeVehicle } from './vehicle-modeler.js';
 import { updateCustomization, setCustomWrapping } from './vehicle-customization.js';
 
+/** Fit the actual model, including its depth, inside the perspective viewport. */
+export function garageCameraFrame(bounds,aspect,fov=40){
+  const target=bounds.getCenter(new THREE.Vector3()),direction=new THREE.Vector3(2.8,1.6,3.2).normalize();
+  const right=new THREE.Vector3().crossVectors(THREE.Object3D.DEFAULT_UP,direction).normalize(),up=new THREE.Vector3().crossVectors(direction,right);
+  const vertical=Math.tan(THREE.MathUtils.degToRad(fov/2))*.82,horizontal=vertical*aspect;
+  let distance=4.8;
+  for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){
+    const point=new THREE.Vector3(x,y,z).sub(target);
+    distance=Math.max(distance,point.dot(direction)+Math.max(Math.abs(point.dot(right))/horizontal,Math.abs(point.dot(up))/vertical));
+  }
+  return {target,position:target.clone().addScaledVector(direction,distance),distance};
+}
+
 /** A separate, on-demand showroom. Only one of the game/showroom renders at once. */
 export class GarageView {
   constructor(onSelect) {
@@ -139,13 +152,12 @@ export class GarageView {
 
   setView(mode, immediate=false) {
     this.mode=mode;
-    const selected=this.displays.get(this.selectedId).display,portrait=this.camera.aspect<1.1;
+    const portrait=this.camera.aspect<1.1;
     for(const [id,{display,base}]of this.displays){display.visible=mode==='overview'||id===this.selectedId;base.material.color.set(id===this.selectedId?'#f2f2df':'#e3e8dc');}
     if(mode==='detail') {
-      this.targetLook.copy(selected.position).add(new THREE.Vector3(0,.75,0));
-      // Fit the full car to a narrow phone panel as well as a wide showroom.
-      const distance=Math.max(4.8,5.3/Math.min(1,this.camera.aspect));
-      this.targetPosition.copy(this.targetLook).add(new THREE.Vector3(2.8,1.6,3.2).normalize().multiplyScalar(distance));
+      const model=this.models.get(this.selectedId);model.updateWorldMatrix(true,true);
+      const {target,position,distance}=garageCameraFrame(new THREE.Box3().setFromObject(model),this.camera.aspect,this.camera.fov);
+      this.targetLook.copy(target);this.targetPosition.copy(position);
       this.controls.minDistance=distance*.65;this.controls.maxDistance=Math.max(13,distance*2);
     } else {
       this.targetLook.set(0,.4,portrait?-.1:0);
