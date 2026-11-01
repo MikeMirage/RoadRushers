@@ -8,7 +8,7 @@ export function polishScenery(group){
   for(const mesh of group.children){
     if(mesh.userData.assetFallback){mesh.visible=false;continue;}
     const geometry=mesh.geometry;
-    if(!geometry||!mesh.isInstancedMesh)continue;
+    if(!geometry||!mesh.isInstancedMesh||mesh.userData.sceneryRole==='boat')continue;
     if(geometry.type==='IcosahedronGeometry'&&geometry.parameters.detail===0){
       if(!stone){stone=new THREE.IcosahedronGeometry(1,3);const positions=stone.attributes.position;
         for(let i=0;i<positions.count;i++){const x=positions.getX(i),y=positions.getY(i),z=positions.getZ(i),r=1+.085*Math.sin(x*9+y*5)*Math.cos(z*7-y*4);positions.setXYZ(i,x*r,y*r,z*r);}

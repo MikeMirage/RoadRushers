@@ -10,7 +10,7 @@ const seeded = seed => () => { seed = (Math.imul(seed,1664525)+1013904223)|0; re
 class Scenery {
   constructor(group) {
     this.group = group; this.batches = {};this.assetKind=null;this.placements=[];
-    this.geometries = { box:new THREE.BoxGeometry(1,1,1), cone:new THREE.ConeGeometry(1,1,7), cylinder:new THREE.CylinderGeometry(1,1,1,8), rock:new THREE.IcosahedronGeometry(1,0) };
+    this.geometries = { box:new THREE.BoxGeometry(1,1,1), cone:new THREE.ConeGeometry(1,1,7), cylinder:new THREE.CylinderGeometry(1,1,1,8), rock:new THREE.IcosahedronGeometry(1,0), hull:new THREE.IcosahedronGeometry(1,2) };
   }
   add(shape,x,y,z,sx,sy,sz,color,angle=0,tilt=0) {
     object.position.set(x,y,z); object.scale.set(sx,sy,sz); object.rotation.set(tilt,angle,0); object.updateMatrix();
@@ -33,6 +33,7 @@ class Scenery {
       const [shape,kind]=key.split(':');
       const mesh = new THREE.InstancedMesh(this.geometries[shape],mat('#ffffff'),instances.length);
       if(kind)mesh.userData.assetFallback=kind;
+      if(shape==='hull')mesh.userData.sceneryRole='boat';
       instances.forEach(([matrix,color],i) => { mesh.setMatrixAt(i,matrix); mesh.setColorAt(i,color); });
       mesh.castShadow = mesh.receiveShadow = true; this.group.add(mesh);
     }
@@ -89,7 +90,7 @@ function coast(group,circuit,s,rng,state) {
   for(const x of [-20,5,30]) {
     s.box(x,-.05,99,4,.45,26,'#aa8c65');
     for(const side of [-1,1])for(let z=89;z<113;z+=5)s.add('cylinder',x+side*1.8,.45,z,.18,1.5,.18,'#7f7058');
-    s.add('rock',x+7,.05,102,2.3,.65,5,'#e9e1c9');s.box(x+7,.65,102,2.2,.8,2.5,'#faf0d9');
+    s.add('hull',x+7,.05,102,2.3,.65,5,'#e9e1c9');s.box(x+7,.65,102,2.2,.8,2.5,'#faf0d9');
     s.box(x+7,1.4,101.8,.12,2.7,.12,'#7e8e7a');
   }
   // The lighthouse and its stone apron anchor each coastal circuit.
