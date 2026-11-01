@@ -17,9 +17,9 @@ La vegetación geométrica de respaldo se oculta para dejar paso a los modelos d
 ## Controles táctiles
 
 - Dos zonas: se mantiene el control anterior; toda la mitad inferior izquierda o derecha gira en esa dirección. Ambas frenan progresivamente.
-- Trackpad analógico: apoyar un dedo comienza en giro cero. El desplazamiento horizontal desde ese punto determina la cantidad de giro, con una zona muerta de 3 px y una curva suave cerca del centro.
-- Sensibilidad precisa, equilibrada o rápida. Un indicador transitorio muestra el giro mientras se mantiene el dedo.
-- Un segundo dedo dentro de la mitad inferior activa el mismo freno progresivo. Al soltarlo se recupera la dirección del primer dedo; si se suelta el primero, el restante se recentra sin provocar un volantazo.
+- Trackpad analógico absoluto: toda la anchura de la mitad inferior marca el objetivo de giro. Pulsar en el centro va recto; pulsar en un extremo pide el giro máximo. El primer toque ya fija el giro, sin arrastre previo. Deslizar cambia el objetivo según la posición horizontal, con una zona muerta central de 3 px.
+- Sensibilidad precisa, equilibrada o rápida: cambia la curva de respuesta sin acortar la zona útil; los dos extremos siempre permiten el giro máximo. Una guía transitoria de ancho completo muestra el centro y el punto de giro mientras se mantiene el dedo.
+- Un segundo dedo dentro de la mitad inferior activa el mismo freno progresivo. Al soltarlo se recupera la dirección del primer dedo; si se suelta el primero, el restante controla el giro según su propia posición.
 - Salir de la zona, cancelar el toque, perder captura, pausar, rotar o cambiar modo limpia los controles.
 
 El teclado conserva sus controles. El trackpad usa la misma física; no altera velocidad, agarre, récords ni reglas de carrera.

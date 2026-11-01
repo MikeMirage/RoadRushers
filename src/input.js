@@ -1,4 +1,4 @@
-/** Keyboard, two touch zones and an optional relative trackpad share one input. */
+/** Keyboard, two touch zones and a full-width absolute trackpad share one input. */
 export function readDrivingInput(keys,pointers){
   let left=keys.has('ArrowLeft')||keys.has('KeyA'),right=keys.has('ArrowRight')||keys.has('KeyD'),analog=0,brake=false;
   for(const value of pointers.values()){
@@ -11,10 +11,14 @@ export function touchDirection(x,y,bounds){
   if(x<bounds.left||x>=bounds.right||y<bounds.top||y>=bounds.bottom)return 0;
   return x<(bounds.left+bounds.right)/2?-1:1;
 }
-/** A short dead zone filters finger jitter; the centre remains more precise. */
-export function analogSteer(displacement,distance,deadZone=3){
-  const amount=Math.max(0,Math.abs(displacement)-deadZone)/Math.max(1,distance-deadZone);
-  return amount===0?0:Math.sign(displacement)*Math.min(1,amount)**1.25;
+/** The screen centre is neutral. Sensitivity changes the response curve while
+ * preserving the whole width and maximum steering at both edges. */
+export function trackpadSteer(x,bounds,sensitivity=1){
+  const distance=(bounds.right-bounds.left)/2;if(distance<=0)return 0;
+  const displacement=x-(bounds.left+bounds.right)/2,deadZone=Math.min(3,distance*.05);
+  const amount=Math.max(0,Math.abs(displacement)-deadZone)/(distance-deadZone);
+  const response=Number.isFinite(sensitivity)&&sensitivity>0?sensitivity:1;
+  return amount===0?0:Math.sign(displacement)*Math.min(1,amount)**(1/response);
 }
 export function bindTouchSteering(container,pointers,isRunning,getOptions=()=>({touchMode:'buttons',sensitivity:1})){
   const active=new Map(),left=container.querySelector('#steer-left'),right=container.querySelector('#steer-right'),feedback=container.querySelector('#trackpad-feedback');
@@ -24,7 +28,7 @@ export function bindTouchSteering(container,pointers,isRunning,getOptions=()=>({
     if(!feedback)return;
     const p=active.get(primary),input=pointers.get(primary),show=getOptions().touchMode==='trackpad'&&p&&input;
     feedback.hidden=!show;
-    if(show){const rect=container.getBoundingClientRect();feedback.style.left=`${p.originX-rect.left}px`;feedback.style.top=`${p.originY-rect.top}px`;feedback.style.setProperty('--turn',`${input.steer*38}px`);feedback.querySelector('span').textContent=input.brake?'FRENO':`${Math.round(Math.abs(input.steer)*100)} %`;}
+    if(show){const rect=container.getBoundingClientRect();feedback.style.top=`${p.y-rect.top}px`;feedback.style.setProperty('--target',`${(p.x-rect.left)/(rect.right-rect.left)*100}%`);feedback.querySelector('span').textContent=input.brake?'FRENO':`${input.steer<0?'← ':''}${Math.round(Math.abs(input.steer)*100)} %${input.steer>0?' →':''}`;}
   };
   const update=()=>{
     pointers.clear();
@@ -33,17 +37,17 @@ export function bindTouchSteering(container,pointers,isRunning,getOptions=()=>({
     if(options.touchMode!=='trackpad'){
       for(const [id,p]of active){const direction=touchDirection(p.x,p.y,bounds);if(direction)pointers.set(id,direction);}
     }else{
-      const inside=[...active].filter(([,p])=>touchDirection(p.x,p.y,bounds)!==0);
-      if(!inside.some(([id])=>id===primary)){primary=inside[0]?.[0]??null;const p=active.get(primary);if(p){p.originX=p.x;p.originY=p.y;}}
+      const inside=[...active].filter(([,p])=>p.x>=bounds.left&&p.x<=bounds.right&&p.y>=bounds.top&&p.y<bounds.bottom);
+      if(!inside.some(([id])=>id===primary))primary=inside[0]?.[0]??null;
       const p=active.get(primary);
-      if(p&&inside.length){const distance=Math.max(64,Math.min(160,(bounds.right-bounds.left)*.28))/(options.sensitivity||1);pointers.set(primary,{steer:analogSteer(p.x-p.originX,distance),brake:inside.length>1});}
+      if(p&&inside.length)pointers.set(primary,{steer:trackpadSteer(p.x,bounds,options.sensitivity),brake:inside.length>1});
     }
     paint();
   };
   const move=e=>{const p=active.get(e.pointerId);if(!p)return;e.preventDefault();p.x=e.clientX;p.y=e.clientY;update();};
   const down=e=>{
     if(!isRunning()||(e.pointerType==='mouse'&&e.button!==0))return;
-    e.preventDefault();active.set(e.pointerId,{x:e.clientX,y:e.clientY,originX:e.clientX,originY:e.clientY});
+    e.preventDefault();active.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(primary==null)primary=e.pointerId;container.setPointerCapture(e.pointerId);update();
   };
   const release=e=>{active.delete(e.pointerId);if(primary===e.pointerId)primary=null;update();};

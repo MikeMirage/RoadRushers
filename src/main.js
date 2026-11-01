@@ -95,8 +95,8 @@ function updatePreferencesReadout(){
   output.textContent=`${canvas.width} × ${canvas.height} px · ${world.renderer.getPixelRatio().toFixed(2)}×${preferences.resolution==='auto'?' · Automática':' · Fija'} · ${samples?'MSAA '+samples+'×':'Sin MSAA'}`;
 }
 function updateTouchGuide(){
-  $('touch-guide').innerHTML=preferences.touchMode==='trackpad'?'<span>← MANTÉN Y DESLIZA →</span><span>GIRO ANALÓGICO</span><small>Segundo dedo para frenar</small>':'<span>← TOCA A LA IZQUIERDA</span><span>TOCA A LA DERECHA →</span><small>Las dos zonas a la vez para frenar</small>';
-  $('touch-steering').setAttribute('aria-label',preferences.touchMode==='trackpad'?'Trackpad analógico en la mitad inferior; segundo dedo para frenar':'Dirección táctil: mitad inferior izquierda y derecha');
+  $('touch-guide').innerHTML=preferences.touchMode==='trackpad'?'<span>← TOCA PARA GIRAR →</span><span>CENTRO = RECTO</span><small>Segundo dedo para frenar</small>':'<span>← TOCA A LA IZQUIERDA</span><span>TOCA A LA DERECHA →</span><small>Las dos zonas a la vez para frenar</small>';
+  $('touch-steering').setAttribute('aria-label',preferences.touchMode==='trackpad'?'Trackpad analógico de ancho completo en la mitad inferior; la posición marca el giro y el segundo dedo frena':'Dirección táctil: mitad inferior izquierda y derecha');
 }
 function paintPreferences(){$('preferences-content').innerHTML=renderPreferences(preferences,preferencesTab);updatePreferencesReadout();}
 function openPreferences(){
