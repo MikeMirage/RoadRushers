@@ -225,7 +225,7 @@ export class World {
       this.contactShadow.material.opacity=.15/Math.max(1,1+((drive.y||0)-(drive.groundY??drive.y??0))*.55);
     }
     this.underpassMarker.visible=Boolean(this.fleet);if(this.underpassMarker.visible)this.underpassMarker.position.set(drive.x,(drive.y||0)+.2,drive.z);
-    const rig=this.cameraRig.update(dt,drive,cameraMode,!this.cameraReady,this.camera.aspect);
+    const rig=this.cameraRig.update(dt,drive,cameraMode,!this.cameraReady,this.camera.aspect,this.circuit);
     this.camera.position.copy(rig.position);this.camera.lookAt(rig.look);
     if(this.camera.fov!==rig.fov){this.camera.fov=rig.fov;this.camera.updateProjectionMatrix();}
     this.cameraReady=true;

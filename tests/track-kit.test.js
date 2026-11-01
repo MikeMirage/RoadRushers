@@ -76,9 +76,9 @@ test('jump crests create a ballistic flight and a stable landing on the real sur
   assert.ok(air>.15&&air<1);assert.ok(gap>.2&&gap<2);assert.equal(landed,true);assert.equal(car.grounded,true);near(car.y,car.road.y);near(car.vy,0);
 });
 
-test('camera follows elevation smoothly and retains the overhead framing',()=>{
+test('camera follows elevated decks without shifting the car out of its overhead framing',()=>{
   const base={x:0,y:0,z:0,vx:0,vz:15,heading:0},rig=new CameraRig().update(1/60,base);
-  const initial=rig.position.y;rig.update(1/60,{...base,y:6});assert.ok(rig.position.y>initial&&rig.position.y<initial+6);
+  const initial=rig.position.y,look=rig.look.y;rig.update(1/60,{...base,y:6});near(rig.position.y,initial+6);near(rig.look.y,look+6);
   for(let i=0;i<240;i++)rig.update(1/60,{...base,y:6});near(rig.position.y,initial+6,.01);assert.ok(rig.position.y-rig.look.y>40);
 });
 

@@ -1,5 +1,8 @@
-import { Vector3, MathUtils } from 'three';
+import { Vector3, Matrix4, MathUtils } from 'three';
 import { cameraView } from './camera-views.js';
+
+const OVERHEAD_OFFSET=new Vector3(24,48,24),UP=new Vector3(0,1,0),ORIGIN=new Vector3();
+const CENTER_LIMIT=.16;
 
 /** Velocity-led framing: rotating the car in a drift must not spin the view. */
 export class CameraRig {
@@ -12,9 +15,13 @@ export class CameraRig {
     this.initialized = false;
     this.velocity = new Vector3(); this.desiredFocus = new Vector3();
     this.delta = new Vector3(); this.offset = new Vector3(); this.desiredPosition = new Vector3();
+    this.car=new Vector3();this.desiredLead=new Vector3();this.lookAhead=new Vector3();this.framedLead=new Vector3();
+    this.smoothedOffset=new Vector3();this.framingOffset=new Vector3();this.rotation=new Matrix4();
+    this.right=new Vector3();this.up=new Vector3();this.backward=new Vector3();
   }
 
-  update(dt, drive, mode = 'topdown', reset = false, aspect = 16 / 9) {
+  update(dt, drive, mode = 'topdown', reset = false, aspect = 16 / 9, circuit) {
+    if(mode!=='chase')return this.updateOverhead(dt,drive,mode,reset,aspect,circuit);
     const initialize = reset || !this.initialized;
     const velocity = this.velocity.set(drive.vx, 0, drive.vz);
     const speed = velocity.length();
@@ -36,22 +43,64 @@ export class CameraRig {
     // Extra distance on a narrow screen preserves room on both sides of a slide.
     const zoom = Math.max(1, Math.sqrt(1 / Math.max(0.3, aspect)));
     const offset = this.offset;
-    let fov;
-    if (mode === 'chase') {
-      const distance = (22 + Math.min(speed, 24) * 0.12) * zoom;
-      offset.set(-Math.sin(this.travelHeading) * distance, 18 * zoom, -Math.cos(this.travelHeading) * distance);
-      fov = 51;
-    } else {
-      // Fixed azimuth and a 55° elevation, like a small drifting diorama.
-      offset.set(24, 48, 24).multiplyScalar(zoom/cameraView(mode).zoom);
-      fov = 45;
-    }
+    const distance = (22 + Math.min(speed, 24) * 0.12) * zoom;
+    offset.set(-Math.sin(this.travelHeading) * distance, 18 * zoom, -Math.cos(this.travelHeading) * distance);
+    const fov = 51;
     const desiredPosition = this.desiredPosition.copy(this.focus).add(offset);
     const alpha = initialize ? 1 : 1 - Math.exp(-3.5 * dt);
     this.position.lerp(desiredPosition, alpha);
     this.look.lerp(this.focus, alpha);
     this.fov = initialize ? fov : MathUtils.damp(this.fov, fov, 4, dt);
     this.initialized = true;
+    this.mode=mode;
+    return this;
+  }
+
+  limitLead(lead,offset,fov,aspect){
+    // Use the same camera basis and perspective division as the rendered view.
+    this.rotation.lookAt(offset,ORIGIN,UP);
+    this.right.setFromMatrixColumn(this.rotation,0);this.up.setFromMatrixColumn(this.rotation,1);this.backward.setFromMatrixColumn(this.rotation,2);
+    const distance=offset.length(),depth=lead.dot(this.backward),vertical=Math.tan(MathUtils.degToRad(fov/2))*CENTER_LIMIT;
+    const horizontal=vertical*aspect,x=Math.abs(lead.dot(this.right))-horizontal*depth,y=Math.abs(lead.dot(this.up))-vertical*depth;
+    let scale=1;
+    if(x>0)scale=Math.min(scale,horizontal*distance/x);
+    if(y>0)scale=Math.min(scale,vertical*distance/y);
+    return lead.multiplyScalar(scale);
+  }
+
+  updateOverhead(dt,drive,mode,reset,aspect,circuit){
+    const initialize=reset||!this.initialized,velocity=this.velocity.set(drive.vx,0,drive.vz),speed=velocity.length();
+    this.car.set(drive.x,(drive.y||0)+.5,drive.z);
+    const distance=Math.min(12,speed*.45);
+    this.desiredLead.copy(velocity).multiplyScalar(speed>.01?distance/speed:0);
+    const progress=drive.progress??drive.road?.progress;
+    if(circuit&&Number.isFinite(progress)&&speed>1){
+      const road=circuit.at(progress),along=velocity.x*Math.sin(road.heading)+velocity.z*Math.cos(road.heading);
+      const anticipation=MathUtils.clamp((Math.abs(along)/speed-.35)/.5,0,1)*.65;
+      const ahead=circuit.at(progress+Math.sign(along)*distance/circuit.length);
+      this.delta.set(ahead.x-road.x,(ahead.y||0)-(road.y||0),ahead.z-road.z);
+      this.desiredLead.lerp(this.delta,anticipation);
+    }
+    if(initialize||this.mode==='chase')this.lookAhead.copy(this.desiredLead);
+    else this.lookAhead.lerp(this.desiredLead,1-Math.exp(-3.5*dt));
+    if(initialize)this.travelHeading=speed>1?Math.atan2(drive.vx,drive.vz):drive.heading;
+    else if(speed>1){
+      const turn=Math.atan2(Math.sin(Math.atan2(drive.vx,drive.vz)-this.travelHeading),Math.cos(Math.atan2(drive.vx,drive.vz)-this.travelHeading));
+      this.travelHeading+=turn*(1-Math.exp(-1.8*dt));
+    }
+    const zoom=Math.max(1,Math.sqrt(1/Math.max(.3,aspect)));
+    this.offset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/cameraView(mode).zoom);
+    if(initialize)this.smoothedOffset.copy(this.offset);
+    else this.smoothedOffset.copy(this.position).sub(this.look).lerp(this.offset,1-Math.exp(-3.5*dt));
+    this.fov=initialize?45:MathUtils.damp(this.fov,45,4,dt);
+    // The three zooms share their target; the closest one sets the safe lead.
+    this.framingOffset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/1.4);
+    this.limitLead(this.framedLead.copy(this.lookAhead),this.framingOffset,45,aspect);
+    this.limitLead(this.framedLead,this.smoothedOffset,this.fov,aspect);
+    this.focus.copy(this.car).add(this.framedLead);this.look.copy(this.focus);
+    // Follow translation and elevation immediately. Only anticipation and zoom lag.
+    this.position.copy(this.look).add(this.smoothedOffset);
+    this.initialized=true;this.mode=mode;
     return this;
   }
 }
