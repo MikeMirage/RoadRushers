@@ -19,7 +19,8 @@ export class EnvironmentSystem{
     Object.assign(this,{renderer,scene,camera,sun,ambient});this.time=0;this.state=normalizeEnvironment();
     this.sky=new Sky();this.sky.name='procedural-sky';this.sky.scale.setScalar(4500);this.sky.frustumCulled=false;scene.add(this.sky);
     this.pmrem=new THREE.PMREMGenerator(renderer);
-    this.composer=new EffectComposer(renderer);this.composer.addPass(new RenderPass(scene,camera));this.grade=new ShaderPass(grading);this.composer.addPass(this.grade);this.composer.addPass(new OutputPass());
+    const target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:Math.min(2,renderer.capabilities.maxSamples)});
+    this.composer=new EffectComposer(renderer,target);this.composer.addPass(new RenderPass(scene,camera));this.grade=new ShaderPass(grading);this.composer.addPass(this.grade);this.composer.addPass(new OutputPass());
     this.size=new THREE.Vector2();this.lastSize='';
   }
   configure(input,circuit){
@@ -51,6 +52,12 @@ export class EnvironmentSystem{
     this.sky.position.copy(this.camera.position);updateBiomeMaterials(landscape,this.state,this.time);
     // Preserve the same atmospheric readability when portrait inspection needs more distance.
     this.scene.fog.density=this.fogDensity*(inspectionDistance?Math.min(1,160/inspectionDistance):1);
+  }
+  setGraphics({samples,postProcessing}){
+    const count=Math.min(samples,this.renderer.capabilities.maxSamples);
+    for(const target of [this.composer.renderTarget1,this.composer.renderTarget2])if(target.samples!==count){target.dispose();target.samples=count;}
+    this.postProcessing=postProcessing;
+    this.grade.enabled=postProcessing;
   }
   render(dt){
     this.renderer.getSize(this.size);const ratio=this.renderer.getPixelRatio(),key=`${this.size.x},${this.size.y},${ratio}`;

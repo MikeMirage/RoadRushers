@@ -5,6 +5,8 @@ import { PIECE_CATALOG,KIT_PRESETS,compileLayout,kitConfig,samplePiece,MAX_TRACK
 import { Circuit } from './circuit.js';
 import { roadRibbon,trackStructures } from './road-geometry.js';
 import { buildEnvironment } from './environments.js';
+import { polishScenery } from './scenery-polish.js';
+import { enhanceLandscape } from './landscape-assets.js';
 import { EnvironmentSystem } from './environment-system.js';
 import { CLIMATES,themePreset,solarPosition } from './environment-config.js';
 import { ManualPropLayer,propPreview } from './manual-props.js';
@@ -22,7 +24,7 @@ export class TrackWorkbench {
   constructor(onTest,onClose){
     Object.assign(this,{onTest,onClose,visible:false,tab:'track',focusSection:null,selectedProp:null,placementType:null,transformMode:'translate',palettePiece:'straight-short',search:'',family:'',snap:true,propWarnings:[],details:{}});
     try{this.storage=localStorage;}catch{}this.document=new TrackEditorDocument(readEditorDocument(this.storage));
-    this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
     this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFShadowMap;this.renderer.shadowMap.autoUpdate=false;
     const canvas=this.renderer.domElement;canvas.setAttribute('aria-label','Editor 3D: arrastra para orbitar, dos dedos para desplazar y pellizca para acercar.');canvas.tabIndex=0;
     this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(45,1,.1,4000);
@@ -214,7 +216,8 @@ export class TrackWorkbench {
   }
   recolorRoad(){for(const mesh of this.roadMeshes||[]){mesh.material.color.set(mesh.userData.sectionIndex===this.focusSection?'#9ac67b':mesh.userData.baseColor);}}
   rebuildLandscape(){
-    this.landscapeDue=0;dispose(this.landscape);this.landscape=new THREE.Group();this.scene.add(this.landscape);buildEnvironment(this.landscape,this.atmosphereCircuit,this.document.value.environment);this.groundMeshes=[];
+    this.landscapeDue=0;dispose(this.landscape);this.landscape=new THREE.Group();this.scene.add(this.landscape);buildEnvironment(this.landscape,this.atmosphereCircuit,this.document.value.environment);polishScenery(this.landscape);this.groundMeshes=[];
+    const landscape=this.landscape;void enhanceLandscape(landscape,this.atmosphereCircuit,this.document.value.environment,()=>this.landscape===landscape).then(changed=>{if(changed)this.renderer.shadowMap.needsUpdate=true;});
     this.landscape.traverse(o=>{if(o.isMesh&&['biome-ground','biome-water'].includes(o.material?.name))this.groundMeshes.push(o);});
     // Authored grounded props follow terrain changes without losing their X/Z, rotation or scale.
     for(const p of this.document.value.props)if(p.grounded){const y=this.groundAt(p.position[0],p.position[2]).y;if(Math.abs(y-p.position[1])>.001){const next=this.document.patchProp(p.id,{position:[p.position[0],y,p.position[2]]});this.layer.updateRecord(next);}}

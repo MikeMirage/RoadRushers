@@ -14,6 +14,7 @@ import { ManualPropLayer } from './manual-props.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { applyEnvironmentPbr, roadPbrId } from './environment-assets.js';
 import { enhanceLandscape } from './landscape-assets.js';
+import { polishScenery } from './scenery-polish.js';
 
 const temp = new THREE.Object3D();
 const mat = (color, options = {}) => new THREE.MeshStandardMaterial({ color, roughness: 1, ...options });
@@ -42,7 +43,7 @@ function surfaceTexture() {
 export class World {
   constructor(container) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     this.renderer.setSize(innerWidth, innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -155,7 +156,7 @@ export class World {
       geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose());
     }
     this.circuit = circuit;
-    this.environmentSettings=environmentForTrack(circuit.config,weatherId);
+    this.environmentSettings=normalizeEnvironment({...environmentForTrack(circuit.config,weatherId),...(this.graphicsQuality?{quality:this.graphicsQuality}:{})});
     this.environment = new THREE.Group();
     this.scene.add(this.environment);
     const half = u => circuit.widthAt(u) / 2;
@@ -242,13 +243,14 @@ export class World {
   addLandscape() {
     this.landscape=new THREE.Group();this.landscape.name='biome-landscape';this.environment.add(this.landscape);
     buildEnvironment(this.landscape,this.circuit,this.environmentSettings);
+    polishScenery(this.landscape);
     const landscape=this.landscape;
     void enhanceLandscape(landscape,this.circuit,this.environmentSettings,()=>this.landscape===landscape)
       .then(changed=>{if(changed)this.renderer.shadowMap.needsUpdate=true;});
   }
 
   applyEnvironment(input,reflections=true){
-    const state=normalizeEnvironment(input),previous=this.environmentSettings;
+    const state=normalizeEnvironment({...input,...(this.graphicsQuality?{quality:this.graphicsQuality}:{})}),previous=this.environmentSettings;
     const rebuild=!previous||['theme','biome','grassDensity','quality'].some(key=>previous[key]!==state[key]);
     this.environmentSettings=state;
     if(rebuild&&this.landscape){

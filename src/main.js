@@ -18,6 +18,9 @@ import './mobile-gameplay.css';
 import './results.css';
 import './ghost.css';
 import './minimal-ui.css';
+import './preferences.css';
+import {loadPreferences,savePreferences,normalizePreferences,selectGraphicsPreset,graphicsPolicy} from './preferences.js';
+import {renderPreferences} from './preferences-ui.js';
 import { ResultRecords,resultContext,createReport } from './results.js';
 import { renderSessionResult } from './results-ui.js';
 import { loadAILeaderboard } from './leaderboard.js';
@@ -51,6 +54,7 @@ const icons = {
 let storage;
 try { storage = localStorage; } catch { storage = null; }
 const playgroundOptions=loadPlayground(storage);
+let preferences=loadPreferences(storage),preferencesOpen=false,preferencesTab='graphics',preferencesFocus;
 const resultRecords=new ResultRecords(storage);
 const ghostRecords=new GhostRecords(storage);
 let ghostRecorder,ghostLap=null;
@@ -63,10 +67,56 @@ let environmentStudio,environmentFocus;
 let race=null,raceSetupOpen=false,raceSetupFocus,raceTracks=[];
 const raceOptions={count:12,interaction:'ghost',laps:3,width:'original',trackId:null,difficulty:'club',fieldLevels:'mixed'};
 const keys = new Set(), pointers = new Map(), audio = new EngineAudio();
-const performanceStats = new PerformanceStats(), simulationClock = new FixedStepClock(), resolution = new AdaptiveResolution(devicePixelRatio);
+const performanceStats = new PerformanceStats(), simulationClock = new FixedStepClock(), resolution = new AdaptiveResolution(devicePixelRatio,graphicsPolicy(preferences,devicePixelRatio));
 const startButton = $('start-btn'); startButton.disabled = true;
 $('camera-icon').innerHTML = icons.camera; $('sound-btn').innerHTML = icons.mute;
 const thumbnails = new Map();
+
+function applyGraphics(){
+  const policy=graphicsPolicy(preferences,devicePixelRatio);resolution.configure(policy);
+  for(const view of [world,garage,workbench]){
+    if(!view?.renderer)continue;
+    const renderer=view.renderer;renderer.setPixelRatio(resolution.ratio);view.atmosphere?.setGraphics(policy);
+    if(view.sun){
+      const wasEnabled=renderer.shadowMap.enabled;renderer.shadowMap.enabled=policy.shadowSize>0;
+      if(policy.shadowSize&&view.sun.shadow.mapSize.x!==policy.shadowSize){view.sun.shadow.map?.dispose();view.sun.shadow.map=null;view.sun.shadow.mapSize.set(policy.shadowSize,policy.shadowSize);}
+      renderer.shadowMap.needsUpdate=true;
+      if(wasEnabled!==renderer.shadowMap.enabled)view.scene.traverse(node=>{for(const m of Array.isArray(node.material)?node.material:[node.material])if(m)m.needsUpdate=true;});
+    }
+  }
+  if(world){const changed=world.graphicsQuality!==policy.detail;world.graphicsQuality=policy.detail;if(changed&&world.environmentSettings)world.applyEnvironment(world.environmentSettings,false);}
+  if(garage?.visible)garage.resize();if(workbench?.visible)workbench.resize();
+  updatePreferencesReadout();
+}
+function updatePreferencesReadout(){
+  const output=$('graphics-readout');if(!preferencesOpen||!output||!world)return;
+  const canvas=world.renderer.domElement;
+  const samples=Math.min(preferences.samples,world.renderer.capabilities.maxSamples);
+  output.textContent=`${canvas.width} × ${canvas.height} px · ${world.renderer.getPixelRatio().toFixed(2)}×${preferences.resolution==='auto'?' · Automática':' · Fija'} · ${samples?'MSAA '+samples+'×':'Sin MSAA'}`;
+}
+function updateTouchGuide(){
+  $('touch-guide').innerHTML=preferences.touchMode==='trackpad'?'<span>← MANTÉN Y DESLIZA →</span><span>GIRO ANALÓGICO</span><small>Segundo dedo para frenar</small>':'<span>← TOCA A LA IZQUIERDA</span><span>TOCA A LA DERECHA →</span><small>Las dos zonas a la vez para frenar</small>';
+  $('touch-steering').setAttribute('aria-label',preferences.touchMode==='trackpad'?'Trackpad analógico en la mitad inferior; segundo dedo para frenar':'Dirección táctil: mitad inferior izquierda y derecha');
+}
+function paintPreferences(){$('preferences-content').innerHTML=renderPreferences(preferences,preferencesTab);updatePreferencesReadout();}
+function openPreferences(){
+  if(!world||state==='loading'||preferencesOpen)return;
+  preferencesFocus=document.activeElement;if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
+  clearPointers();preferencesOpen=true;paintPreferences();$('preferences-overlay').classList.remove('hidden');
+  for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
+  $('preferences-content').querySelector('[data-preferences-close]').focus();
+}
+function closePreferences(){
+  preferencesOpen=false;$('preferences-overlay').classList.add('hidden');
+  for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;
+  if(preferencesFocus?.isConnected)preferencesFocus.focus();
+}
+function changePreferences(next){
+  const before=preferences;preferences=normalizePreferences(next);clearPointers();
+  const graphicsChanged=['quality','resolution','detail','shadows','samples','postProcessing'].some(k=>before[k]!==preferences[k]);
+  if(graphicsChanged)applyGraphics();updateTouchGuide();const saved=savePreferences(storage,preferences);paintPreferences();
+  $('preferences-save-status').textContent=saved?'Ajustes guardados.':'Aplicado durante esta sesión.';
+}
 
 function recordKey() { return `roadrushers.v3.${settings.track.id}.${settings.vehicle.id}.${settings.surface}.${settings.weather}.${settings.pace}`; }
 function readBest() {
@@ -120,6 +170,7 @@ function openGarage(inspectId,context) {
   $('garage-overlay').classList.remove('hidden');
   garage ||= new GarageView(inspectVehicle);
   garage.mount($('garage-stage'),playgroundOptions.vehicleId);
+  applyGraphics();
   if(typeof inspectId==='string'&&VEHICLES.some(v=>v.id===inspectId))inspectVehicle(inspectId);
   for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=true;
   $('garage-content').querySelector('[data-action="close-garage"]').focus();
@@ -139,6 +190,7 @@ function openKit() {
     closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'track',weather:'track',surface:'track'});settings.track=config;launchPlayground();
   },closeKit);
   $('track-kit-overlay').classList.remove('hidden');workbench.mount($('track-kit-content'));
+  applyGraphics();
   for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
   $('track-kit-content').querySelector('[data-kit="close"]').focus();
 }
@@ -365,6 +417,11 @@ function drawMap(){
 
 function setupInput(){
   window.addEventListener('keydown',e=>{
+    if(preferencesOpen){
+      if(e.code==='Escape'){e.preventDefault();closePreferences();}
+      if(e.code==='Tab'){const items=[...$('preferences-content').querySelectorAll('button:not(:disabled),select')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+      return;
+    }
     if(state==='finished'){
       if(e.code==='Escape'){e.preventDefault();showHub();}
       if(e.code==='Tab'){const items=[...$('result-content').querySelectorAll('button:not(:disabled),[tabindex="0"]')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
@@ -403,8 +460,8 @@ function setupInput(){
   window.addEventListener('keyup',e=>keys.delete(e.code));
   const blur=()=>{keys.clear();clearPointers();if(state==='running')setState('paused');if(state==='countdown')setState('ready');};
   window.addEventListener('blur',blur);document.addEventListener('visibilitychange',()=>{if(document.hidden)blur();});
-  touchControls=bindTouchSteering($('touch-steering'),pointers,()=>state==='running');
-  window.addEventListener('resize',clearPointers);
+  touchControls=bindTouchSteering($('touch-steering'),pointers,()=>state==='running',()=>preferences);
+  window.addEventListener('resize',()=>{clearPointers();applyGraphics();});
   $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('garage-btn').addEventListener('click',openGarage);$('intro-back').addEventListener('click',showHub);$('pause-hub-btn').addEventListener('click',showHub);
   $('track-kit-btn').addEventListener('click',openKit);
   $('environment-btn').addEventListener('click',openEnvironment);
@@ -420,6 +477,14 @@ function setupInput(){
   $('lab-btn').addEventListener('click',()=>setLab($('lab').classList.contains('hidden')));$('lab-close').addEventListener('click',()=>setLab(false));
   for(const id of['reset-btn','restart-pause-btn'])$(id).addEventListener('click',()=>reset());$('pause-btn').addEventListener('click',pause);$('resume-btn').addEventListener('click',()=>setState('running'));
   $('sound-btn').addEventListener('click',()=>{const enabled=audio.toggle();$('sound-btn').innerHTML=enabled?icons.sound:icons.mute;$('sound-btn').setAttribute('aria-label',enabled?'Silenciar sonido':'Activar sonido');$('sound-btn').title=enabled?'Silenciar sonido':'Activar sonido';$('sound-btn').setAttribute('aria-pressed',String(enabled));});
+  $('preferences-btn').addEventListener('click',openPreferences);$('pause-preferences-btn').addEventListener('click',openPreferences);
+  $('preferences-overlay').addEventListener('click',e=>{
+    if(e.target===$('preferences-overlay')||e.target.closest('[data-preferences-close]')){closePreferences();return;}
+    const tab=e.target.closest('[data-preferences-tab]')?.dataset.preferencesTab;if(tab){preferencesTab=tab;paintPreferences();$('preferences-content').querySelector(`[data-preferences-tab="${tab}"]`).focus();}
+    const preset=e.target.closest('[data-graphics-preset]')?.dataset.graphicsPreset;if(preset){changePreferences(selectGraphicsPreset(preferences,preset));$('preferences-content').querySelector(`[data-graphics-preset="${preset}"]`).focus();}
+    const mode=e.target.closest('[data-touch-mode]')?.dataset.touchMode;if(mode){changePreferences({...preferences,touchMode:mode});$('preferences-content').querySelector(`[data-touch-mode="${mode}"]`).focus();}
+  });
+  $('preferences-overlay').addEventListener('change',e=>{const key=e.target.dataset.preference;if(!key)return;const value=key==='samples'||key==='sensitivity'?Number(e.target.value):key==='postProcessing'?e.target.value==='true':e.target.value;changePreferences({...preferences,[key]:value});$('preferences-content').querySelector(`[data-preference="${key}"]`)?.focus();});
   $('playground-hub').addEventListener('click',e=>{
     const mode=e.target.closest('[data-play-mode]');if(mode){playgroundOptions.mode=mode.dataset.playMode;savePlayground(storage,playgroundOptions);refreshPlayground();}
     const action=e.target.closest('[data-play-action]')?.dataset.playAction;
@@ -483,7 +548,7 @@ function frame(now){
     }
   }
   if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').classList.add('hidden');}
-  uiTimer+=dt;if(uiTimer>1/20){updateHUD();drawMap();uiTimer=0;}
+  uiTimer+=dt;if(uiTimer>1/20){updateHUD();drawMap();updatePreferencesReadout();uiTimer=0;}
   audio.update(drive.speed,state==='running');const renderDrive=drive.interpolated(state==='running'||state==='paused'?simulationClock.alpha:1);
   if(workbench?.visible)workbench.update(dt);
   else if(garage?.visible)garage.update(dt);
@@ -491,14 +556,14 @@ function frame(now){
     const ghostTime=state==='running'||state==='paused'?Math.max(0,laps.time-FIXED_STEP*(1-simulationClock.alpha)):0;
     world.ghost?.update(ghostLap,ghostTime,['countdown','running','paused'].includes(state));
     world.update(dt,renderDrive,settings.camera,state==='running',state!=='paused',state==='running'||state==='paused'?simulationClock.alpha:1);
-    const ratio=resolution.sample(rawDt);if(Math.abs(world.renderer.getPixelRatio()-ratio)>.01)world.renderer.setPixelRatio(ratio);
+    const ratio=state==='running'?resolution.sample(rawDt):resolution.ratio;if(Math.abs(world.renderer.getPixelRatio()-ratio)>.01)world.renderer.setPixelRatio(ratio);
   }
   performanceStats.sample(rawDt,performance.now()-cpuStart,workbench?.visible?workbench.renderer:garage?.visible?garage.renderer:world.renderer);
   requestAnimationFrame(frame);
 }
 async function init(){
   try{
-    setupOptions();setupInput();refreshPlayground();world=new World($('game'));await world.loadCar(settings.vehicle);makeSession(true);setLab(false);startButton.disabled=false;
+    setupOptions();setupInput();updateTouchGuide();refreshPlayground();world=new World($('game'));applyGraphics();await world.loadCar(settings.vehicle);makeSession(true);setLab(false);startButton.disabled=false;
     $('loading-status').textContent=innerWidth<=760?'Mitad inferior izquierda / derecha · Ambas: freno':'← → / A D girar · Ambas: frenar · R reintentar';refreshPlayground();setState('hub');lastFrame=performance.now();requestAnimationFrame(frame);
   }catch(error){console.error(error);$('fatal-error').classList.remove('hidden');$('error-message').textContent=`No se ha podido preparar la carrera. ${error.message}`;}
 }

@@ -1,12 +1,15 @@
 /** Resolution changes affect only rendering, never the driving simulation. */
 export class AdaptiveResolution {
-  constructor(deviceRatio = 1) {
-    this.maximum = Math.min(deviceRatio, 1.25);
-    this.minimum = Math.min(deviceRatio, 0.75);
-    this.ratio = this.maximum;
+  constructor(deviceRatio = 1,policy={maximum:Math.min(deviceRatio,2),minimum:Math.min(deviceRatio,1.5),adaptive:true}) {
+    this.configure(policy);
+  }
+  configure({maximum,minimum=maximum,adaptive=true}){
+    this.maximum=Math.max(.5,maximum);this.minimum=Math.max(.5,Math.min(minimum,this.maximum));this.adaptive=adaptive;
+    this.ratio=this.maximum;
     this.elapsed = 0; this.frames = 0; this.slowWindows = 0; this.fastWindows = 0;
   }
   sample(dt) {
+    if(!this.adaptive)return this.ratio;
     if (dt <= 0 || dt > 0.25) return this.ratio;
     this.elapsed += dt; this.frames++;
     if (this.elapsed < 1.5) return this.ratio;

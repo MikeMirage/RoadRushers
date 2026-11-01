@@ -67,7 +67,7 @@ test('adaptive resolution lowers GPU load during sustained slow rendering', () =
   for (let i = 0; i < 150; i++) quality.sample(1 / 25);
   assert.ok(quality.ratio < initial);
   for (let i = 0; i < 1000; i++) quality.sample(1 / 25);
-  assert.ok(quality.ratio >= 0.75);
+  assert.ok(quality.ratio >= 1.5);
 });
 
 test('adaptive resolution stays within native resolution and avoids changes for isolated hitches', () => {
@@ -83,5 +83,5 @@ test('adaptive resolution recovers gradually when rendering becomes consistently
   for (let i = 0; i < 150; i++) quality.sample(1 / 25);
   const low = quality.ratio;
   for (let i = 0; i < 1600; i++) quality.sample(1 / 60);
-  assert.ok(quality.ratio > low && quality.ratio <= 1.25);
+  assert.ok(quality.ratio > low && quality.ratio <= 2);
 });

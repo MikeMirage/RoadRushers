@@ -38,3 +38,29 @@ test('pause, rotation, lost capture and disposal cannot leave a held direction b
   zone.send('pointerdown',3);zone.send('lostpointercapture',3);assert.equal(pointers.size,0);
   controls.dispose();assert.equal(zone.handlers.size,0);
 });
+
+test('relative trackpad starts neutral anywhere and produces graduated, symmetric steering',()=>{
+ const zone=surface(),pointers=new Map();bindTouchSteering(zone,pointers,()=>true,()=>({touchMode:'trackpad',sensitivity:1}));
+ zone.send('pointerdown',1,800);assert.deepEqual(readDrivingInput(new Set(),pointers),{steer:0,brake:false});
+ zone.send('pointermove',1,840);const small=readDrivingInput(new Set(),pointers).steer;assert.ok(small>0&&small<.5);
+ zone.send('pointermove',1,900);const large=readDrivingInput(new Set(),pointers).steer;assert.ok(large>small&&large<1);
+ zone.send('pointermove',1,760);assert.equal(readDrivingInput(new Set(),pointers).steer,-small);
+ zone.send('pointermove',1,799);assert.equal(readDrivingInput(new Set(),pointers).steer,0);
+ zone.send('pointerup',1);assert.deepEqual(readDrivingInput(new Set(),pointers),{steer:0,brake:false});
+});
+test('trackpad second finger brakes without moving the origin, and remaining fingers re-anchor on primary release',()=>{
+ const zone=surface(),pointers=new Map();bindTouchSteering(zone,pointers,()=>true,()=>({touchMode:'trackpad',sensitivity:1}));
+ zone.send('pointerdown',1,300);zone.send('pointermove',1,370);const steer=readDrivingInput(new Set(),pointers).steer;
+ zone.send('pointerdown',2,900);assert.deepEqual(readDrivingInput(new Set(),pointers),{steer,brake:true});
+ zone.send('pointerup',2);assert.deepEqual(readDrivingInput(new Set(),pointers),{steer,brake:false});
+ zone.send('pointerdown',2,900);zone.send('pointerup',1);assert.deepEqual(readDrivingInput(new Set(),pointers),{steer:0,brake:false});
+ zone.send('pointermove',2,850);assert.ok(readDrivingInput(new Set(),pointers).steer<0);
+ zone.send('pointercancel',2);assert.equal(pointers.size,0);
+});
+test('trackpad cannot retain input after leaving the screen area, pause, rotation or a mode change',()=>{
+ const zone=surface(),pointers=new Map();let mode='trackpad',running=true;const controls=bindTouchSteering(zone,pointers,()=>running,()=>({touchMode:mode,sensitivity:.7}));
+ zone.send('pointerdown',1,300);zone.send('pointermove',1,500);assert.ok(readDrivingInput(new Set(),pointers).steer>0);
+ zone.send('pointermove',1,600,390);assert.equal(pointers.size,0);zone.send('pointermove',1,600,600);assert.equal(readDrivingInput(new Set(),pointers).steer,0);
+ running=false;zone.send('pointermove',1,700);assert.equal(pointers.size,0);controls.clear();running=true;mode='buttons';zone.send('pointermove',1,800);assert.equal(pointers.size,0);
+ zone.send('pointerdown',2,800);assert.equal(readDrivingInput(new Set(),pointers).steer,1);controls.dispose();assert.equal(pointers.size,0);
+});

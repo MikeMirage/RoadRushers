@@ -110,7 +110,7 @@ function coast(group,circuit,s,rng,state) {
     const x=(rng()-.5)*420,z=(rng()-.5)*400;
     if(z>shore(x)-20||circuit.nearest(x,z).distance<14||Math.hypot(x-lx,z-lz)<19||Math.abs(x)<42&&z>-42&&z<48)continue;
     const scale=.65+rng()*.75;
-    if(i%3===0) {s.add('cylinder',x,2*scale,z,.25*scale,4*scale,.25*scale,'#a38760');for(let j=0;j<4;j++){const a=j*Math.PI/2;s.add('rock',x+Math.sin(a)*1.5*scale,4.4*scale,z+Math.cos(a)*1.5*scale,2.2*scale,.3*scale,.9*scale,'#769a69',a);}}
+    if(i%3===0)s.tree('tropical',x,z,scale,'#769a69');
     else pine(s,x,z,scale,i%2?'#63856b':'#82956a');
     if(i%5===0)s.add('rock',x+3,.7,z+2,2.5,1.2,1.8,'#c3bea5',rng()*6);
   }

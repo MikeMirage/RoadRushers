@@ -13,7 +13,7 @@ export class GarageView {
   constructor(onSelect) {
     this.onSelect = onSelect;
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.renderer.domElement.setAttribute('aria-label', 'Colección 3D de micromachines. Arrastra para girar y selecciona un coche para ampliarlo.');
