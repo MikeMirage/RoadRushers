@@ -21,3 +21,6 @@ reference/
 /tools/prl-production/
 /tools/prl-production-local/
 /tools/prl-supervision/
+
+# Also ignore dependency links used by isolated validation.
+node_modules
