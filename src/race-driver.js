@@ -1,4 +1,5 @@
 import { SURFACES, WEATHER, PACES } from './config.js';
+import { steeringTurnRate } from './physics.js';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
@@ -100,7 +101,9 @@ export class RivalDriver {
     if(overlap)this.targetLane=clamp(car.road.offset,-limit,limit);
 
     let speedLimit=Infinity;
-    for(let d=0;d<=48;d+=4){
+    // Scan a full stopping distance at the current speed, including reaction and pressure build-up.
+    const horizon=Math.max(48,Math.min(220,v*v/(2*4)+v*(this.interval+.45)+p.brakeMargin));
+    for(let d=0;d<=horizon;d+=4){
       const q=this.guide.at(u+d/circuit.length),surfaceId=circuit.surfaceAt(u+d/circuit.length,surface),s=SURFACES[surfaceId];
       const loose=['dirt','gravel'].includes(surfaceId)?car.vehicle.looseGrip:1;
       const grip=clamp(s.grip/9.5*car.vehicle.grip*loose,.18,1.2)*WEATHER[weather].grip;
@@ -128,12 +131,11 @@ export class RivalDriver {
     const noseLead=Math.atan(v*curvature/Math.max(1,grip));
     const yawFeed=curvature*v;
     const desiredYaw=yawFeed+wrap(error+noseLead)*2.5-(car.angularSpeed-yawFeed)*.7;
-    const turn=2.65*car.vehicle.turn*Math.max(.4,Math.min(1,v/7))*(circuit.surfaceAt(u,surface)==='ice'?.85:1)*(car.grounded?1:.25);
+    const turn=steeringTurnRate(car.vehicle,v,circuit.surfaceAt(u,surface),car.grounded);
     this.steerTarget=clamp(-desiredYaw/turn,-1,1);
-    // Braking shares the player's interlock: both directions straighten the wheels.
-    const aligned=Math.abs(error)<.24&&Math.abs(car.angularSpeed)<.7;
-    if(this.braking){if(this.brakeTime>.24&&(v<Math.max(.25,speedLimit-.65)||Math.abs(error)>.28||Math.abs(car.angularSpeed)>1))this.braking=false;}
-    else if(v>speedLimit+.7&&(aligned||hazard)){this.braking=true;this.brakeTime=0;}
+    // Braking may continue through a bend; all tire forces still come from DriveModel.
+    if(this.braking){if(this.brakeTime>.24&&v<Math.max(.25,speedLimit-.65))this.braking=false;}
+    else if(v>speedLimit+.7||hazard){this.braking=true;this.brakeTime=0;}
   }
   decide(dt,racer,field,circuit,interaction,surface,weather,pace='normal'){
     this.timer-=dt;this.maneuverTime+=dt;this.brakeTime+=dt;
@@ -141,7 +143,7 @@ export class RivalDriver {
     const laneRate=this.maneuver==='cruise'?.8:1.35;
     this.lane=approach(this.lane,this.targetLane,laneRate*dt);
     // Bound wheel demand changes every physics tick, not just every AI decision.
-    this.input.steer=approach(this.input.steer,this.braking?0:this.steerTarget,2.1*dt);
+    this.input.steer=approach(this.input.steer,this.steerTarget,2.1*dt);
     this.input.brake=this.braking;
     return this.input;
   }

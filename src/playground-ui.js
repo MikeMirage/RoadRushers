@@ -6,6 +6,9 @@ import { renderRaceSetup } from './race-setup-ui.js';
 import { clubIcon,renderClubNavigation,countryFlag } from './club-ui.js';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function renderHomeCarLink(vehicle){
+  return `<button type="button" class="club-home-car-link" data-play-action="garage" aria-label="Ver garaje: ${esc(vehicle.name)}" title="Garaje">${countryFlag(vehicleOrigin(vehicle))}<strong>${esc(vehicle.name)}</strong>${clubIcon('garage')}</button>`;
+}
 export function renderPlayground(options,tracks,ready=true,setupStep='circuit'){
   const vehicle=VEHICLES.find(v=>v.id===options.vehicleId)||VEHICLES[0],track=tracks.find(t=>t.id===options.trackId)||tracks[0];
   const widths=['original',12,14,16].map(width=>({width,...makeRaceTrack(track,width)})),chosen=widths.find(v=>v.width===options.width)||widths[0];
@@ -14,7 +17,7 @@ export function renderPlayground(options,tracks,ready=true,setupStep='circuit'){
   return `<form id="playground-form" class="club-home" aria-label="Preparar carrera">
     <section class="club-home-hero home-studio" aria-label="Tu miniatura">
       <div id="home-car-stage" class="club-car-stage" aria-label="Vista 3D de tu coche"><span class="club-car-loading" role="status">Preparando miniatura…</span></div>
-      <button type="button" class="club-home-car-link" data-play-action="garage" aria-label="Ver garaje: ${esc(vehicle.name)}" title="Garaje">${countryFlag(vehicleOrigin(vehicle))}<strong>${esc(vehicle.name)}</strong>${clubIcon('garage')}</button>
+      ${renderHomeCarLink(vehicle)}
     </section>
     <section class="club-home-controls" aria-label="Tu próxima salida">
       <button type="button" class="home-track-recap" data-play-action="tracks" aria-label="Elegir circuito" title="Circuitos">${clubIcon('path')}<span><strong>${esc(track.name)}</strong><small>${preview.length} km</small></span>${clubIcon('caret-right')}</button>

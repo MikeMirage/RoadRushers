@@ -1,4 +1,10 @@
-import { TRACKS, VEHICLES, CHAMPIONSHIP } from './config.js';
+import { TRACKS, VEHICLES, CHAMPIONSHIP, SURFACES } from './config.js';
+
+import { Circuit } from './circuit.js';
+
+// Conservative geometric lower bound, independent of medal targets and tuning.
+// Allow the shorter inside line, but reject times impossible at the official pace.
+const minimumOfficialLap=(track,vehicle)=>new Circuit(track).length*.7 / (Math.max(...Object.values(SURFACES).map(s=>s.speed))*vehicle.speed*1.08);
 
 export const CAREER_KEY = 'roadrushers.career.v1';
 export const MEDALS = ['Sin medalla', 'Bronce', 'Plata', 'Oro'];
@@ -21,7 +27,7 @@ export class Career {
         for (const event of CHAMPIONSHIP.events) {
           const time = data.results?.[event.id];
           const track = TRACKS.find(t => t.id === event.track);
-          if (typeof time === 'number' && Number.isFinite(time) && time <= 3600 && time >= track.medals.gold * 0.6 && this.eventAvailable(event.id)) this.results[event.id] = time;
+          if (typeof time === 'number' && Number.isFinite(time) && time <= 3600 && time >= minimumOfficialLap(track,VEHICLES.find(v=>v.id===event.vehicle)) && this.eventAvailable(event.id)) this.results[event.id] = time;
         }
       }
     } catch { this.saveAvailable = false; }
@@ -45,7 +51,7 @@ export class Career {
     if (!event || !this.eventAvailable(eventId)) throw new Error('Prueba no disponible');
     const track = TRACKS.find(t => t.id === event.track);
     if (settings.mode !== 'career' || settings.track.id !== event.track || settings.vehicle.id !== event.vehicle || settings.surface !== 'track' || settings.weather !== event.weather || settings.pace !== 'normal') throw new Error('La prueba requiere su configuración oficial');
-    if (!Number.isFinite(time) || time > 3600 || time < track.medals.gold * 0.6) throw new Error('Tiempo no válido');
+    if (!Number.isFinite(time) || time > 3600 || time < minimumOfficialLap(track,settings.vehicle)) throw new Error('Tiempo no válido');
     const before = this.unlocked;
     this.results[eventId] = Math.min(this.best(eventId) ?? Infinity, time);
     try { this.storage?.setItem(CAREER_KEY, JSON.stringify({ version: 1, results: this.results })); this.saveAvailable = Boolean(this.storage); } catch { this.saveAvailable = false; }

@@ -38,7 +38,8 @@ test('a short brake press is gentle and holding progressively slows every car to
     const earlyPressure=car.brake,earlySpeed=car.speed;
     assert.ok(earlyPressure>0&&earlyPressure<.4);
     step(car,.5);assert.ok(car.brake>earlyPressure);assert.ok(car.speed<earlySpeed-2);
-    step(car,3);assert.equal(car.speed,0);assert.equal(car.vx,0);assert.equal(car.vz,0);
+    // The faster cruise ceiling increases the full stopping time.
+    step(car,5);assert.equal(car.speed,0);assert.equal(car.vx,0);assert.equal(car.vz,0);
     step(car,1);assert.equal(car.speed,0,'holding the brake restarted acceleration');
   }
 });

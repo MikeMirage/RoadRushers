@@ -1,6 +1,6 @@
 {
   "createdOn": "2026-11-02",
-  "status": "awaiting_visual_selection",
+  "status": "published_verified",
   "product": "Pocket Racing League",
   "scope": [
     "Home with full game title and race/challenge content",
@@ -12,7 +12,7 @@
   "constraints": [
     "Mobile, gamepad and PC keyboard usability",
     "No pixelated full-screen backdrop or isolated selected car as the home hero",
-    "No invented online competition, economy or player progress"
+    "Economy and progress are implemented from real local race results; no fictitious online opponents."
   ],
   "displayOrder": [
     {
@@ -42,5 +42,9 @@
     "Model unlock state explicitly; current testing catalog is not a progression system",
     "A garage visit should show the unlocked collection, not just the current car",
     "Profile must have its own content instead of redirecting to preferences"
-  ]
+  ],
+  "selectedOption": 2,
+  "implementationRevision": "305b237346ec4ea1f3faad421f81cc8503a5e163",
+  "publicationUrl": "https://mikemirage.github.io/RoadRushers/?v=305b237",
+  "actionsUrl": "https://github.com/MikeMirage/RoadRushers/actions/runs/41446414661"
 }

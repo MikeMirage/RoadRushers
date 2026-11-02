@@ -11,6 +11,16 @@ import { provingGround,runFor,measureVehicle,measureLap,FAST_TEST_TRACK } from '
 
 const metrics=ORIGINAL_VEHICLES.map(measureVehicle);
 
+test('starter cars reach a real 140–160 km/h and retain controllable steering',()=>{
+  for(const vehicle of ORIGINAL_VEHICLES.slice(0,3)){
+    const car=new DriveModel(provingGround,vehicle);runFor(car,30);
+    assert.ok(car.speed*3.6>=140&&car.speed*3.6<=160,`${vehicle.id}: ${car.speed*3.6} km/h`);
+    const z=car.z;runFor(car,1);assert.ok(car.z-z>=140/3.6,'cruise must move the simulation, not only the speedometer');
+    runFor(car,.5,{steer:1});assert.ok(Math.abs(car.angularSpeed)>1,'full steering must still turn at cruise');
+    runFor(car,.35,{steer:-1});assert.ok(car.angularSpeed>0,'countersteering must remain available');
+  }
+});
+
 test('base cars have close straight-line performance and different measurable advantages',()=>{
   const [truck,rally,roadster]=metrics;
   assert.ok(roadster.topSpeed>rally.topSpeed&&rally.topSpeed>truck.topSpeed);

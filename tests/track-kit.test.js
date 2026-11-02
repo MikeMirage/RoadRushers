@@ -6,7 +6,7 @@ import { Circuit } from '../src/circuit.js';
 import { DriveModel,LapTracker } from '../src/physics.js';
 import { CameraRig } from '../src/camera.js';
 import { roadRibbon,trackStructures } from '../src/road-geometry.js';
-import { VEHICLES } from '../src/config.js';
+import { VEHICLES,SURFACES } from '../src/config.js';
 
 const eight=()=>new Circuit(kitConfig(KIT_PRESETS[1].pieces));
 const near=(a,b,epsilon=1e-6)=>assert.ok(Math.abs(a-b)<epsilon,`${a} differs from ${b}`);
@@ -43,7 +43,8 @@ test('both traversals of the crossing preserve their own route and lap-gate cont
     const car=new DriveModel(c);car.reset(c,progress-.015);const p=c.at(progress-.015);
     car.vx=Math.sin(p.heading)*19;car.vz=Math.cos(p.heading)*19;
     let previous=car.road.progress;
-    for(let i=0;i<130;i++){car.step(1/120,0,'track','clear');assert.ok(Math.abs(car.road.progress-previous)<.002,'jumped to the crossing branch');previous=car.road.progress;}
+    // Hold the original 19 m/s traversal so the test stays on the crossing deck.
+    for(let i=0;i<130;i++){car.step(1/120,0,'track','clear','normal',false,19/(SURFACES.asphalt.speed*car.vehicle.speed));assert.ok(Math.abs(car.road.progress-previous)<.002,'jumped to the crossing branch');previous=car.road.progress;}
     assert.ok(car.road.progress>progress);assert.ok(Math.abs(car.y-(progress===cross.lowerProgress?0:6))<.1);
   }
 });

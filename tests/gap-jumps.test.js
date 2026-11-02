@@ -11,7 +11,7 @@ import { renderPlayground } from '../src/playground-ui.js';
 import { resolvePlayground,playgroundTracks,DEFAULT_PLAYGROUND } from '../src/playground.js';
 import { trackPanel } from '../src/track-editor-ui.js';
 import { RaceSession } from '../src/race.js';
-import { VEHICLES } from '../src/config.js';
+import { VEHICLES,SURFACES } from '../src/config.js';
 import { World } from '../src/world.js';
 
 const course=(piece='gap-jump-short')=>new Circuit(kitConfig(['straight-64',piece,'straight-long']));
@@ -58,7 +58,8 @@ test('a real ballistic flight crosses the short void and lands without midair su
   const c=course(),car=new DriveModel(c);car.reset(c,45/c.length);car.vz=20;
   let overVoid=0,air=0,landed=false,left=false;
   for(let i=0;i<720;i++){
-    const wasAir=!car.grounded;car.step(1/120,0,'track','clear');
+    // This checks the authored 20 m/s jump, independently of the higher cruise ceiling.
+    const wasAir=!car.grounded;car.step(1/120,0,'track','clear','normal',false,20/(SURFACES.asphalt.speed*car.vehicle.speed));
     if(car.road.gap){overVoid++;assert.equal(car.grounded,false);}
     if(!car.grounded)left=true;
     if(wasAir&&car.grounded&&!car.respawned)landed=true;

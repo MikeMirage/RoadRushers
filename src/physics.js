@@ -6,6 +6,12 @@ const POSE_FIELDS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 'speed', 'steer', 'slip', 
 export const START_PROGRESS = 0;
 const vehicleFrontLoad=vehicle=>vehicle.handling?.frontWeight??.5;
 
+// Keep steering progressive above 108 km/h. Low-speed and
+// countersteering response still use the same damped wheel/yaw controls.
+export const steeringTurnRate=(vehicle,speed,surfaceId,grounded=true)=>
+  2.65*vehicle.turn*Math.max(.4,Math.min(1,speed/7)) /
+  (1+Math.max(0,speed-30)*.067)*(surfaceId==='ice'?.85:1)*(grounded?1:.25);
+
 export class DriveModel {
   constructor(circuit, vehicle = VEHICLES[0]) { this.vehicle = vehicle; this.reset(circuit); }
 
@@ -85,7 +91,7 @@ export class DriveModel {
     const grip = Math.max(0.65, surface.grip * vehicle.grip * terrainGrip * (1 - this.drift * vehicle.drift)) * weather.grip;
     // Steering always means left/right relative to the vehicle, in either camera.
     // Keep enough steering authority to recover after a head-on wall contact.
-    const turn = 2.65 * vehicle.turn * Math.max(0.4, Math.min(1, speed / 7)) * (activeSurface === 'ice' ? 0.85 : 1);
+    const turn = steeringTurnRate(vehicle,speed,activeSurface);
     this.angularSpeed = damp(this.angularSpeed, -this.steer * turn * (this.grounded?1:.25), 4.5 * vehicle.yawResponse, dt);
     this.heading = wrap(this.heading + this.angularSpeed * dt);
     const fx = Math.sin(this.heading), fz = Math.cos(this.heading);
@@ -95,7 +101,8 @@ export class DriveModel {
     const throttle=Math.max(0,Math.min(1,Number.isFinite(throttleInput)?throttleInput:1));
     const target = cruiseSpeed * (1 - Math.abs(this.steer) * 0.08)*throttle;
     if(this.grounded){
-      if(!this.braking)forward = damp(forward, target, 1.45 * vehicle.acceleration, dt);
+      // Raising the cruise ceiling must not double the legacy cars' launch force.
+      if(!this.braking)forward = damp(forward, target, 1.45 * vehicle.acceleration * (21/41), dt);
       // Static holding avoids creeping backwards when braking at rest on a ramp.
       if(!this.braking||speed>.05)forward -= Math.sin(Math.atan(this.road.grade||0))*5*dt;
     }
@@ -138,9 +145,9 @@ export class DriveModel {
     const cornerDemand=Math.abs(this.steer)*speed;
     const driftTarget=Math.max(0,Math.min(1,(cornerDemand-h.driftEntry)/10));
     this.drift=damp(this.drift,driftTarget,driftTarget>this.drift?h.driftBuild:h.recovery,dt);
-    // Preserve full steering authority at speed and through countersteering.
-    // Grip still controls lateral momentum; it must not also mute yaw response.
-    const turn=2.65*v.turn*Math.max(.4,Math.min(1,speed/7))*(activeSurface==='ice'?.85:1);
+    // Steering remains responsive while its full-lock rate becomes gentler at high speed.
+    // Grip controls lateral momentum independently of this wheel demand.
+    const turn=steeringTurnRate(v,speed,activeSurface);
     const targetYaw=-this.steer*turn*(this.grounded?1:.25);
     this.angularSpeed=damp(this.angularSpeed,targetYaw,h.yawRate,dt);
     this.heading=wrap(this.heading+this.angularSpeed*dt);

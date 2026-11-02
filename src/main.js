@@ -51,7 +51,7 @@ import { FixedStepClock, FIXED_STEP } from './timing.js';
 import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
 
 import { renderGarage,updateStudioDetail,renderStudioPanel } from './vehicle-collection-ui.js';
-import { renderPlayground } from './playground-ui.js';
+import { renderPlayground,renderHomeCarLink } from './playground-ui.js';
 import { loadPlayground,savePlayground,normalizePlayground,resolvePlayground,playgroundTracks } from './playground.js';
 import { carIllustration, preloadVehicles,vehicleAvailable } from './vehicles.js';
 import { renderRaceSetup,SETUP_STEPS } from './race-setup-ui.js';
@@ -304,6 +304,10 @@ function refreshPlayground(){
 }
 function syncPlaygroundScroll(){}
 function hubFocusMode(mode){$('playground-hub').querySelector(`[data-play-mode="${mode}"]`)?.focus({preventScroll:true});}
+function syncHomeCarSelection(){
+  const vehicle=VEHICLES.find(v=>v.id===playgroundOptions.vehicleId),caption=document.querySelector('.club-home-car-link');
+  if(vehicle&&caption)caption.outerHTML=renderHomeCarLink(vehicle);
+}
 function showSetup(step='circuit',focus=true){
   if(raceLaunching)return;
   const previousStep=setupStep,wasOpen=setupOpen;
@@ -313,6 +317,7 @@ function showSetup(step='circuit',focus=true){
     const cars=availableEligibleVehicles(VEHICLES.filter(v=>league.owns(v.id)),playgroundOptions.carCategory);
     if(!cars.length){setupStep='rules';toast('No tienes coches de esta categoría. Elige otra o visita el garaje.');}
     else if(!cars.some(v=>v.id===playgroundOptions.vehicleId)){playgroundOptions.vehicleId=cars[0].id;savePlayground(storage,playgroundOptions);}
+    syncHomeCarSelection();
   }
   const sheet=$('club-setup');if(!sheet)return;
   sheet.outerHTML=renderRaceSetup(playgroundOptions,playgroundTracks(settings.track,storage),{step:setupStep,ready:state!=='loading'});
@@ -349,6 +354,7 @@ async function paintRaceCards(){
 function chooseRaceCar(id){
   if(raceLaunching||!availableEligibleVehicles(VEHICLES.filter(v=>league.owns(v.id)),playgroundOptions.carCategory).some(v=>v.id===id))return;
   playgroundOptions.vehicleId=id;savePlayground(storage,playgroundOptions);
+    syncHomeCarSelection();
   for(const button of $('race-car-grid').querySelectorAll('[data-race-car]')){
     const selected=button.dataset.raceCar===id;button.setAttribute('aria-pressed',String(selected));button.querySelector('.race-card-check')?.remove();
     if(selected)button.insertAdjacentHTML('beforeend',`<span class="race-card-check">${clubIcon('check')}<span class="sr-only">Seleccionado</span></span>`);
