@@ -1,0 +1,4 @@
+.rival-name-layer{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.rival-name-tag{position:absolute;left:0;top:0;max-width:84px;padding:2px 4px;background:#141c249e;color:#f5f6fa;border-radius:2px;font:500 11px/1.2 'DM Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;text-shadow:0 1px 2px #0008;will-change:transform;pointer-events:none}
+.rival-name-tag[hidden]{display:none}
+body:not([data-state=running]):not([data-state=countdown]):not([data-state=paused]) .rival-name-layer{display:none}

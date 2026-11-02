@@ -127,8 +127,7 @@ export class DriveModel {
     this.frontLoad=Math.max(.25,Math.min(.75,h.frontWeight-transfer));this.rearLoad=1-this.frontLoad;
     const lateralTransfer=Math.max(-.23,Math.min(.23,this.lateralAcceleration/9.81*h.cgHeight/h.track*.45));
     this.leftLoad=.5+lateralTransfer;this.rightLoad=.5-lateralTransfer;
-    // Tire load sensitivity and combined longitudinal/lateral demand produce mild
-    // power understeer in AWD and progressive rear breakaway in the roadster.
+    // Tire load and combined demand affect traction, independently of steering input.
     const frontLoadGrip=Math.pow(this.frontLoad/h.frontWeight,.18);
     const rearLoadGrip=Math.pow(this.rearLoad/(1-h.frontWeight),.18);
     const longitudinalDemand=Math.min(.75,Math.abs(this.longitudinalAcceleration)/(12*roadGrip));
@@ -139,12 +138,11 @@ export class DriveModel {
     const cornerDemand=Math.abs(this.steer)*speed;
     const driftTarget=Math.max(0,Math.min(1,(cornerDemand-h.driftEntry)/10));
     this.drift=damp(this.drift,driftTarget,driftTarget>this.drift?h.driftBuild:h.recovery,dt);
-    const understeer=1/(1+Math.max(0,cornerDemand-8)*h.speedSensitivity*(1-frontGrip*.4)*.13);
-    const turn=2.65*v.turn*Math.max(.4,Math.min(1,speed/7))*understeer*(activeSurface==='ice'?.85:1);
-    const countersteering=this.steer*this.driftAngle<0;
-    const recoveryGain=countersteering?Math.max(.12,Math.min(1,Math.abs(this.driftAngle)/.30)):1;
-    const targetYaw=-this.steer*turn*recoveryGain*(this.grounded?1:.25);
-    this.angularSpeed=damp(this.angularSpeed,targetYaw,h.yawRate*(.85+.15*frontGrip),dt);
+    // Preserve full steering authority at speed and through countersteering.
+    // Grip still controls lateral momentum; it must not also mute yaw response.
+    const turn=2.65*v.turn*Math.max(.4,Math.min(1,speed/7))*(activeSurface==='ice'?.85:1);
+    const targetYaw=-this.steer*turn*(this.grounded?1:.25);
+    this.angularSpeed=damp(this.angularSpeed,targetYaw,h.yawRate,dt);
     this.heading=wrap(this.heading+this.angularSpeed*dt);
     this.steeringAngle=-this.steer*(.40-.10*Math.min(1,speed/25));
     const fx=Math.sin(this.heading),fz=Math.cos(this.heading);

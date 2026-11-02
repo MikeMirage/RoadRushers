@@ -1,3 +1,4 @@
+import {buildCircuitFacilities} from './circuit-facilities-view.js';
 import {circuitGrassMaterial,buildCircuitGrass} from './circuit-grass.js';
 import {buildCircuitMarkers} from './circuit-markers-view.js';
 import {buildCircuitInfrastructure} from './circuit-infrastructure-view.js';
@@ -27,19 +28,6 @@ export function circuitAsphaltMaterial(){
     `);
   };
   m.customProgramCacheKey=()=> 'club-asphalt-v1';return m;
-}
-let advertMap;
-function advertisingMaterial(){
-  const m=material('#e6e2d6');
-  if(typeof document==='undefined')return m;
-  if(!advertMap){
-    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=256;const ctx=canvas.getContext('2d');
-    ctx.fillStyle='#173539';ctx.fillRect(0,0,1024,256);ctx.fillStyle='#e8e5d7';ctx.fillRect(0,232,1024,24);
-    ctx.fillStyle='#d4e86a';ctx.fillRect(30,35,14,170);ctx.font='900 122px sans-serif';ctx.fillText('PRL',70,158);
-    ctx.fillStyle='#f2efdf';ctx.font='bold 43px sans-serif';ctx.fillText('ROAD RUSHERS',350,108);ctx.font='26px sans-serif';ctx.fillText('CLUB CIRCUIT  /  MOTORSPORT',353,160);
-    advertMap=new THREE.CanvasTexture(canvas);advertMap.colorSpace=THREE.SRGBColorSpace;advertMap.anisotropy=4;
-  }
-  m.map=advertMap;return m;
 }
 function ground(circuit,m){
   const box=new THREE.Box3().setFromPoints(circuit.samples),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
@@ -88,7 +76,7 @@ export function buildCircuitDressing(circuit,recipe){
   const tireParts=[];
   for(let i=0;i<3;i++){const profile=[[.25,0],[.44,0],[.5,.045],[.5,.24],[.44,.29],[.25,.29],[.25,0]].map(([r,y])=>new THREE.Vector2(r,y));const g=new THREE.LatheGeometry(profile,12);g.translate(0,.015+i*.3,0);tireParts.push(g);}
   const stack=mergeGeometries(tireParts);tireParts.forEach(g=>g.dispose());
-  const rubber=material('#ffffff'),board=advertisingMaterial(),steel=material('#686e68',{metalness:.35,roughness:.7});
+  const rubber=material('#ffffff');
   rubber.onBeforeCompile=shader=>{
     shader.vertexShader='varying vec3 tireLocal;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\ntireLocal=position;');
     shader.fragmentShader='varying vec3 tireLocal;\n'+shader.fragmentShader;
@@ -113,13 +101,10 @@ export function buildCircuitDressing(circuit,recipe){
   instances(recipe.tires,stack,rubber,'tires',.02);
   const contact=new THREE.CircleGeometry(.56,12);contact.rotateX(-Math.PI/2);
   instances(recipe.tires,contact,new THREE.MeshBasicMaterial({color:'#171c15',transparent:true,opacity:.24,depthWrite:false}),'tire-contact',.025);
-  const legacyBoards=recipe.infrastructure?(recipe.options?.advertising&&!recipe.infrastructure.rails.length&&!recipe.infrastructure.fences.length?recipe.boards.filter((_,i)=>(i%10)/10<recipe.options.advertisingDensity):[]):recipe.boards;
-  root.add(buildCircuitInfrastructure(circuit,recipe.infrastructure),buildCircuitMarkers(circuit,recipe.markers));
-  instances(legacyBoards,new THREE.PlaneGeometry(4.8,1.15),board,'advertising',1.05);
-  instances(legacyBoards,new THREE.BoxGeometry(4.8,1.15,.06),material('#59605d',{metalness:.25,roughness:.8}),'board-back',1.05);
-  instances(legacyBoards,new THREE.BoxGeometry(4.9,.12,.16),steel,'board-rail',.46);
-  const posts=legacyBoards.flatMap(([u,offset])=>[-1,1].map(side=>[u+side*1.9/circuit.length,offset]));
-  instances(posts,new THREE.BoxGeometry(.12,1.55,.12),material('#686e68',{metalness:.35,roughness:.7}),'board-post',.7);
+  const legacyCandidates=recipe.infrastructure?(recipe.options?.advertising&&!recipe.infrastructure.rails.length&&!recipe.infrastructure.fences.length?recipe.boards.filter((_,i)=>(i%10)/10<recipe.options.advertisingDensity):[]):recipe.boards;
+  const legacyAds=legacyCandidates.filter(([u])=>u>3/circuit.length&&u<1-3/circuit.length).map(([u,o])=>[u-3/circuit.length,u+3/circuit.length,Math.sign(o),Math.abs(o)-circuit.widthAt(u)/2]);
+  const infrastructure=recipe.infrastructure||{rails:[],fences:[],ads:[]};
+  root.add(buildCircuitInfrastructure(circuit,{...infrastructure,ads:[...infrastructure.ads,...legacyAds]},recipe),buildCircuitMarkers(circuit,recipe.markers),buildCircuitFacilities(circuit,recipe.facilities));
   // Release materials with no geometry; shared texture cache remains owned by the loader.
   for(const [kind,m]of Object.entries(materials))if(![...cells.values()].some(cell=>cell[kind]))m.dispose();
   root.userData.recipe=recipe;root.updateMatrixWorld(true);root.traverse(o=>{o.matrixAutoUpdate=false;});return root;

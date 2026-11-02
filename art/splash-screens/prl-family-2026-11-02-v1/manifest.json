@@ -1,0 +1,103 @@
+{
+  "project": "PocketRacingLeague",
+  "shortName": "PRL",
+  "date": "2026-11-02",
+  "provider": "Higgsfield",
+  "model": "gpt_image_2_5",
+  "quality": "high",
+  "requestedResolution": "2k",
+  "requestedAspectRatio": "9:16",
+  "actualPixelDimensions": {
+    "width": 1520,
+    "height": 2688
+  },
+  "status": "three completed, downloaded and visually reviewed",
+  "costEstimateCredits": 8.25,
+  "costNote": "Preflight estimate for three generations; actual charge was not separately returned.",
+  "artDirection": {
+    "style": "Semi-realistic illustrated 2.5D motorsport key art",
+    "palette": {
+      "white": "#FFFFFF",
+      "red": "#F21E35",
+      "blue": "#009DE2",
+      "charcoal": "#19212C"
+    },
+    "layout": "Consistent PRL header, diagonal racing graphics and quiet lower area for future loading UI",
+    "subjects": [
+      "Collectible car garage",
+      "Helmeted driver",
+      "Female league ambassador"
+    ]
+  },
+  "outputs": [
+    {
+      "index": 1,
+      "job_id": "efbfa25a-450f-4b1a-9c2c-94fa2a9f191a",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2_5",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_31Bsc26R8l07gR0W3u6I4DllJtZ/hf_20261101_200810_efbfa25a-450f-4b1a-9c2c-94fa2a9f191a.png",
+      "file": "01-garage.png",
+      "width": 1520,
+      "height": 2688,
+      "sha256": "6c2ccafa696d5f00909fde41562836c3cf3e4e14d68d6cf3e57a02b3d37f5d99",
+      "bytes": 5649358
+    },
+    {
+      "index": 2,
+      "job_id": "090081f2-2b4f-4c81-be6e-b5c69bc23001",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2_5",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_31Bsc26R8l07gR0W3u6I4DllJtZ/hf_20261101_200810_090081f2-2b4f-4c81-be6e-b5c69bc23001.png",
+      "file": "02-helmet.png",
+      "width": 1520,
+      "height": 2688,
+      "sha256": "17e2c5842f4a0d366c027cc236079d255a6f9f48781df7c0353d0de93cf173e7",
+      "bytes": 4354671
+    },
+    {
+      "index": 3,
+      "job_id": "efe98bbf-b9c0-4e98-b8fb-455096e02a1c",
+      "status": "completed",
+      "type": "image",
+      "model": "gpt_image_2_5",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_31Bsc26R8l07gR0W3u6I4DllJtZ/hf_20261101_200557_efe98bbf-b9c0-4e98-b8fb-455096e02a1c.png",
+      "file": "03-ambassador.png",
+      "width": 1520,
+      "height": 2688,
+      "sha256": "f350614d57d7de4b2d4612566027467549f71d0d5c6f963424b8029b08ff2e2f",
+      "bytes": 4241112
+    }
+  ],
+  "referenceUploads": [
+    {
+      "index": 1,
+      "media_id": "0647d5cf-f25e-4c00-b857-d49a4795108f",
+      "file": "codex-clipboard-34259291-3b02-4c16-93fc-4c59ed511046.png"
+    },
+    {
+      "index": 2,
+      "media_id": "e48237ab-9b1a-4963-a893-600263f9777c",
+      "file": "codex-clipboard-8a12e7b8-5b85-44ad-bf17-36c4ca89d546.png"
+    },
+    {
+      "index": 3,
+      "media_id": "58b4e6dd-d8c4-49f5-8c6a-7f12b32ad610",
+      "file": "codex-clipboard-1b59298a-8059-405c-b657-413114b56039.png"
+    }
+  ],
+  "prompts": [
+    "00-shared-art-direction.txt",
+    "01-garage-prompt.txt",
+    "02-helmet-prompt.txt",
+    "03-ambassador-prompt.txt"
+  ],
+  "review": {
+    "mainLogo": "Readable and consistent across the three generated headers",
+    "palette": "Unified red, blue, charcoal and white",
+    "subjects": "Each source theme preserved",
+    "bottomArea": "Light fade for future loading UI; no progress bar baked into artwork",
+    "notes": "These are unified visual proposals. Generated small livery marks and equipment details may need production cleanup before final release."
+  }
+}

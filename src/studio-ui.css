@@ -31,7 +31,9 @@
 .studio-detail h2{font:600 31px/1.1 'Barlow Condensed',sans-serif;letter-spacing:0;margin:0;color:var(--studio-ink)}
 #garage-content .studio-detail>p{margin:5px 0 14px;font:400 13px/1.3 'DM Sans',sans-serif;color:var(--prl-blue)}
 .studio-stats{display:grid;gap:9px}
-.studio-stats>div{display:grid;grid-template-columns:24px minmax(0,1fr);gap:16px;align-items:center;font:400 13px/1.2 'DM Sans',sans-serif}
+.studio-stats>div{display:grid;grid-template-columns:24px minmax(0,1fr) 47px;gap:12px;align-items:center;font:400 13px/1.2 'DM Sans',sans-serif}
+.studio-stat-value{font:500 12px/1.2 'DM Sans',sans-serif;color:var(--studio-ink);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.studio-stat-value>small{font-size:10px;color:var(--studio-muted);margin-left:2px}
 .studio-stats .club-icon{width:21px;height:21px;opacity:.8}
 .studio-stats meter{appearance:none;display:block;width:100%;height:9px;border:0;background:#afc5d52e;border-radius:2px}
 .studio-stats meter::-webkit-meter-bar{background:#afc5d52e;border:0;border-radius:2px;height:9px}
@@ -84,6 +86,8 @@ body:has(#club-setup:not(.hidden)) header.topbar{visibility:hidden}
 .setup-recap .club-icon{width:21px;height:21px}
 .setup-circuit{display:flex;flex-direction:column}
 .setup-circuit-selector{padding:8px 14px 0;flex-shrink:0}
+.setup-circuit-theme{margin-top:10px}
+.setup-circuit-theme .setup-help{margin:6px 0 10px 30px}
 .setup-map-panel{display:grid;place-items:center;flex:1;min-height:230px;padding:18px 16px;background:#151c23}
 .setup-map-svg{position:relative;width:100%;height:100%;min-height:0;color:#f5f6fa}
 .setup-map-svg svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
@@ -153,6 +157,27 @@ body:has(#club-setup:not(.hidden)) header.topbar{visibility:hidden}
 body[data-state=hub] .club-header-car{display:none}
 body[data-state=hub] .topbar .toolbar{margin-left:auto}
 .club-track-identity .eyebrow,.club-selected-car small,.club-mode>button small{display:none}
+/* The start screen shares the miniature studio, with one route into preparation. */
+.club-home-hero.home-studio{background:#26313d url('/assets/prl/club/studio-backdrop.webp') center/cover no-repeat;min-height:160px}
+.home-studio .club-car-stage{top:0;bottom:64px}
+.club-home-car-link{position:absolute;inset:auto 0 0;z-index:2;display:flex;align-items:center;gap:12px;width:100%;height:64px;min-height:64px;padding:12px 16px;border:0;border-top:1px solid var(--studio-line);border-radius:0;background:#151c23e0;backdrop-filter:blur(10px);color:var(--studio-ink);text-align:left}
+.club-home-car-link>strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 27px/1.1 'Barlow Condensed',sans-serif}
+.club-home-car-link>.club-icon{width:26px;height:26px}
+.home-track-recap{display:flex;align-items:center;gap:12px;min-width:0;min-height:60px;padding:10px 12px;background:#242d36;color:var(--studio-ink);border:1px solid var(--studio-line);border-radius:4px;text-align:left}
+.home-track-recap>span{flex:1;min-width:0}
+.home-track-recap strong{display:block;font:500 20px/1.1 'Barlow Condensed',sans-serif;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.home-track-recap small{display:block;font:400 12px/1.2 'DM Sans',sans-serif;color:var(--prl-blue);margin-top:4px}
+.home-track-recap>.club-icon:last-child{width:18px;height:18px}
+#playground-hub .club-home-controls{background:var(--studio-bg)}
+@keyframes studio-reveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes studio-panel-reveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes setup-step-reveal{from{opacity:0;transform:translateX(var(--step-offset,12px))}to{opacity:1;transform:translateX(0)}}
+#garage-content .studio-body{animation:studio-reveal .28s ease-out both}
+#garage-content .studio-panel:not(.hidden){animation:studio-panel-reveal .24s cubic-bezier(.2,.75,.2,1) both}
+.home-studio canvas{animation:studio-reveal .36s ease-out both}
+.animate-step :is(.setup-body,.setup-cars):not(.hidden){animation:setup-step-reveal .24s cubic-bezier(.2,.75,.2,1) both}
+#garage-content .studio-arrow{transition:background .18s,opacity .18s,transform .16s}
+#garage-content .studio-arrow:active:not(:disabled){transform:scale(.94)}
 .setup-error{font:400 12px/1.5 'DM Sans',sans-serif;color:#ffb6cf;margin:0 0 10px}
 .setup-warning{font:400 12px/1.5 'DM Sans',sans-serif;color:var(--studio-muted);margin:0 0 10px}
 .race-car-facts{inset:25% 14px 14px;z-index:10;font-size:14px}
@@ -169,9 +194,13 @@ body[data-state=hub] .topbar .toolbar{margin-left:auto}
   .race-setup-footer{padding-block:9px}.race-car-summary{margin-bottom:8px}
 }
 @media (max-height:600px) and (orientation:portrait){
+  #garage-content .studio-showroom{min-height:180px;flex-basis:180px}
   #garage-content .studio-detail>p{margin-bottom:6px}
   .studio-detail .studio-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
   .studio-detail .studio-stats>div{grid-template-columns:20px minmax(0,1fr);gap:8px}
+  .studio-detail .studio-stats>div{row-gap:4px}
+  .studio-detail .studio-stats>div>meter{grid-column:1/-1;grid-row:2}
+  .studio-detail .studio-stat-value{grid-column:2;grid-row:1}
 }
 @media (min-width:701px) and (orientation:landscape){
   #garage-overlay #garage-content{grid-template-columns:minmax(0,1fr) minmax(300px,30%);grid-template-rows:54px auto minmax(0,1fr) auto 64px}
@@ -194,4 +223,7 @@ body[data-state=hub] .topbar .toolbar{margin-left:auto}
   .race-setup-footer .primary-button{max-width:360px;margin-left:auto}.race-car-summary{max-width:500px;float:left;width:50%;margin:0}
   .race-car-facts{inset:20% max(14px,calc((100% - 500px)/2)) 30px}
 }
-@media (prefers-reduced-motion:reduce){.studio-arrow,.race-car-card{transition:none}}
+@media (prefers-reduced-motion:reduce){
+  .studio-arrow,.race-car-card,.studio-stats meter::-webkit-meter-optimum-value{transition:none!important}
+  #garage-content .studio-body,#garage-content .studio-panel,.home-studio canvas,.animate-step :is(.setup-body,.setup-cars){animation:none!important}
+}

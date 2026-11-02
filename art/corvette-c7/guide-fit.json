@@ -1,0 +1,22 @@
+{
+  "body": {
+    "samples": 7099,
+    "maxDisplacement": 0.1902671300483428,
+    "meanDisplacement": 0.038462303130389515
+  },
+  "cabin": {
+    "samples": 4861,
+    "maxDisplacement": 0.15564173379136811,
+    "meanDisplacement": 0.030805318663596565
+  },
+  "sourceHeight": 1.3328090906143188,
+  "sourceAxles": [
+    1.2625,
+    -1.3465
+  ],
+  "targetAxles": [
+    1.31,
+    -1.4
+  ],
+  "method": "Symmetric nearest-surface fitting + 12 adjacency-smoothing passes; source guide polygons never exported."
+}

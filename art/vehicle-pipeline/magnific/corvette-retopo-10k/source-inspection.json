@@ -1,0 +1,29 @@
+{
+  "source": "/Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers/art/vehicle-pipeline/magnific/corvette-retopo-10k/source.glb",
+  "status": "candidate-high-source-not-game-ready",
+  "normalization": "Uniform length to 4.49m for visual comparison; not dimensional validation",
+  "sourceBounds": [
+    0.4716244637966156,
+    1.000000238418579,
+    0.305283784866333
+  ],
+  "parts": [
+    {
+      "name": "tripo_node_1c71b5c5-7ee6-4093-a5c3-aeb97",
+      "triangles": 12813,
+      "vertices": 16505,
+      "uvLayers": 1,
+      "center": [
+        0.0,
+        0.0,
+        0.6897552609443665
+      ],
+      "dimensions": [
+        4.489998817443848,
+        2.1175923347473145,
+        1.370723843574524
+      ]
+    }
+  ],
+  "triangles": 12813
+}

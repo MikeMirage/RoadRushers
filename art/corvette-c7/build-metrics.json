@@ -1,0 +1,143 @@
+{
+  "objects": {
+    "Part_BodySuspension_M_Paint": {
+      "triangles": 28833
+    },
+    "Part_BodySuspension_M_Carbon": {
+      "triangles": 17824
+    },
+    "Part_BodySuspension_M_Glass": {
+      "triangles": 13384
+    },
+    "Part_BodySuspension_M_Vent": {
+      "triangles": 17738
+    },
+    "Part_BodySuspension_M_Chrome": {
+      "triangles": 3936
+    },
+    "Part_BodySuspension_M_Amber": {
+      "triangles": 40
+    },
+    "Part_BodySuspension_M_TailLight": {
+      "triangles": 920
+    },
+    "Part_BodySuspension_M_HeadLight": {
+      "triangles": 960
+    },
+    "Part_BodySuspension_M_HeadlampGlass": {
+      "triangles": 12096
+    },
+    "Part_BodySuspension_M_Lens": {
+      "triangles": 1120
+    },
+    "Part_BodySuspension_M_Interior": {
+      "triangles": 2184
+    },
+    "Part_Wheel_FL_M_Rubber": {
+      "triangles": 4096
+    },
+    "Part_Wheel_FL_M_Vent_Tread": {
+      "triangles": 6208
+    },
+    "Part_Wheel_FL_M_Rim": {
+      "triangles": 2228
+    },
+    "Part_Wheel_FL_M_Chrome": {
+      "triangles": 1032
+    },
+    "Part_Wheel_FL_M_BrakeDisc": {
+      "triangles": 380
+    },
+    "Part_Wheel_FL_M_Carbon": {
+      "triangles": 216
+    },
+    "Part_Wheel_FL_M_Vent": {
+      "triangles": 1280
+    },
+    "Part_Steering_FL_M_Caliper": {
+      "triangles": 188
+    },
+    "Part_Wheel_FR_M_Rubber": {
+      "triangles": 4096
+    },
+    "Part_Wheel_FR_M_Vent_Tread": {
+      "triangles": 6208
+    },
+    "Part_Wheel_FR_M_Rim": {
+      "triangles": 2228
+    },
+    "Part_Wheel_FR_M_Chrome": {
+      "triangles": 1032
+    },
+    "Part_Wheel_FR_M_BrakeDisc": {
+      "triangles": 380
+    },
+    "Part_Wheel_FR_M_Carbon": {
+      "triangles": 216
+    },
+    "Part_Wheel_FR_M_Vent": {
+      "triangles": 1280
+    },
+    "Part_Steering_FR_M_Caliper": {
+      "triangles": 188
+    },
+    "Part_Wheel_RL_M_Rubber": {
+      "triangles": 4096
+    },
+    "Part_Wheel_RL_M_Vent_Tread": {
+      "triangles": 6208
+    },
+    "Part_Wheel_RL_M_Rim": {
+      "triangles": 2228
+    },
+    "Part_Wheel_RL_M_Chrome": {
+      "triangles": 1032
+    },
+    "Part_Wheel_RL_M_BrakeDisc": {
+      "triangles": 380
+    },
+    "Part_Wheel_RL_M_Carbon": {
+      "triangles": 216
+    },
+    "Part_Wheel_RL_M_Vent": {
+      "triangles": 1280
+    },
+    "Part_Steering_RL_M_Caliper": {
+      "triangles": 188
+    },
+    "Part_Wheel_RR_M_Rubber": {
+      "triangles": 4096
+    },
+    "Part_Wheel_RR_M_Vent_Tread": {
+      "triangles": 6208
+    },
+    "Part_Wheel_RR_M_Rim": {
+      "triangles": 2228
+    },
+    "Part_Wheel_RR_M_Chrome": {
+      "triangles": 1032
+    },
+    "Part_Wheel_RR_M_BrakeDisc": {
+      "triangles": 380
+    },
+    "Part_Wheel_RR_M_Carbon": {
+      "triangles": 216
+    },
+    "Part_Wheel_RR_M_Vent": {
+      "triangles": 1280
+    },
+    "Part_Steering_RR_M_Caliper": {
+      "triangles": 188
+    }
+  },
+  "materials": 18,
+  "dimensionsTarget": [
+    1.877,
+    1.239,
+    4.49
+  ],
+  "wheelbase": 2.71,
+  "blender": "4.4.3",
+  "triangles": 161547,
+  "meshCount": 43
+}

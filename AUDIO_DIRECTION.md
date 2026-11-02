@@ -2,7 +2,9 @@
 
 ## Estado de integración · 2 noviembre 2026
 
-El feedback escrito aprueba Menu Lounge, Neon Surge, V8, neumáticos, grava y los dos impactos. Estas siete tomas locales ya se usan en el juego. El menú y las pantallas de colección comparten Menu Lounge; las carreras usan Neon Surge. Aún faltan temas aprobados propios por circuito y pantalla.
+La biblioteca aportada por el usuario contiene nueve versiones Suno de seis composiciones. A y B están seleccionadas para uso. Se preservan los M4A originales (Opus dentro de MP4) y se preparan copias MP3 estéreo de 192 kbps para reproducción, con normalización en dos pasadas a −18 LUFS y objetivo de pico verdadero −2 dB. El catálogo conserva duración, medidas, procedencia y hash de cada original.
+
+Menú y garaje usan Precision Objects. Puerto y costa usan Coastal Velocity A/B; bosque y Aserradero, Timberline Run A/B; lluvia y noche, Afterlight Express A/B. Faro y atardecer comienzan con Golden Apex y continúan con Coastal A/B. Entrenamiento añade One More Lap. Resultados usa Golden Apex (la entrega disponible dura 27,56 segundos). Las listas avanzan al final de cada tema con fundido, y alternan la versión inicial al volver a una misma sesión. La música Magnific anterior queda archivada en el panel y fuera de la selección del juego.
 
 Coastal Velocity recibió «demasiado disonante» y queda fuera de la selección del juego; su revisión diatónica sigue pendiente. La importación de navegación y confirmación Magnific se desbloqueó y ambas quedaron locales. El feedback posterior aprueba también volver y aviso, pero pide simplificar aceptar y volver: ahora se utilizan WAV originales de una sola nota (1320 Hz y 660 Hz, 100 ms). Navegación mantiene su muestra Magnific y aviso mantiene el tono provisional. Las versiones anteriores se conservan para comparar en el panel.
 

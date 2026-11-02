@@ -54,7 +54,7 @@ export class GarageView {
     this.rowDirection=new THREE.Vector3(3.2,0,-2.8).normalize();this.spacing=3.6;this.slideTarget=new THREE.Vector3();
     this.models=new Map();this.displays=new Map();this.modelData=new Map();this.thumbnails=new Map();this.thumbnailPending=new Map();
     this.pendingModels=new Map();this.modelRequests=new Map();this.pageVersion=0;this.visible=false;this.page=null;this.mode='detail';this.presentation='garage';
-    this.selectedId=VEHICLES[0].id;this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.selectedId=VEHICLES[0].id;const motion=matchMedia('(prefers-reduced-motion: reduce)');this.reducedMotion=motion.matches;motion.addEventListener('change',e=>{this.reducedMotion=e.matches;});
     this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.enablePan=false;
     this.controls.minPolarAngle=.3;this.controls.maxPolarAngle=Math.PI/2-.07;this.controls.enabled=false;
     this.raycaster=new THREE.Raycaster();this.pointer=new THREE.Vector2();
@@ -102,6 +102,7 @@ export class GarageView {
       const scale=3.25/Math.max(size.x,size.z);group.scale.multiplyScalar(scale);group.updateWorldMatrix(true,true);
       const fitted=new THREE.Box3().setFromObject(group),center=fitted.getCenter(new THREE.Vector3());
       group.position.set(-center.x,-fitted.min.y,-center.z);
+      group.rotation.y=this.reducedMotion?-.22:-.42;
       group.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
       this.displays.get(id).add(group);this.models.set(id,group);this.modelData.set(id,data);return true;
     })();
@@ -125,7 +126,8 @@ export class GarageView {
     const index=this.pageVehicles.findIndex(v=>v.id===this.selectedId);
     this.slideTarget.copy(this.rowDirection).multiplyScalar(-Math.max(0,index)*this.spacing);
     if(immediate||this.reducedMotion)this.lineup.position.copy(this.slideTarget);
-    this.host?.setAttribute('aria-busy',String(this.lineup.position.distanceTo(this.slideTarget)>.005));
+    if(this.reducedMotion)for(const [id,model]of this.models)model.rotation.y=id===this.selectedId?-.22:-.42;
+    this.host?.setAttribute('aria-busy',String(this.lineup.position.distanceTo(this.slideTarget)>.005||[...this.models].some(([id,model])=>Math.abs(model.rotation.y-(id===this.selectedId?-.22:-.42))>.005)));
     for(const [id,display]of this.displays)display.visible=this.presentation==='garage'||id===this.selectedId;
   }
   async showPage(page){this.loadPage(page);this.mode='detail';await this.ensureModel(this.selectedId);this.resize();this.loadNeighbors();}
@@ -149,6 +151,7 @@ export class GarageView {
   async mount(host,selectedId,{presentation='garage',allowedIds=null}={}){
     if(JSON.stringify(this.allowedIds)!==JSON.stringify(allowedIds))this.page=null;this.allowedIds=allowedIds;
     this.presentation=presentation;this.host=host;host.appendChild(this.renderer.domElement);
+    this.renderer.domElement.setAttribute('aria-label',presentation==='home'?'Tu miniatura en 3D. Abrir garaje.':'Estudio 3D. Desliza a izquierda o derecha para cambiar de coche.');
     this.resizeObserver.disconnect();this.resizeObserver.observe(host);this.visible=true;
     this.loadPage(this.allowedIds?'owned':collectionPage(selectedId));this.selectedId=selectedId;this.mode='detail';
     await this.ensureModel(selectedId);if(this.host!==host||this.selectedId!==selectedId)return;
@@ -164,7 +167,7 @@ export class GarageView {
   setView(mode){
     this.mode=mode;this.positionLineup(mode==='customize');
     const bounds=new THREE.Box3(new THREE.Vector3(-1.4,0,-1.65),new THREE.Vector3(1.4,1.65,1.65));
-    const frame=this.presentation==='garage'&&mode!=='customize'?studioCameraFrame(this.camera.aspect,this.camera.fov):garageCameraFrame(bounds,this.camera.aspect,this.camera.fov);
+    const frame=mode!=='customize'?studioCameraFrame(this.camera.aspect,this.camera.fov):garageCameraFrame(bounds,this.camera.aspect,this.camera.fov);
     this.camera.position.copy(frame.position);this.controls.target.copy(frame.target);this.camera.lookAt(frame.target);
     this.controls.minDistance=frame.distance*.65;this.controls.maxDistance=frame.distance*2;
     this.controls.enabled=mode==='customize';this.controls.update();
@@ -214,7 +217,11 @@ export class GarageView {
   update(dt){
     if(!this.visible)return;
     this.lineup.position.lerp(this.slideTarget,this.reducedMotion?1:1-Math.exp(-9*dt));
-    this.host?.setAttribute('aria-busy',String(this.lineup.position.distanceTo(this.slideTarget)>.005));
+    if(this.mode!=='customize')for(const [id,model]of this.models){
+      const target=id===this.selectedId?-.22:-.42;
+      model.rotation.y+=(target-model.rotation.y)*(this.reducedMotion?1:1-Math.exp(-8*dt));
+    }
+    this.host?.setAttribute('aria-busy',String(this.lineup.position.distanceTo(this.slideTarget)>.005||this.mode!=='customize'&&[...this.models].some(([id,model])=>Math.abs(model.rotation.y-(id===this.selectedId?-.22:-.42))>.005)));
     if(this.controls.enabled)this.controls.update();this.renderer.render(this.scene,this.camera);
   }
 }

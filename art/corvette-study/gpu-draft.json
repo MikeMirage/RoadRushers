@@ -1,0 +1,12 @@
+{
+  "pass": true,
+  "checks": [
+    "Paint, rim and rubber have independent materials",
+    "Body suspension keeps wheel centers fixed",
+    "Wheel rotations independent",
+    "Paint customization preserves rim color",
+    "Paint changes reuse normal maps",
+    "Four rolling wheels and two steering pivots",
+    "WebGL shaders compile"
+  ]
+}

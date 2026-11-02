@@ -1,0 +1,182 @@
+[
+  {
+    "id": "suno-afterlight-express-b",
+    "title": "Afterlight Express",
+    "variant": "B",
+    "group": "night",
+    "use": "Noche y lluvia",
+    "file": "/audio/suno/ready/suno-afterlight-express-b.mp3",
+    "original": "Afterlight Express (1).m4a",
+    "duration": 213.6,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "e85dc797563b9ef6258aedd2cc3cc66d4ef13db9cf6076d6d7d49fde15992660",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.13,
+      "outputLUFS": -17.95,
+      "outputTruePeak": -6.35
+    }
+  },
+  {
+    "id": "suno-afterlight-express-a",
+    "title": "Afterlight Express",
+    "variant": "A",
+    "group": "night",
+    "use": "Noche y lluvia",
+    "file": "/audio/suno/ready/suno-afterlight-express-a.mp3",
+    "original": "Afterlight Express.m4a",
+    "duration": 193.44,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "a06200c6de244b02b368ab0c0740699c6e3ed4c76434609aa68b9b56952c4003",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.3,
+      "outputLUFS": -17.97,
+      "outputTruePeak": -6.34
+    }
+  },
+  {
+    "id": "suno-coastal-velocity-b",
+    "title": "Coastal Velocity",
+    "variant": "B",
+    "group": "coast",
+    "use": "Puerto y costa",
+    "file": "/audio/suno/ready/suno-coastal-velocity-b.mp3",
+    "original": "Coastal Velocity (1).m4a",
+    "duration": 199.0,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "2a3db67312ff5909dc3dbf13151f7d025103549dbb8f627e50c4e0fa25bc69a5",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -16.1,
+      "outputLUFS": -17.95,
+      "outputTruePeak": -6.2
+    }
+  },
+  {
+    "id": "suno-coastal-velocity-a",
+    "title": "Coastal Velocity",
+    "variant": "A",
+    "group": "coast",
+    "use": "Puerto y costa",
+    "file": "/audio/suno/ready/suno-coastal-velocity-a.mp3",
+    "original": "Coastal Velocity.m4a",
+    "duration": 188.16,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "c56de4a8c251ad3fec4bcac2f24f73b662f5c78315472ea8cf3efc0a24cf1198",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.15,
+      "outputLUFS": -17.94,
+      "outputTruePeak": -6.77
+    }
+  },
+  {
+    "id": "suno-golden-apex-a",
+    "title": "Golden Apex",
+    "variant": "A",
+    "group": "sunset",
+    "use": "Faro, atardecer y resultados",
+    "file": "/audio/suno/ready/suno-golden-apex-a.mp3",
+    "original": "Golden Apex.m4a",
+    "duration": 27.56,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "caa7e638f05e417b53b30285ce59f26422f5fd8dd1b73a77e819d71a6b5e0d35",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -16.91,
+      "outputLUFS": -17.83,
+      "outputTruePeak": -6.81
+    }
+  },
+  {
+    "id": "suno-one-more-lap-a",
+    "title": "One More Lap",
+    "variant": "A",
+    "group": "practice",
+    "use": "Entrenamiento y contrarreloj",
+    "file": "/audio/suno/ready/suno-one-more-lap-a.mp3",
+    "original": "One More Lap.m4a",
+    "duration": 197.44,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "9700f8cd205428f93ef70bf55ee58a14514d6e6c3dfadc4f8667d7f8fd29bbc9",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -14.92,
+      "outputLUFS": -17.97,
+      "outputTruePeak": -6.09
+    }
+  },
+  {
+    "id": "suno-precision-objects-a",
+    "title": "Precision Objects",
+    "variant": "A",
+    "group": "menu",
+    "use": "Menú y garaje",
+    "file": "/audio/suno/ready/suno-precision-objects-a.mp3",
+    "original": "Precision Objects.m4a",
+    "duration": 162.72,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "4c67b459a6f0696ec706e73b606241d64b8259b81aaf7f078aa5aac05e8f7d47",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.44,
+      "outputLUFS": -17.97,
+      "outputTruePeak": -6.1
+    }
+  },
+  {
+    "id": "suno-timberline-run-b",
+    "title": "Timberline Run",
+    "variant": "B",
+    "group": "forest",
+    "use": "Bosque y aserradero",
+    "file": "/audio/suno/ready/suno-timberline-run-b.mp3",
+    "original": "Timberline Run (1).m4a",
+    "duration": 152.36,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "162a93bc515ff73e71b6d199cfef440ff084167495f9e235e958e380f8b2fe52",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.12,
+      "outputLUFS": -17.96,
+      "outputTruePeak": -5.19
+    }
+  },
+  {
+    "id": "suno-timberline-run-a",
+    "title": "Timberline Run",
+    "variant": "A",
+    "group": "forest",
+    "use": "Bosque y aserradero",
+    "file": "/audio/suno/ready/suno-timberline-run-a.mp3",
+    "original": "Timberline Run.m4a",
+    "duration": 177.2,
+    "userSelected": true,
+    "source": "Suno · aportado por el usuario",
+    "originalSha256": "e61fe03bb5ae9505d61e3d151deb2c60b41476f3fe22e867ded617bc56285315",
+    "normalization": {
+      "targetLUFS": -18,
+      "targetTruePeak": -2,
+      "inputLUFS": -15.0,
+      "outputLUFS": -17.96,
+      "outputTruePeak": -6.65
+    }
+  }
+]

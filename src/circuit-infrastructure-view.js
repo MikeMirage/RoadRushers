@@ -1,14 +1,16 @@
+import {BRAND_ATLAS,brandAtlasRect,bannerBrandIndex} from './advertising-brands.js';
+import {advertisingSite,advertisingAvoidsSigns,advertisingCenter,ADVERTISING_SHAPE} from './circuit-advertising.js';
 import * as THREE from 'three';
 import {markPlayerOccluder} from './local-occlusion.js';
 let advertisingAtlas;
 function atlas(){
   if(advertisingAtlas||typeof document==='undefined')return advertisingAtlas;
-  const canvas=document.createElement('canvas');canvas.width=1536;canvas.height=128;const ctx=canvas.getContext('2d');
-  [['#183b40','#f0ede0','PRL  MOTORSPORT'],['#d7df67','#172b32','APEX  RACING'],['#eee8d8','#a72230','ROAD RUSHERS']].forEach(([bg,fg,label],i)=>{ctx.fillStyle=bg;ctx.fillRect(i*512,0,512,128);ctx.fillStyle=fg;ctx.font='bold 42px sans-serif';ctx.textAlign='center';ctx.fillText(label,i*512+256,80);ctx.fillRect(i*512,114,512,8);});
-  advertisingAtlas=new THREE.CanvasTexture(canvas);advertisingAtlas.colorSpace=THREE.SRGBColorSpace;advertisingAtlas.anisotropy=4;return advertisingAtlas;
+  const base=import.meta.env?.BASE_URL||'/';
+  advertisingAtlas=new THREE.TextureLoader().load(`${base}${BRAND_ATLAS.path}`);
+  advertisingAtlas.colorSpace=THREE.SRGBColorSpace;advertisingAtlas.anisotropy=4;return advertisingAtlas;
 }
 /** Thin opaque geometry and cutout mesh; fixed spatial batches, no animation or new lights. */
-export function buildCircuitInfrastructure(circuit,infrastructure){
+export function buildCircuitInfrastructure(circuit,infrastructure,recipe){
   const root=new THREE.Group();root.name='circuit-infrastructure';if(!infrastructure)return root;
   const metal=new THREE.MeshStandardMaterial({color:'#a8b1b4',metalness:.65,roughness:.48,side:THREE.DoubleSide});
   const fence=new THREE.MeshStandardMaterial({color:'#515d60',roughness:.85,side:THREE.DoubleSide});
@@ -50,10 +52,29 @@ export function buildCircuitInfrastructure(circuit,infrastructure){
     post(from,side,offset,kind==='fence'?2.6:1.02);post(to,side,offset,kind==='fence'?2.6:1.02);
     if(kind==='rail')for(const u of [from,to])quad('rail',[at(u,side,offset-.02,.38),at(u,side,offset+.075,.38),at(u,side,offset-.02,.89),at(u,side,offset+.075,.89)],[u,u,u,u],[[0,0],[1,0],[0,1],[1,1]],side);
   }
+  const validAd=advertisingSite(circuit,recipe);
   for(const [a,b,side,offset]of infrastructure.ads){
-    const design=(Math.floor(a*circuit.length/24)+ (side>0?1:0))%3,left=design/3+.003,right=(design+1)/3-.003;
-    panel('ad',a,b,side,offset-.10,offset===4.5?1.15:.43,offset===4.5?2.15:.93,[[left,0],[right,0],[left,1],[right,1]]);
+    if((b-a)*circuit.length<5.9||!validAd(a,b,side,offset)||!advertisingAvoidsSigns(circuit,[a,b,side],recipe))continue;
+    const design=bannerBrandIndex(circuit.length,a,b,side,offset),rect=brandAtlasRect(design),{left,right}=rect;
+    const center=advertisingCenter(offset),inner=center-ADVERTISING_SHAPE.halfBase,outer=center+ADVERTISING_SHAPE.halfBase;
+    const height=ADVERTISING_SHAPE.height,steps=Math.max(1,Math.ceil((b-a)*circuit.length/2));
+    // The long text axis is aligned with the fixed topdown camera's screen-right axis.
+    const heading=circuit.at((a+b)/2).heading,forwardText=Math.sin(heading)-Math.cos(heading)>=0;
+    for(let i=0;i<steps;i++){
+      const from=a+(b-a)*i/steps,to=a+(b-a)*(i+1)/steps;
+      const l=forwardText?left+(right-left)*i/steps:right-(right-left)*i/steps,r=forwardText?left+(right-left)*(i+1)/steps:right-(right-left)*(i+1)/steps;
+      quad('ad',[at(from,side,inner,.06),at(to,side,inner,.06),at(from,side,center,height),at(to,side,center,height)],[from,to,from,to],[[l,rect.bottom],[r,rect.bottom],[l,rect.top],[r,rect.top]],side);
+      quad('ad',[at(from,side,outer,.06),at(to,side,outer,.06),at(from,side,center,height),at(to,side,center,height)],[from,to,from,to],[[l,rect.bottom],[r,rect.bottom],[l,rect.top],[r,rect.top]],-side);
+      quad('post',[at(from,side,inner,.04),at(to,side,inner,.04),at(from,side,outer,.04),at(to,side,outer,.04)],[from,to,from,to],[[0,0],[1,0],[0,1],[1,1]],side);
+    }
+    for(const u of [a,b]){
+      const points=[at(u,side,inner,.05),at(u,side,outer,.05),at(u,side,center,height)];
+      const p=points[0],key=`post:${Math.floor(p.x/80)},${Math.floor(p.z/80)}`;
+      if(!batches.has(key))batches.set(key,{kind:'post',positions:[],indices:[],uvs:[],routes:[]});const batch=batches.get(key),n=batch.positions.length/3;
+      points.forEach(p=>batch.positions.push(p.x,p.y,p.z));batch.uvs.push(0,0,1,0,.5,1);batch.routes.push(u,u,u);batch.indices.push(n,n+1,n+2);
+    }
   }
+
   const used=new Set();for(const [key,b]of batches){
     const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(b.positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(b.uvs,2));geometry.setIndex(b.indices);geometry.computeVertexNormals();geometry.computeBoundingSphere();
     const mesh=markPlayerOccluder(new THREE.Mesh(geometry,materials[b.kind]),b.routes);mesh.name=`club-${key}`;mesh.receiveShadow=b.kind!=='fence';mesh.castShadow=false;root.add(mesh);used.add(materials[b.kind]);

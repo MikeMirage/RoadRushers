@@ -1,0 +1,28 @@
+{
+  "sourceUrl": "https://www.magnific.com/app/creation/LwpiBumswO",
+  "texturedUrl": "https://www.magnific.com/app/creation/EbZlVU0uuO",
+  "model": "tripo-v31",
+  "generationTextureQuality": "none",
+  "retexture": {
+    "provider": "tripo",
+    "reference": "User Corvette four-view image",
+    "textureQuality": "standard",
+    "enablePbr": true,
+    "credits": 400
+  },
+  "measured": {
+    "sourceTriangles": 95866,
+    "resultTriangles": 95826,
+    "sourceMeshes": 38,
+    "resultMeshes": 38,
+    "resultMaterials": 38,
+    "resultImages": 114,
+    "resultBytes": 9493312,
+    "estimatedRGBA8MipBytes": 73269096
+  },
+  "verdict": "Parts mode disables textures; separate retexturing works and preserves mesh count. Slight geometry change (-40 triangles). Excessively metallic finish, irregular segment borders and 38 material draws prevent use as final mobile asset. Use semantic regions to guide authored cleanup and bake compact atlases.",
+  "hashes": {
+    "source.glb": "36f5df69c082464882c024d291a5d00a3e1eed14ec27ff5f9d20c6a479d5fbfd",
+    "textured-pbr.glb": "8c89cc5df2ed54da56419ca0cb4546425cc98f20106a800636beae344cc3cb97"
+  }
+}

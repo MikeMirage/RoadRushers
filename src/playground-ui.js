@@ -1,8 +1,9 @@
 import { VEHICLES } from './config.js';
+import { vehicleOrigin } from './vehicle-regulations.js';
 import { makeRaceTrack } from './race.js';
 import { circuitPreview } from './circuit-preview.js';
 import { renderRaceSetup } from './race-setup-ui.js';
-import { clubIcon,renderClubNavigation } from './club-ui.js';
+import { clubIcon,renderClubNavigation,countryFlag } from './club-ui.js';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function renderPlayground(options,tracks,ready=true,setupStep='circuit'){
@@ -11,19 +12,14 @@ export function renderPlayground(options,tracks,ready=true,setupStep='circuit'){
   if(track.editorError)chosen.error=track.editorError;
   const preview=circuitPreview(chosen.config||track);
   return `<form id="playground-form" class="club-home" aria-label="Preparar carrera">
-    <section class="club-home-hero" aria-label="Circuito y coche seleccionados">
-      <div class="club-track-identity"><span class="eyebrow">CIRCUITO ACTUAL</span><h1>${esc(track.name)}</h1><p>${preview.length} km</p><div class="club-track-map">${preview.svg}</div></div>
+    <section class="club-home-hero home-studio" aria-label="Tu miniatura">
       <div id="home-car-stage" class="club-car-stage" aria-label="Vista 3D de tu coche"><span class="club-car-loading" role="status">Preparando miniatura…</span></div>
-      <div class="club-selected-car"><div><strong>${esc(vehicle.name)}</strong><small>${esc(vehicle.category)}</small></div><button type="button" data-play-action="garage" aria-label="Ver garaje" title="Ver garaje">${clubIcon('garage')}</button></div>
+      <button type="button" class="club-home-car-link" data-play-action="garage" aria-label="Ver garaje: ${esc(vehicle.name)}" title="Garaje">${countryFlag(vehicleOrigin(vehicle))}<strong>${esc(vehicle.name)}</strong>${clubIcon('garage')}</button>
     </section>
     <section class="club-home-controls" aria-label="Tu próxima salida">
-      <div class="club-mode" role="group" aria-label="Tipo de sesión">
-        <button type="button" data-play-mode="practice" aria-pressed="${options.mode==='practice'}">${clubIcon('timer')}<span><strong>Entrenamiento</strong><small>Tú y el cronómetro</small></span>${clubIcon('caret-right','club-mode-chevron')}</button>
-        <button type="button" data-play-mode="race" aria-pressed="${options.mode==='race'}">${clubIcon('flag-checkered')}<span><strong>Carrera IA</strong><small>${options.count} coches · ${options.laps} ${options.laps===1?'vuelta':'vueltas'}</small></span>${clubIcon('caret-right','club-mode-chevron')}</button>
-      </div>
-
+      <button type="button" class="home-track-recap" data-play-action="tracks" aria-label="Elegir circuito" title="Circuitos">${clubIcon('path')}<span><strong>${esc(track.name)}</strong><small>${preview.length} km</small></span>${clubIcon('caret-right')}</button>
       ${chosen.error?`<p class="play-width-note invalid" role="alert">${esc(chosen.error)}</p>`:''}
-      <button type="submit" class="primary-button club-launch" ${!ready||chosen.error?'disabled':''}>${ready?'Preparar salida':'Preparando pista…'} ${clubIcon('caret-right')}</button>
+      <button type="submit" class="primary-button club-launch" ${!ready||chosen.error?'disabled':''}>${ready?'Jugar':'Preparando pista…'} ${clubIcon('caret-right')}</button>
     </section>
   </form>
   ${renderClubNavigation('race')}

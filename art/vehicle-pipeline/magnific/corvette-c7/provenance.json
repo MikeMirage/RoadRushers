@@ -1,0 +1,32 @@
+{
+  "provider": "Magnific / Tripo H3.1",
+  "created": "2026-11-02",
+  "credits": 580,
+  "creation": "8ay5bCRIrU",
+  "inputs": {
+    "front": "N2CV0bC6D9",
+    "left": "s7e36tHl8e",
+    "back": "w48G2CP7EI"
+  },
+  "settings": {
+    "faceLimit": 200000,
+    "textureQuality": "none",
+    "generateParts": true
+  },
+  "originalFile": "tripo-high.glb",
+  "sha256": "b6330a1a3e7f826b89f3163650e9460a8dd77758ab4530c118b69bdc50f780e0",
+  "measured": {
+    "triangles": 196937,
+    "primitives": 51,
+    "geometryBufferBytes": 5356694,
+    "fileBytes": 5403184,
+    "images": 0
+  },
+  "decision": "Reference high source only. Better overall silhouette than procedural v2, but irregular segmentation borders and soft lights/grille require authored cleanup and retopology. Not accepted as a game-ready asset.",
+  "limitations": [
+    "No dimensional guarantee from photographic reconstruction",
+    "Provider parts are semantic guesses, not a suspension or wheel rig",
+    "No production UV/bake/normal validation yet",
+    "No runtime performance claim"
+  ]
+}

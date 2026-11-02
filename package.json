@@ -13,7 +13,8 @@
     "vehicles:benchmark": "node scripts/starter-vehicle-benchmark.mjs",
     "models:qa": "node scripts/vehicle-qa.mjs",
     "models:export-base": "node scripts/export-starter-vehicles.mjs",
-    "models:export": "node scripts/export-vehicles.mjs"
+    "models:export": "node scripts/export-vehicles.mjs",
+    "brands:generate": "node scripts/generate-advertising-brands.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

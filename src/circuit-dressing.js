@@ -1,3 +1,5 @@
+import {generateCircuitAdvertising} from './circuit-advertising.js';
+import {generateCircuitFacilities,normalizeCircuitFacilities} from './circuit-facilities.js';
 /** Offline, deterministic circuit dressing. Only the resolved recipe is used at load time. */
 export const DRESSING_VERSION=2;
 export const DRESSING_LIMITS={segments:6000,tires:144,boards:48};
@@ -92,6 +94,7 @@ export function normalizeCircuitDressing(value){
   if(segments.reduce((sum,r)=>sum+r[1]-r[0],0)>2.02)throw Error('Demasiadas franjas superpuestas en el entorno.');
   const placement=r=>r[0]>=0&&r[0]<=1&&Math.abs(r[1])<=30;
   const extra={};
+  if(value.facilities)extra.facilities=normalizeCircuitFacilities(value.facilities);
   if(value.markers){
     extra.markers={};
     for(const [kind,limit,len]of [['braking',48,4],['start',2,2],['grid',8,2]]){
@@ -135,10 +138,12 @@ export function addCircuitInfrastructure(circuit,recipe,input){
     const fence=options.fences&&pick(u,side,options.fenceDensity,37)&&safe(4.5,2.7);
     if(rail&&rails.length<1200)rails.push([a,b,side]);
     if(fence&&fences.length<800)fences.push([a,b,side]);
-    if(options.advertising&&(rail||fence)&&pick(u,side,options.advertisingDensity,71)&&safe(fence?4.5:3.8,2.4))ads.push([a,b,side,fence?4.5:3.8]);
+
   }
-  const selectedAds=ads.length>96?Array.from({length:96},(_,i)=>ads[Math.floor(i*ads.length/96)]):ads;
-  return {...recipe,options,infrastructure:{rails,fences,ads:selectedAds},markers:recipe.markers||generateCircuitMarkers(circuit,recipe)};
+  const markers=recipe.markers||generateCircuitMarkers(circuit,recipe);
+  const facilities=recipe.facilities||generateCircuitFacilities(circuit,{...recipe,markers});
+  const selectedAds=generateCircuitAdvertising(circuit,rails,fences,options,{...recipe,markers,facilities});
+  return {...recipe,options,infrastructure:{rails,fences,ads:selectedAds},markers,facilities};
 }
 
 /** Distances are measured along the track to the beginning of a tight bend. */

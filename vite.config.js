@@ -23,7 +23,7 @@ export default defineConfig({
   plugins:[audioFeedback],
   // The reference has its own CDN import map; it is not an application entry.
   optimizeDeps: { entries: ['index.html'] },
-  build: { rollupOptions: { input: ['index.html', 'vehicle-review.html', 'asset-library.html', 'corvette-garage.html', 'audio-review.html', 'corvette-studio.html'] } },
+  build: { rollupOptions: { input: ['index.html', 'vehicle-review.html', 'asset-library.html', 'corvette-garage.html', 'audio-review.html', 'corvette-studio.html', 'advertising-library.html'] } },
   server: { host: '127.0.0.1', port: 5174, strictPort: true, watch: { ignored: ['**/artifacts/**', '**/versiones/**'] } },
   preview: { host: '127.0.0.1', port: 4174, strictPort: true },
 });

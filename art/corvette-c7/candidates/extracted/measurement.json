@@ -1,0 +1,11 @@
+{
+  "sourceHeight": 1.3590657711029053,
+  "sourceAxles": [
+    1.257925033569336,
+    -1.3424835205078125
+  ],
+  "targetWheelbase": 2.71,
+  "bodyWidthScale": 0.9492822300625711,
+  "triangles": 70751,
+  "method": "Continuous user source, corrected dimensions, wheel geometry removed; clean authored wheel rigs; paint-neutral color reconstruction"
+}

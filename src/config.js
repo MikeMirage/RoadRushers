@@ -1,4 +1,5 @@
 import { NEW_VEHICLES } from './vehicle-catalog.js';
+import { vehicleStats } from './vehicle-performance.js';
 
 export const TRACKS = [
   {
@@ -77,6 +78,7 @@ export const VEHICLE_PROTOTYPES = [
     character:{strength:'Tracción y estabilidad en condiciones mixtas',compromise:'Más peso y balanceo',technique:'Apóyalo antes de pedir todo el giro.'}}
 ];
 
+for(const vehicle of ORIGINAL_VEHICLES)vehicle.stats=vehicleStats(vehicle);
 export const VEHICLES = [...ORIGINAL_VEHICLES, ...NEW_VEHICLES];
 
 export const CHAMPIONSHIP = {

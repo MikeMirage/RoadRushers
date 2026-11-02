@@ -17,7 +17,7 @@ test('resolved dressing survives save, reload, export and launching the saved tr
   assert.deepEqual(readEditorDocument(storage).circuitDressing,recipe);
   assert.deepEqual(parseEditorFile(JSON.stringify(doc.value)).circuitDressing,recipe);
   const tracks=playgroundTracks(undefined,storage),id=editorTrackConfig(doc.value).id;
-  const result=resolvePlayground({...DEFAULT_PLAYGROUND,trackId:id},tracks);
+  const result=resolvePlayground({...DEFAULT_PLAYGROUND,theme:'grass',trackId:id},tracks);
   assert.deepEqual(activeCircuitDressing(new Circuit(result.settings.track)),recipe);
   doc.change(d=>{d.name='Renamed';});assert.deepEqual(doc.value.circuitDressing,recipe);
   doc.change(d=>{d.startHeight=4;});assert.equal(doc.value.circuitDressing,undefined);

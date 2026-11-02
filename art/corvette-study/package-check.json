@@ -1,0 +1,85 @@
+{
+  "pass": true,
+  "draft": true,
+  "stats": {
+    "triangles": 39334,
+    "drawVertices": 41510,
+    "primitives": 17,
+    "materials": 8,
+    "meshDefinitions": 5,
+    "renderedMeshInstances": 5,
+    "geometryBufferBytes": 2228484,
+    "fileBytes": 2248132,
+    "nonIndexedPrimitives": 0,
+    "images": 0,
+    "extensions": []
+  },
+  "transforms": {
+    "dimensionsXYZ": [
+      2.037662148475647,
+      1.3384819626808167,
+      4.490161418914795
+    ],
+    "minimumXYZ": [
+      -1.0184324979782104,
+      6.556510925292969e-7,
+      -2.245161771774292
+    ],
+    "maximumXYZ": [
+      1.0192296504974365,
+      1.3384826183319092,
+      2.244999647140503
+    ],
+    "wheels": [
+      {
+        "name": "Wheel_FL",
+        "center": [
+          -0.7777000069618225,
+          0.35040000081062317,
+          1.2719000577926636
+        ]
+      },
+      {
+        "name": "Wheel_FR",
+        "center": [
+          0.7748000025749207,
+          0.3540000021457672,
+          1.2714999914169312
+        ]
+      },
+      {
+        "name": "Wheel_RL",
+        "center": [
+          -0.7829999923706055,
+          0.35199999809265137,
+          -1.343999981880188
+        ]
+      },
+      {
+        "name": "Wheel_RR",
+        "center": [
+          0.7915999889373779,
+          0.3522000014781952,
+          -1.344499945640564
+        ]
+      }
+    ]
+  },
+  "roles": [
+    "paint",
+    "glass",
+    "trim",
+    "metal",
+    "brake",
+    "rubber",
+    "rim"
+  ],
+  "maps": [],
+  "errors": [],
+  "warnings": [
+    "Studio representation, above the separate 8–10k race budget; not registered as a race asset.",
+    "Draft geometry/material review only; normal bake and final asset QA pending."
+  ],
+  "textureMemoryBasis": "RGBA8 complete mip chain, excluding driver overhead",
+  "remainingGate": "Multi-angle appearance and actual WebGL rig/material interaction review"
+}

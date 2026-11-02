@@ -1,0 +1,30 @@
+{
+  "url": "https://www.magnific.com/app/creation/WDrmfGJcXe",
+  "provider": "Tripo",
+  "model": "tripo-v31",
+  "modelVersion": "v3.1-20260211",
+  "textureQuality": "standard",
+  "requestedFaceLimit": null,
+  "requestedFaceLimitNote": "Not exposed in creation metadata; do not infer from final count.",
+  "fileBytes": 3725288,
+  "geometryBufferBytes": 2984344,
+  "triangles": 96498,
+  "vertices": 57074,
+  "primitives": 1,
+  "materials": 1,
+  "baseColorSize": [
+    2048,
+    2048
+  ],
+  "baseColorGPURGBA8WithMipBytes": 22369620,
+  "normalMap": false,
+  "ormMap": false,
+  "rig": false,
+  "sourceDimensionsLWH": [
+    3.964487314224243,
+    1.8744564056396484,
+    1.2000000476837158
+  ],
+  "sha256": "8c19f1e760c89a97c915784529a8334df83844bc110199905c3014ae67b4328a",
+  "verdict": "Preferred continuous high guide over segmented pilot. Not production-ready: wheels connected to main body, no rig, no paint masks, no normal/ORM bakes, above all target LOD budgets."
+}

@@ -73,8 +73,12 @@ test('countersteering brings the nose back toward the sliding trajectory', () =>
     return car;
   };
   const released = makeSlide(), countersteered = makeSlide();
-  simulate(released, 0.4, 0); simulate(countersteered, 0.4, -1);
+  simulate(released, 0.3, 0); simulate(countersteered, 0.3, -1);
   assert.ok(Math.abs(countersteered.driftAngle) < Math.abs(released.driftAngle) * 0.5);
+  // Full countersteering keeps turning after alignment; release it to avoid
+  // starting a slide in the other direction, rather than muting the input.
+  simulate(countersteered, 0.1, -1);
+  assert.ok(countersteered.driftAngle < 0);
 });
 
 test('solid edges contain the car under sustained steering for every surface and weather', () => {

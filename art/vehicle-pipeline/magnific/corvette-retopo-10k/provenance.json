@@ -1,0 +1,28 @@
+{
+  "source": "https://www.magnific.com/app/creation/WDrmfGJcXe",
+  "result": "https://www.magnific.com/app/creation/O6mWPN8ynm",
+  "request": {
+    "provider": "tripo",
+    "remeshMode": "retopology",
+    "topology": "triangle",
+    "faceLimit": 10000
+  },
+  "providerReportedModel": "tripo-mesh-decimate",
+  "credits": 630,
+  "measured": {
+    "triangles": 12813,
+    "vertices": 16505,
+    "primitives": 1,
+    "materials": 1,
+    "geometryBytes": 605038,
+    "fileBytes": 2278652,
+    "images": 2
+  },
+  "accepted": false,
+  "reasons": [
+    "Visible holes/folds at side windows and side vents",
+    "Over-smoothed/lost body creases",
+    "Actual output exceeds requested10k; provider limit is not a verified final count"
+  ],
+  "sha256": "b9e5b1642d3258f570f2c81d0f7b4f8932c2bfbe349d94b14e749b0769cf21f9"
+}
