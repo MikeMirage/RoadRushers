@@ -78,7 +78,7 @@ export class GarageView {
     if(this.page===page)return;
     this.pageVersion++;for(const data of this.modelData.values())disposeVehicle(data);
     this.lineup.clear();this.models.clear();this.modelData.clear();this.displays.clear();this.pendingModels.clear();this.modelRequests.clear();this.page=page;
-    this.pageVehicles=vehiclesOnPage(VEHICLES,page).filter(vehicleAvailable);
+    this.pageVehicles=(this.allowedIds?VEHICLES.filter(v=>this.allowedIds.includes(v.id)):vehiclesOnPage(VEHICLES,page)).filter(vehicleAvailable);
     for(const [index,v]of this.pageVehicles.entries()){
       const display=new THREE.Group();display.userData.vehicleId=v.id;display.position.copy(this.rowDirection).multiplyScalar(index*this.spacing);
       this.lineup.add(display);this.displays.set(v.id,display);
@@ -131,7 +131,8 @@ export class GarageView {
   async showPage(page){this.loadPage(page);this.mode='detail';await this.ensureModel(this.selectedId);this.resize();this.loadNeighbors();}
   async select(id){
     if(!VEHICLES.some(v=>v.id===id))return;
-    const page=collectionPage(id),changed=this.page!==page;this.loadPage(page);this.selectedId=id;
+    if(this.allowedIds&&!this.allowedIds.includes(id))return;
+    const page=this.allowedIds?'owned':collectionPage(id),changed=this.page!==page;this.loadPage(page);this.selectedId=id;
     await this.ensureModel(id);if(this.selectedId!==id)return;
     this.mode='detail';this.controls.enabled=false;this.positionLineup(changed);this.loadNeighbors();
   }
@@ -145,10 +146,11 @@ export class GarageView {
     if(!model){URL.revokeObjectURL(url);return;}
     try{const texture=await new THREE.TextureLoader().loadAsync(url);if(this.modelData.get(this.selectedId)!==model){texture.dispose();return;}setCustomWrapping(model,texture);this.thumbnails.delete(this.selectedId);}finally{URL.revokeObjectURL(url);}
   }
-  async mount(host,selectedId,{presentation='garage'}={}){
+  async mount(host,selectedId,{presentation='garage',allowedIds=null}={}){
+    if(JSON.stringify(this.allowedIds)!==JSON.stringify(allowedIds))this.page=null;this.allowedIds=allowedIds;
     this.presentation=presentation;this.host=host;host.appendChild(this.renderer.domElement);
     this.resizeObserver.disconnect();this.resizeObserver.observe(host);this.visible=true;
-    this.loadPage(collectionPage(selectedId));this.selectedId=selectedId;this.mode='detail';
+    this.loadPage(this.allowedIds?'owned':collectionPage(selectedId));this.selectedId=selectedId;this.mode='detail';
     await this.ensureModel(selectedId);if(this.host!==host||this.selectedId!==selectedId)return;
     this.positionLineup(true);this.resize();this.loadNeighbors();
   }

@@ -9,13 +9,13 @@ import { clubIcon,clubWordmark,countryFlag } from './club-ui.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const SETUP_STEPS=['circuit','rules','car'];
 export function renderEligibleCards(options){
-  const vehicles=availableEligibleVehicles(VEHICLES,options.carCategory);
+  const vehicles=availableEligibleVehicles(VEHICLES.filter(v=>!options.ownedVehicleIds||options.ownedVehicleIds.includes(v.id)),options.carCategory);
   return vehicles.map(v=>`<button type="button" class="race-car-card" data-race-car="${v.id}" aria-pressed="${v.id===options.vehicleId}" aria-label="Elegir ${esc(v.name)}"><span class="race-card-art"><img data-race-thumbnail="${v.id}" alt="" width="384" height="220" hidden><span class="race-thumbnail-status">Preparando miniatura…</span></span><strong>${esc(v.name)}</strong><small title="${esc(ORIGINS[vehicleOrigin(v)]||'PRL')}">${countryFlag(vehicleOrigin(v))}<span>${vehiclePowerClass(v).toUpperCase()}</span></small>${v.id===options.vehicleId?`<span class="race-card-check">${clubIcon('check')}<span class="sr-only">Seleccionado</span></span>`:''}</button>`).join('');
 }
 export function renderRaceSetup(options,tracks,{step='circuit',ready=true}={}){
   const track=tracks.find(t=>t.id===options.trackId)||tracks[0],vehicle=VEHICLES.find(v=>v.id===options.vehicleId)||VEHICLES[0];
   const widths=['original',12,14,16].map(width=>({width,...makeRaceTrack(track,width)})),chosen=widths.find(w=>w.width===options.width)||widths[0];
-  const preview=circuitPreview(chosen.config||track),category=carCategory(options.carCategory),eligible=availableEligibleVehicles(VEHICLES,options.carCategory),index=SETUP_STEPS.indexOf(step);
+  const preview=circuitPreview(chosen.config||track),category=carCategory(options.carCategory),eligible=availableEligibleVehicles(VEHICLES.filter(v=>!options.ownedVehicleIds||options.ownedVehicleIds.includes(v.id)),options.carCategory),index=SETUP_STEPS.indexOf(step);
   const forecastIcon={clear:'sun',rain:'cloud-rain',fog:'cloud-fog',snow:'cloud-snow',sunset:'cloud-sun'}[options.weather==='track'?track.weather:options.weather]||'sun';
   const fieldIcons={trackId:'path',carCategory:'car-profile',mode:options.mode==='race'?'flag-checkered':'timer',laps:'arrow-clockwise',count:'users-three',difficulty:'gauge',interaction:'intersect',fieldLevels:'sliders-horizontal',surface:'road-horizon',weather:forecastIcon,width:'arrows-horizontal',pace:'gauge',camera:'camera'};
   const select=(key,label,values)=>{
