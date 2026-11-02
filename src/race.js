@@ -86,7 +86,7 @@ export function resolveCarContacts(racers,circuit,iterations=3) {
 export class RaceSession {
   constructor(circuit,vehicle,{count=12,interaction='ghost',laps=3,seed=38171,difficulty='club',fieldLevels='mixed',vehiclePool=[vehicle]}={}){
     if(!circuit.closed)throw new Error('La carrera requiere un circuito cerrado.');
-    this.circuit=circuit;this.vehicle=vehicle;this.count=[4,8,12].includes(count)?count:12;
+    this.circuit=circuit;this.vehicle=vehicle;this.count=[2,4,8,12].includes(count)?count:12;
     this.interaction=interaction==='contact'?'contact':'ghost';this.lapCount=[1,3,5].includes(laps)?laps:3;this.seed=seed;
     this.difficulty=aiLevel(difficulty);this.fieldLevels=fieldLevels==='uniform'?'uniform':'mixed';
     const random=seeded(seed),guide=new RaceGuide(circuit),levels=gridLevels(this.count-1,this.difficulty,this.fieldLevels,random);
@@ -127,6 +127,6 @@ export class RaceSession {
 
 /** Use a separate seed stream so choosing a field never changes AI difficulty. */
 export function raceGridVehicles(vehicle,{count=12,seed=38171,vehiclePool=[vehicle]}={}){
-  const random=seeded(seed^0x52414345),pool=vehiclePool.length?vehiclePool:[vehicle],size=[4,8,12].includes(count)?count:12;
+  const random=seeded(seed^0x52414345),pool=vehiclePool.length?vehiclePool:[vehicle],size=[2,4,8,12].includes(count)?count:12;
   return Array.from({length:size},(_,i)=>i===size-1?vehicle:pool[Math.floor(random()*pool.length)]);
 }

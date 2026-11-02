@@ -7,7 +7,7 @@ export function clubIcon(name,className=''){
 }
 export function clubWordmark(){return '<span class="club-wordmark" aria-label="Pocket Racing League"><b aria-hidden="true">PR<span>L</span></b><small aria-hidden="true">POCKET RACING LEAGUE</small></span>';}
 export function renderClubNavigation(active='race'){
-  const entries=[['race','Inicio','flag-checkered'],['tracks','Carreras','path'],['garage','Garaje','garage'],['profile','Perfil','user-circle']];
+  const entries=[['events','Events','flag-checkered'],['profile','Career','user-circle'],['race','Drive','steering-wheel'],['garage','Cars','garage'],['rankings','Rankings','users-three']];
   return `<nav class="club-navigation" aria-label="Navegación principal">${entries.map(([id,label,icon])=>`<button type="button" data-club-nav="${id}" aria-label="${label}" title="${label}" ${id===active?'aria-current="page"':''}>${clubIcon(icon)}<span class="club-nav-label">${label}</span></button>`).join('')}</nav>`;
 }
 export function countryFlag(code){return code?`<img class="country-flag" src="${base}assets/prl/club/flags/${code.toLowerCase()}.svg" width="18" height="14" alt="">`:'';}

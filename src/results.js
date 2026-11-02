@@ -9,7 +9,7 @@ export function resultContext(settings,circuit){
   const t=settings.track,v=settings.vehicle;
   const geometry={points:t.points,layout:t.layout,width:t.width,widthProfile:t.widthProfile,smoothing:t.cornerSmoothing,
     startHeight:t.startHeight,closed:t.closed,zones:t.zones,surface:t.surface,props:(t.manualProps||[]).filter(p=>p.collision)};
-  const handling=Object.fromEntries(['id','speed','grip','acceleration','turn','response','yawResponse','drift','looseGrip','bodyWidth','bodyLength'].map(k=>[k,v[k]]));
+  const handling=Object.fromEntries(['id','speed','grip','acceleration','turn','response','yawResponse','drift','looseGrip','bodyWidth','bodyLength','handling','economyLevel'].map(k=>[k,v[k]]));
   const category={physics:PHYSICS_VERSION,geometry,handling,surface:settings.surface,weather:settings.weather,pace:settings.pace,
     mode:settings.mode,interaction:settings.mode==='race'?settings.raceRules.interaction:'solo',count:settings.mode==='race'?settings.raceRules.count:1};
   return {key:fingerprint(category),category,track:t,vehicle:v,length:circuit.length,surface:settings.surface,weather:settings.weather,pace:settings.pace,

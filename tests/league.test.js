@@ -1,25 +1,89 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {League,LEAGUE_KEY,licenseTier,carOffer,EVENTS} from '../src/league.js';
-import {VEHICLES,TRACKS,CHAMPIONSHIP} from '../src/config.js';
-import {renderEligibleCards} from '../src/race-setup-ui.js';
+import {League,LEAGUE_KEY,EVENTS,licenseTier,acquisition,LEAGUES} from '../src/league.js';
+import {League as Legacy} from '../src/league-legacy.js';
+import {VEHICLES} from '../src/config.js';
+import {groups,upgradedVehicle,UPGRADE_COSTS} from '../src/economy-config.js';
+import {vehiclePowerClass} from '../src/vehicle-regulations.js';
 import {playgroundTracks,resolvePlayground} from '../src/playground.js';
-const store=()=>{const data=new Map();return {getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};};
-const field=place=>{const rivals=Array.from({length:3},(_,i)=>({id:`rival-${i+1}`}));rivals.splice(place-1,0,{id:'player',isPlayer:true});return rivals;};
-const finish=(l,a,place=1,time=90)=>l.settle(a.id,{complete:true,lapTimes:Array(a.laps).fill(time),position:place,racers:field(place)});
-const cup=(l,id,car,place=1)=>{let r;for(let i=0;i<EVENTS.find(e=>e.id===id).tracks.length;i++)r=finish(l,l.begin(id,car),place);return r;};
-test('new player, durable purchases, no double spending and legacy selected car retained',()=>{const storage=store(),l=new League(storage,{legacyVehicle:'velo'});assert.equal(l.state.credits,600);assert(l.owns('coda')&&l.owns('bambino')&&l.owns('velo'));assert.throws(()=>l.buy('borough'),/suficientes/);finish(l,l.begin('quick','coda'));finish(l,l.begin('quick','coda'));l.buy('borough');const after=l.state.credits;assert.throws(()=>l.buy('borough'),/Ya/);assert.equal(l.state.credits,after);assert(new League(storage).owns('borough'));});
-test('only completed valid races pay once, even after reload or receipt-ledger eviction',()=>{const storage=store(),l=new League(storage);const a=l.begin('quick','coda');assert.equal(l.settle(a.id,{complete:false,lapTimes:[90]}),null);assert.equal(l.settle(a.id,{complete:true,lapTimes:[NaN]}),null);assert.equal(finish(l,a).credits,240);const restored=new League(storage);assert.equal(finish(restored,a),null);assert.equal(restored.state.credits,840);assert.equal(restored.state.stats.races,1);});
-test('club cup accumulates real standings, podium gifts Sport car and license; repeated cups do not duplicate gifts',()=>{const l=new League(store());const r=cup(l,'club','coda',2);assert.equal(r.rank,2);assert.equal(r.gift,'apex');assert.equal(r.license,'Sport');assert.equal(licenseTier(l.state),1);assert.equal(l.state.credits,600+190*3+450+150);assert.equal(l.state.xp,280);const repeat=cup(l,'club','coda',2);assert.equal(repeat.gift,null);assert.equal(repeat.bonus,0);assert.equal(l.state.owned.filter(id=>id==='apex').length,1);});
-test('last place remains viable, cannot buy higher license cars or enter gated races',()=>{const l=new League(store());cup(l,'club','coda',4);assert.equal(licenseTier(l.state),0);assert(l.state.credits>600);assert.throws(()=>l.begin('sport','coda'),/licencia/i);assert.throws(()=>l.buy('apex'),/licencia/i);assert.throws(()=>l.begin('quick','apex'),/garaje/);assert.equal(l.state.run,null);});
-test('qualifying free retries, two real cuts, fee only once and resume without paying again',()=>{const storage=store(),l=new League(storage);let a=l.begin('club-open','coda');let r=finish(l,a,1,181);assert.equal(r.qualified,false);assert.equal(l.state.run.stage,0);assert.equal(l.state.credits,600);r=finish(l,l.begin('club-open','coda'),1,30);assert(r.qualified);assert.equal(l.state.run.stage,1);finish(l,l.begin('club-open','coda'),1,30);assert.equal(l.state.run.qualifying,false);assert.equal(l.state.credits,600);l.begin('club-open','coda');assert.equal(l.state.credits,400);const restored=new League(storage);restored.begin('club-open','coda');assert.equal(restored.state.credits,400);assert.throws(()=>restored.begin('club','coda'),/curso/);assert.throws(()=>restored.begin('club-open','bambino'),/mismo coche/);assert.equal(restored.state.credits,400);restored.retire();assert.equal(restored.state.credits,400);});
-test('all tournament finishers recover entry, medals pay new achievements once',()=>{const l=new League(store());finish(l,l.begin('club-open','coda'),4,30);finish(l,l.begin('club-open','coda'),4,30);let receipt;for(let i=0;i<3;i++)receipt=finish(l,l.begin('club-open','coda'),4);assert.equal(receipt.rank,4);assert.equal(l.state.credits,600+130*3);assert.equal(l.state.run,null);const first=finish(l,l.begin('suzuka-record','coda'),1,95),repeat=finish(l,l.begin('suzuka-record','coda'),1,95);assert.equal(first.credits,500);assert.equal(repeat.credits,50);assert.equal(l.state.medals['suzuka-record'],3);assert.equal(l.state.records['gp-suzuka-compact-v1'],95);});
-test('loaner challenges work without granting ownership; Pro requires XP and Sport podium',()=>{const l=new League(store());finish(l,l.begin('roadster','coda'));assert(!l.owns('velo'));cup(l,'club','coda');cup(l,'sport','apex');assert.equal(licenseTier(l.state),1);assert(l.owns('c7-sport'));while(l.state.xp<850)finish(l,l.begin('quick','coda'));assert.equal(licenseTier(l.state),2);assert.doesNotThrow(()=>l.begin('pro','c7-sport'));});
-test('economy pacing: first purchase in two races, P2 earned by first cup; no negative balances',()=>{const l=new League(store());finish(l,l.begin('quick','coda'));assert(l.state.credits<carOffer(VEHICLES.find(v=>v.id==='borough')).price);finish(l,l.begin('quick','coda'));assert(l.state.credits>=carOffer(VEHICLES.find(v=>v.id==='borough')).price);cup(l,'club','coda');assert(l.owns('apex'));for(const v of VEHICLES){try{l.buy(v.id);}catch{}assert(l.state.credits>=0);}assert(JSON.parse(l.storage.getItem(LEAGUE_KEY)).owned.length>=3);});
-test('all event circuits exist and resolve into actual game sessions',()=>{const tracks=playgroundTracks();for(const e of EVENTS)for(const id of [...e.tracks,...e.qualifiers||[]]){assert(tracks.some(t=>t.id===id),id);assert(!resolvePlayground({trackId:id,vehicleId:'coda',width:'original'}).error,id);}});
-test('unavailable persistence keeps session playable and reports unsaved state',()=>{const l=new League({getItem(){throw Error('blocked')},setItem(){throw Error('quota')}});finish(l,l.begin('quick','coda'));assert.equal(l.saved,false);assert.equal(l.state.credits,840);});
-
-test('malformed league saves cannot crash the home or create negative wallets',()=>{const storage=store();storage.setItem(LEAGUE_KEY,JSON.stringify({version:1,owned:null,credits:-20,xp:'oops',run:{eventId:'missing'},stats:null}));const l=new League(storage);assert.equal(l.state.credits,600);assert.equal(l.state.xp,0);assert(l.owns('coda'));assert.equal(l.state.run,null);assert.doesNotThrow(()=>l.begin('quick','coda'));});
-
-test('legacy career earned cars migrate without modifying the original career save',()=>{const storage=store(),key='roadrushers.career.v1';const original=JSON.stringify({version:1,results:Object.fromEntries(CHAMPIONSHIP.events.map(e=>[e.id,TRACKS.find(t=>t.id===e.track).medals.bronze]))});storage.setItem(key,original);const l=new League(storage);assert(l.owns('apex'));assert(l.owns('velo'));assert.equal(storage.getItem(key),original);});
-test('race car selection enforces ownership and handles categories with no eligible cars',()=>{const html=renderEligibleCards({carCategory:'any',vehicleId:'coda',ownedVehicleIds:['coda','bambino']});assert(html.includes('data-race-car="coda"'));assert(html.includes('data-race-car="bambino"'));assert(!html.includes('data-race-car="apex"'));assert.equal(renderEligibleCards({carCategory:'p3',ownedVehicleIds:['coda','bambino']}),'');});
+import {renderLeague} from '../src/league-ui.js';
+const store=()=>{const m=new Map();return {getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v)};};
+const field=(place,count=4)=>{const rivals=Array.from({length:count-1},(_,i)=>({id:`rival-${i}`,finishTime:80+i*5}));rivals.splice(place-1,0,{id:'player',isPlayer:true,finishTime:78+(place-1)*5});return rivals;};
+const finish=(l,a,place=1)=>l.settle(a.id,{complete:true,lapTimes:Array(a.laps).fill(30),position:place,racers:field(place,a.count)});
+const quick=l=>finish(l,l.begin('quick','coda',{trackId:'puerto',count:4,laps:1,mode:'race'}));
+const cup=(l,id,car,place=1)=>{let r;for(const _ of EVENTS.find(e=>e.id===id).tracks)r=finish(l,l.begin(id,car),place);return r;};
+test('catalogue covers every production ID exactly once and leagues resolve into real tracks',()=>{
+ const ids=Object.values(groups).flat();assert.equal(ids.length,VEHICLES.length);assert.equal(new Set(ids).size,ids.length);
+ for(const v of VEHICLES)assert(ids.includes(v.id));
+ const tracks=playgroundTracks();for(const e of EVENTS)for(const id of [...e.tracks,...e.qualifiers||[]]){assert(tracks.some(t=>t.id===id),id);assert(!resolvePlayground({trackId:id,vehicleId:'coda',width:'original'}).error);}
+ for(const l of LEAGUES.slice(1)){const prior=LEAGUES.slice(0,l.index).flatMap(x=>groups[x.id]);assert(prior.length>=l.owned);assert(prior.some(id=>vehiclePowerClass(VEHICLES.find(v=>v.id===id))===l.category));}
+});
+test('first car in three finishes, free unlock consumes cards, duplicate commands cannot pay twice',()=>{
+ const l=new League(store());assert.equal(l.state.credits,600);quick(l);quick(l);const r=quick(l);assert.equal(l.state.cards.borough,10);assert.equal(l.state.credits,1020);
+ const receipt=l.unlock('borough');assert.equal(receipt.gift,'borough');assert.equal(l.state.cards.borough,0);assert.equal(l.state.credits,1020);assert.throws(()=>l.unlock('borough'));
+ assert.equal(l.settle(r.id,{complete:true,lapTimes:[30]}),null);
+});
+test('duel debits once, reload resumes paid attempt, loss pays cards but no CR',()=>{
+ const st=store(),l=new League(st);let a=l.begin('duel-club','coda');assert.equal(l.state.credits,500);assert.equal(a.count,2);
+ const loaded=new League(st);assert.equal(loaded.settle(a.id,{complete:true,lapTimes:[30],position:1}),null);
+ a=loaded.begin('duel-club','coda');assert.equal(loaded.state.credits,500);const r=finish(loaded,a,2);assert.equal(r.credits,0);assert.equal(r.net,-100);assert.equal(r.mastery,6);assert.equal(loaded.state.credits,500);assert.equal(loaded.state.cards.borough,6);
+ const win=finish(loaded,loaded.begin('duel-club','coda'));assert.equal(win.net,100);assert.equal(loaded.state.credits,600);
+});
+test('exact duel tie refunds fee without a win; abandonment never pays',()=>{
+ const l=new League(store()),a=l.begin('duel-club','coda');const r=l.settle(a.id,{complete:true,lapTimes:[30],position:1,racers:[{id:'player',isPlayer:true,finishTime:30},{id:'rival-0',finishTime:30}]});assert.equal(r.net,0);assert.equal(r.mastery,6);assert.equal(l.state.credits,600);
+ const b=l.begin('duel-club','coda');l.retire();assert.equal(finish(l,b),null);assert.equal(l.state.credits,500);
+});
+test('no rewards for practice, custom tracks, extra laps or incomplete evidence',()=>{
+ for(const args of [{mode:'practice'},{trackId:'custom'},{laps:3},{pace:'fast'},{count:8}]){const l=new League(store()),a=l.begin('quick','coda',{trackId:'puerto',count:4,laps:1,...args});const r=finish(l,a);assert.equal(r.credits,0);assert.equal(r.cards.length,0);}
+ const l=new League(store()),a=l.begin('quick','coda');assert.equal(l.settle(a.id,{complete:true,lapTimes:[NaN]}),null);assert.equal(l.settle(a.id,{complete:false,lapTimes:[30]}),null);assert.equal(l.settle(a.id,{complete:true,lapTimes:[30,30]}),null);
+});
+test('tournament pays final only, entrants can lose and incomplete standings are rejected',()=>{
+ const l=new League(store());finish(l,l.begin('club-open','coda'));finish(l,l.begin('club-open','coda'));assert.equal(l.state.credits,600);
+ let a=l.begin('club-open','coda');assert.equal(l.state.credits,300);assert.throws(()=>l.settle(a.id,{complete:true,lapTimes:[30],position:4,racers:[]}));
+ assert.equal(finish(l,a,4).credits,0);assert.equal(finish(l,l.begin('club-open','coda'),4).credits,0);
+ const r=finish(l,l.begin('club-open','coda'),4);assert.equal(r.rank,4);assert.equal(r.net,-300);assert.equal(l.state.credits,300);assert.equal(l.state.run,null);
+});
+test('licenses grant bridge contracts, not automatic ownership, and never duplicate',()=>{
+ const l=new League(store());const r=cup(l,'club','coda');assert.equal(r.contract,'apex');assert.equal(l.state.cards.apex,acquisition('apex').cards);assert(!l.owns('apex'));assert.equal(licenseTier(l.state),1);
+ l.unlock('apex');assert(l.owns('apex'));assert.equal(cup(l,'club','coda').contract,null);
+});
+test('league access requires collection AND mastery; level costs/caps are real and immutable',()=>{
+ const l=new League(store());assert.throws(()=>l.begin('duel-forest','coda'));
+ l.transaction(s=>{s.owned.push('borough','kafer');s.mastery.club=40;s.cards.coda=8;});assert(l.state.opened.includes('forest'));
+ l.upgrade('coda');assert.equal(l.level('coda'),2);assert.equal(l.state.credits,400);assert.equal(l.state.cards.coda,0);assert.throws(()=>l.upgrade('coda'));
+ const v=VEHICLES[0],original=JSON.stringify(v),n5=upgradedVehicle(v,5,2);assert.equal(n5.economyLevel,2);assert.equal(n5.speed,v.speed);assert(n5.handling.engineForce>v.handling.engineForce);assert.equal(JSON.stringify(v),original);
+ assert.equal(l.begin('duel-forest','coda').level,2);
+});
+test('max-level duplicates redirect within band; all-max reserve never becomes CR',()=>{
+ const l=new League(store());l.transaction(s=>{s.levels.borough=5;const a=[];l.addCards(s,'borough',3,a);assert.equal(a[0].id,'coda');for(const id of groups.club)s.levels[id]=5;l.addCards(s,'borough',4,a);assert.equal(a[1].reserve,'series');});assert.equal(l.state.reserve.series,4);assert.equal(l.state.credits,600);
+});
+test('v1 active tournament preserves old prizes and source snapshot through migration',()=>{
+ const st=store(),old=new Legacy(st);old.begin('club-open','coda');const original=st.getItem('prl.league.v1');const l=new League(st);assert(l.state.run.legacyRules);
+ finish(l,l.begin('club-open','coda'));finish(l,l.begin('club-open','coda'));for(let i=0;i<3;i++)finish(l,l.begin('club-open','coda'),4);
+ assert.equal(l.state.credits,990);assert.equal(l.state.run,null);assert.equal(st.getItem('prl.league.v1'),original);assert.equal(new League(st).state.credits,990);
+});
+test('stale tab cannot overwrite newer rewards; corrupt snapshot remains intact',()=>{
+ const st=store(),a=new League(st),b=new League(st);quick(a);assert.throws(()=>quick(b),/otra pestaña/);assert.equal(new League(st).state.credits,740);
+ st.setItem(LEAGUE_KEY,'{broken');const broken=new League(st);quick(broken);assert.equal(st.getItem(LEAGUE_KEY),'{broken');assert.equal(broken.saved,false);
+});
+test('storage failure remains playable and receipt reports same wallet as state',()=>{
+ const l=new League({getItem(){return null;},setItem(){throw Error('full');}});const r=quick(l);assert.equal(l.saved,false);assert.equal(r.balanceAfter,l.state.credits);assert.equal(r.credits,140);
+});
+test('UI shows five destinations, closing controls and gross/net before charging',()=>{
+ const league=new League(store()),args={league,options:{vehicleId:'coda'},tracks:playgroundTracks(),ready:true,step:'circuit'};
+ const html=renderLeague(args);for(const name of ['Events','Career','Drive','Cars','Rankings'])assert(html.includes(name));
+ const detail=renderLeague({...args,selection:'duel-club'});assert(detail.includes('Cerrar competición'));assert(detail.includes('100 CR'));assert(detail.includes('200 CR'));assert.equal(league.state.credits,600);
+});
+test('late leagues have an explicit free recovery path within five last-place finishes',()=>{
+ const l=new League(store());l.transaction(s=>{s.opened=LEAGUES.map(l=>l.id);s.credits=0;});for(let i=0;i<5;i++)finish(l,l.begin('quick','coda',{trackId:'puerto',mode:'race',count:4,laps:1}),4);assert.equal(l.state.credits,4500);
+});
+test('upgrade changes real race handling and record signatures, including starter engine force',async()=>{
+ const {RaceSession}=await import('../src/race.js'),{Circuit}=await import('../src/circuit.js'),{TRACKS}=await import('../src/config.js'),{resultContext}=await import('../src/results.js');
+ const v=VEHICLES[0],circuit=new Circuit(TRACKS[0]),factory=upgradedVehicle(v,1),level2=upgradedVehicle(v,5,2);
+ const r=new RaceSession(circuit,level2,{count:2,laps:1,vehiclePool:[level2]});assert.equal(r.rivals.length,1);for(const car of r.racers)assert.equal(car.drive.vehicle.economyLevel,2);
+ const settings={track:TRACKS[0],surface:'track',weather:'clear',pace:'normal',mode:'race',raceRules:{count:2,laps:1,interaction:'ghost'}};
+ assert.notEqual(resultContext({...settings,vehicle:factory},circuit).key,resultContext({...settings,vehicle:level2},circuit).key);
+});
+test('free recovery remains available during a paid event without losing or repaying entry',()=>{
+ const l=new League(store());finish(l,l.begin('club-open','coda'));finish(l,l.begin('club-open','coda'));l.begin('club-open','coda');const wallet=l.state.credits;quick(l);assert.equal(l.state.run.eventId,'club-open');assert.equal(l.state.credits,wallet+140);l.begin('club-open','coda');assert.equal(l.state.credits,wallet+140);
+});

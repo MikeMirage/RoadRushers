@@ -42,6 +42,9 @@ import './audio-settings.css';
 import './pause-menu.css';
 import './test-pilot.css';
 import './league.css';
+import './economy.css';
+import {upgradedVehicle,freeRacePrizes,isFreeRaceEligible} from './economy-config.js';
+import {EconomyCelebration} from './economy-celebration.js';
 import {League,eventById} from './league.js';
 import {renderLeague,renderReward} from './league-ui.js';
 import {vehiclePowerClass} from './vehicle-regulations.js';
@@ -76,7 +79,30 @@ try { storage = localStorage; } catch { storage = null; }
 if(testingWithAI){storage=testSessionStorage(storage);const badge=document.createElement('div');badge.id='test-pilot-status';badge.textContent='PRUEBA IA · SIN GUARDAR';badge.setAttribute('role','status');document.body.append(badge);}
 const playgroundOptions=loadPlayground(storage);
 const league=new League(storage,{legacyVehicle:playgroundOptions.vehicleId});
-let leaguePage='home',leagueSelection=null,leagueMessage='',leagueAttempt=null;
+let leaguePage='home',leagueSelection=null,leagueMessage='',leagueAttempt=null,rankingMetric='xp',rankingTrack='all';
+let leagueOrigin='home',workshopLoaner=null,economyBusy=false,resultsSettling=false,eventPreparation=null,preferencesSetupReturn=null,leagueReturn=null;
+let historyGuard=false,historyRemoving=false;
+function canNavigateBack(){return celebration.visible||preferencesOpen||fullGarage()||workbench?.visible||setupOpen||['finished','ready','paused'].includes(state)||state==='hub'&&(leagueSelection||leaguePage!=='home');}
+function syncNavigation(){
+ queueMicrotask(()=>{if(historyRemoving)return;const needed=canNavigateBack();if(needed&&!historyGuard){history.pushState({prlOverlay:true},'');historyGuard=true;}else if(!needed&&historyGuard){historyRemoving=true;historyGuard=false;history.back();}});
+}
+window.addEventListener('popstate',()=>{historyGuard=false;if(historyRemoving){historyRemoving=false;return;}if(canNavigateBack())backFromMenu();syncNavigation();});
+function raceSetupVehicles(){const e=eventPreparation&&league.event(eventPreparation.id),run=league.state.run;return e?.loaner?VEHICLES.filter(v=>v.id===e.loaner):VEHICLES.filter(v=>league.owns(v.id)&&(!eventPreparation||!run||v.id===run.vehicleId));}
+function rememberLeagueOrigin(selector){leagueOrigin=leaguePage;leagueReturn={scroll:$('playground-hub').scrollTop,selector};}
+function leaveLeagueDetail(){leaguePage=leagueOrigin;leagueSelection=null;refreshPlayground();if(leagueReturn){$('playground-hub').scrollTop=leagueReturn.scroll;document.querySelector(leagueReturn.selector)?.focus({preventScroll:true});}}
+function prepareLeague(id){
+ const e=league.event(id),run=league.state.run?.eventId===id?league.state.run:null;
+ eventPreparation={id,revision:league.state.revision};workshopLoaner=null;leagueAttempt=null;
+ Object.assign(playgroundOptions,{trackId:run?.qualifying?e.qualifiers[run.stage]:e.qualifiers&&!run?e.qualifiers[0]:e.kind==='duel'?e.tracks[league.state.stats.races%e.tracks.length]:e.tracks[run?.stage||0],vehicleId:e.loaner||run?.vehicleId||$('league-event-car')?.value||playgroundOptions.vehicleId,mode:run?.qualifying||e.qualifiers&&!run||e.kind==='challenge'?'practice':'race',laps:run?.qualifying||e.qualifiers&&!run||e.kind==='challenge'?1:e.laps,count:e.kind==='duel'?2:4,carCategory:e.category,difficulty:['novice','club','expert'][e.tier],width:'original',weather:'clear',surface:'track',pace:'normal',interaction:'ghost',fieldLevels:'uniform'});
+ showSetup('circuit');
+}
+const celebration=new EconomyCelebration({thumbnail:async id=>(await getGarage()).thumbnail(id),onNavigate:page=>{leaguePage=page;leagueSelection=null;showHub();},sound:()=>audio.ui('confirm'),onStateChange:()=>syncNavigation()});
+async function economyAction(fn){
+ if(economyBusy)return;economyBusy=true;
+ try{const receipt=await league.execute(fn);refreshPlayground();if(receipt?.id)celebration.show(receipt,{animations:league.state.animations,saved:league.saved});}
+ catch(error){leagueMessage=error.message;refreshPlayground();}finally{economyBusy=false;}
+}
+
 if(!league.owns(playgroundOptions.vehicleId))playgroundOptions.vehicleId=league.state.owned[0];
 playgroundOptions.ownedVehicleIds=league.state.owned;
 const linkedTrack=new URLSearchParams(location.search).get('track');
@@ -120,6 +146,7 @@ let gamepadState=null,padFamily='standard',inputDevice=matchMedia('(pointer:coar
 const inputPrompts=document.createElement('div');inputPrompts.id='game-input-prompts';inputPrompts.className='game-input-prompts';document.body.append(inputPrompts);
 function fullGarage(){return !$('garage-overlay').classList.contains('hidden');}
 function menuRoot(){
+  if(celebration.visible)return celebration.dialog;
   if(styledSelectRoot())return styledSelectRoot();
   if(!$('prl-splash').hidden)return $('prl-splash');
   if(preferencesOpen)return $('preferences-content');
@@ -144,6 +171,7 @@ function updateInputPrompts(){
 function setInputDevice(device,family){const changed=device!==inputDevice||family&&family!==padFamily;if(family)padFamily=family;if(!changed)return;inputDevice=device;updateInputPrompts();}
 function backFromMenu(){
   audio.ui('back');
+  if(celebration.visible){celebration.close();return;}
   if(styledSelectOpen()){closeStyledSelect(true);return;}
   if(!$('prl-splash').hidden){if(state!=='loading')brandUI.dismiss();return;}
   if(preferencesOpen){closePreferences();return;}
@@ -151,7 +179,7 @@ function backFromMenu(){
   if(workbench?.visible){closeKit();return;}
   if(setupOpen){backSetup();return;}
   if(state==='finished'||state==='ready'){showHub();return;}
-  if(state==='hub'&&(leagueSelection||leaguePage!=='home')){leagueSelection=null;leaguePage=leaguePage==='events'?'home':leaguePage==='collection'||leaguePage==='profile'?'home':'events';refreshPlayground();return;}
+  if(state==='hub'&&(leagueSelection||leaguePage!=='home')){if(leagueSelection)leaveLeagueDetail();else{leaguePage='home';refreshPlayground();}return;}
   if(state==='paused'){setState('running');return;}
   if(state==='running'||state==='countdown')pause();
 }
@@ -216,19 +244,21 @@ function openPreferences(context){
   if(!world||state==='loading'||preferencesOpen)return;
   preferencesContext=context==='profile'?'profile':'settings';
   if(preferencesContext==='profile')preferencesTab='game';
+  preferencesSetupReturn=setupOpen?{step:setupStep,event:eventPreparation}:null;
   closeSetup(false);
   preferencesFocus=document.activeElement;if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
-  clearPointers();preferencesOpen=true;paintPreferences();$('preferences-overlay').classList.remove('hidden');
+  clearPointers();preferencesOpen=true;syncNavigation();paintPreferences();$('preferences-overlay').classList.remove('hidden');
   for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
   $('preferences-content').querySelector('[data-preferences-close]').focus();
 }
 function closePreferences(){
   closeStyledSelect();
-  preferencesOpen=false;$('preferences-overlay').classList.add('hidden');
+  preferencesOpen=false;syncNavigation();$('preferences-overlay').classList.add('hidden');
   for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;
   if(state==='paused')$('resume-btn').focus({preventScroll:true});
   else if(preferencesFocus?.isConnected&&preferencesFocus.getClientRects().length)preferencesFocus.focus();
-  else if(state==='hub')$('playground-hub').querySelector('.club-track-open')?.focus({preventScroll:true});
+  else if(state==='hub')$('playground-hub').querySelector('[data-play-action=preferences]')?.focus({preventScroll:true});
+  if(preferencesSetupReturn){const origin=preferencesSetupReturn;preferencesSetupReturn=null;eventPreparation=origin.event;showSetup(origin.step);}
 }
 function changePreferences(next){
   const before=preferences;preferences=normalizePreferences(next);audio.setOptions(preferences);clearPointers();
@@ -278,29 +308,29 @@ async function paintLeagueCollection(){
   const view=await getGarage();
   for(const image of images){if(!image.isConnected)return;try{const url=await view.thumbnail(image.dataset.leagueThumbnail);if(!image.isConnected)return;image.src=url;image.hidden=false;image.nextElementSibling.hidden=true;}catch{if(image.isConnected)image.nextElementSibling.textContent='Vista 3D disponible al abrir';}await new Promise(resolve=>setTimeout(resolve,0));}
 }
-async function launchLeague(id){
-  if(raceLaunching)return;
+async function launchLeague(id,quoteRevision,selectedVehicle){
+  if(raceLaunching||economyBusy)return;economyBusy=true;workshopLoaner=null;
   try{
-    const e=eventById(id),run=league.state.run;
-    const chosen=e.loaner||(run?.eventId===id?run.vehicleId:$('league-event-car')?.value)||league.state.owned.find(id=>{const v=VEHICLES.find(v=>v.id===id);return e.category==='any'||vehiclePowerClass(v)===e.category;});
-    leagueAttempt=league.begin(id,chosen);
+    const e=league.event(id),run=league.state.run;
+    const chosen=e.loaner||(run?.eventId===id?run.vehicleId:selectedVehicle||$('league-event-car')?.value)||league.state.owned.find(id=>['any','same-model'].includes(e.category)||vehiclePowerClass(VEHICLES.find(v=>v.id===id))===e.category);
+    leagueAttempt=await league.execute(()=>league.begin(id,chosen,{quoteRevision}));
     Object.assign(playgroundOptions,{vehicleId:leagueAttempt.vehicleId,trackId:leagueAttempt.trackId,mode:leagueAttempt.mode,laps:leagueAttempt.laps,count:leagueAttempt.count,carCategory:leagueAttempt.category,width:'original',theme:'basic',weather:'clear',surface:'track',pace:'normal',difficulty:leagueAttempt.difficulty,interaction:'ghost',fieldLevels:'uniform'});
     await launchPlayground();
-  }catch(error){leagueMessage=error.message;refreshPlayground();}
+  }catch(error){leagueMessage=error.message;refreshPlayground();}finally{economyBusy=false;}
 }
 function refreshPlayground(){
   if(garageSurface==='home'){garage?.hide();garageSurface=null;}
   const hub=$('playground-hub'),opened=[...hub.querySelectorAll('details[open]')].map(d=>d.className);
   const scroll=hub.querySelector('.setup-body:not(.hidden)')?.scrollTop||0;
   playgroundOptions.ownedVehicleIds=league.state.owned;
-  hub.innerHTML=renderLeague({league,page:leaguePage,selection:leagueSelection,message:leagueMessage,options:playgroundOptions,tracks:playgroundTracks(settings.track,storage),ready:state!=='loading',step:setupStep});
-  if(leaguePage==='collection')paintLeagueCollection();
+  hub.innerHTML=renderLeague({league,page:leaguePage,selection:leagueSelection,message:leagueMessage,rankingMetric,rankingTrack,options:playgroundOptions,tracks:playgroundTracks(settings.track,storage),ready:state!=='loading',step:setupStep});
+  if(hub.querySelector('[data-league-thumbnail]'))paintLeagueCollection();
   for(const detail of hub.querySelectorAll('details'))detail.open=opened.includes(detail.className);
   const area=hub.querySelector('.setup-body:not(.hidden)');if(area)area.scrollTop=scroll;
   if(setupOpen)showSetup(setupStep,false);
   const vehicle=VEHICLES.find(v=>v.id===playgroundOptions.vehicleId);
   if(vehicle&&$('club-nav-car')){$('club-nav-car').querySelector('strong').textContent=vehicle.name;$('club-nav-car').querySelector('small').textContent='Tu miniatura';}
-  updateInputPrompts();if(state==='hub'&&!setupOpen)mountHomeGarage();
+  updateInputPrompts();if(state==='hub'&&!setupOpen)mountHomeGarage();syncNavigation();
 }
 function syncPlaygroundScroll(){}
 function hubFocusMode(mode){$('playground-hub').querySelector(`[data-play-mode="${mode}"]`)?.focus({preventScroll:true});}
@@ -314,16 +344,25 @@ function showSetup(step='circuit',focus=true){
   if(!setupOpen)setupFocus=document.activeElement;
   setupStep=SETUP_STEPS.includes(step)?step:'circuit';setupOpen=true;
   if(setupStep==='car'){
-    const cars=availableEligibleVehicles(VEHICLES.filter(v=>league.owns(v.id)),playgroundOptions.carCategory);
+    const cars=availableEligibleVehicles(raceSetupVehicles(),playgroundOptions.carCategory);
     if(!cars.length){setupStep='rules';toast('No tienes coches de esta categoría. Elige otra o visita el garaje.');}
     else if(!cars.some(v=>v.id===playgroundOptions.vehicleId)){playgroundOptions.vehicleId=cars[0].id;savePlayground(storage,playgroundOptions);}
     syncHomeCarSelection();
   }
+  playgroundOptions.ownedVehicleIds=raceSetupVehicles().map(v=>v.id);
   const sheet=$('club-setup');if(!sheet)return;
   sheet.outerHTML=renderRaceSetup(playgroundOptions,playgroundTracks(settings.track,storage),{step:setupStep,ready:state!=='loading'});
   $('club-setup').classList.remove('hidden');
   if(!wasOpen||previousStep!==setupStep){$('club-setup').classList.add('animate-step');$('club-setup').style.setProperty('--step-offset',!wasOpen||SETUP_STEPS.indexOf(setupStep)>=SETUP_STEPS.indexOf(previousStep)?'12px':'-12px');}
-  enhanceStyledSelects($('club-setup'));
+  if(eventPreparation){
+    const e=league.event(eventPreparation.id),fee=league.quote(e.id,playgroundOptions.vehicleId).fee;
+    for(const control of $('club-setup').querySelectorAll('[data-playground]'))if(control.dataset.playground!=='camera')control.disabled=true;
+    $('club-setup').querySelector('[data-play-action="kit"]')?.remove();
+    $('club-setup').querySelector('.race-setup-footer').insertAdjacentHTML('afterbegin',`<p class="economy-setup-note">${e.name} · ${playgroundOptions.count} pilotos · N${e.cap||1} máximo · Confirmación: ${fee} CR</p>`);
+    if(setupStep==='car')$('club-setup').querySelector('[data-setup-next]').textContent=fee?`Inscribirme y correr · ${fee} CR`:'Salir a pista';
+  }
+  if(!eventPreparation){const prizes=freeRacePrizes(league.state);$('club-setup').querySelector('.race-setup-footer').insertAdjacentHTML('afterbegin',`<p class="economy-setup-note">${isFreeRaceEligible(playgroundOptions)?`Entrada gratis · ${prizes[3]}–${prizes[0]} CR + 2 cartas al terminar`:'Entrenamiento / configuración libre · sin premios económicos'}</p>`);}
+  enhanceStyledSelects($('club-setup'));syncNavigation();
   $('playground-form').inert=true;document.querySelector('#playground-hub>.club-navigation').inert=true;document.querySelector('header.topbar').inert=true;
   if(garageSurface==='home'){garage?.hide();garageSurface=null;}
   if(focus)$('club-setup').querySelector('[data-setup-back]')?.focus({preventScroll:true});
@@ -331,7 +370,7 @@ function showSetup(step='circuit',focus=true){
 }
 function closeSetup(restore=true){
   if(!setupOpen||raceLaunching)return;
-  closeStyledSelect();setupOpen=false;thumbnailRequest++;$('club-setup')?.classList.add('hidden');
+  closeStyledSelect();setupOpen=false;eventPreparation=null;thumbnailRequest++;syncNavigation();$('club-setup')?.classList.add('hidden');
   const form=$('playground-form'),nav=document.querySelector('#playground-hub>.club-navigation');
   if(form)form.inert=false;if(nav)nav.inert=false;document.querySelector('header.topbar').inert=false;
   if(restore&&setupFocus?.isConnected)setupFocus.focus({preventScroll:true});
@@ -352,7 +391,7 @@ async function paintRaceCards(){
   }
 }
 function chooseRaceCar(id){
-  if(raceLaunching||!availableEligibleVehicles(VEHICLES.filter(v=>league.owns(v.id)),playgroundOptions.carCategory).some(v=>v.id===id))return;
+  if(raceLaunching||!availableEligibleVehicles(raceSetupVehicles(),playgroundOptions.carCategory).some(v=>v.id===id))return;
   playgroundOptions.vehicleId=id;savePlayground(storage,playgroundOptions);
     syncHomeCarSelection();
   for(const button of $('race-car-grid').querySelectorAll('[data-race-car]')){
@@ -376,11 +415,11 @@ function showHub(){
   if(!world||state==='loading')return;
   closeSetup(false);
   if(!league.owns(playgroundOptions.vehicleId))playgroundOptions.vehicleId=league.state.owned[0];
-  stopResultCalculation();leagueAttempt=null;closeGarage();closeKit();refreshPlayground();setState('hub');
+  celebration.close();workshopLoaner=null;stopResultCalculation();leagueAttempt=null;closeGarage();closeKit();refreshPlayground();setState('hub');$('playground-hub').scrollTop=0;
 }
 async function launchPlayground(startNow=true){
   if(!world||state==='loading'||raceLaunching)return;
-  if(!leagueAttempt&&!league.owns(playgroundOptions.vehicleId)){toast('Selecciona un coche de tu garaje.');return;}
+  if(!leagueAttempt&&!workshopLoaner&&!league.owns(playgroundOptions.vehicleId)){toast('Selecciona un coche de tu garaje.');return;}
   const prepared=resolvePlayground(playgroundOptions,playgroundTracks(settings.track,storage));if(prepared.error){toast(prepared.error);return;}
   raceLaunching=true;const button=$('club-setup')?.querySelector('[data-setup-next]');
   if(button){button.disabled=true;button.textContent='Preparando salida…';}
@@ -389,10 +428,13 @@ async function launchPlayground(startNow=true){
     const vehicles=prepared.settings.mode==='race'?raceGridVehicles(prepared.settings.vehicle,prepared.settings.raceRules):[prepared.settings.vehicle];
     await Promise.all([...new Set(vehicles)].map(vehicle=>preloadVehicles(vehicle)));
     if(request!==vehicleLoadRequest)return;
-    if(!leagueAttempt){leagueAttempt=league.begin('quick',prepared.options.vehicleId,prepared.options);}
+    if(!leagueAttempt&&!workshopLoaner){leagueAttempt=await league.execute(()=>league.begin('quick',prepared.options.vehicleId,prepared.options));}
     Object.assign(playgroundOptions,prepared.options);savePlayground(storage,playgroundOptions);Object.assign(settings,prepared.settings);
+    const effective=workshopLoaner?1:leagueAttempt?.level||1,cap=leagueAttempt?.cap||5;
+    settings.vehicle=upgradedVehicle(settings.vehicle,effective,cap);
+    settings.raceRules={...settings.raceRules,count:leagueAttempt?.count||settings.raceRules.count,seed:leagueAttempt?.seed||38171,vehiclePool:settings.raceRules.vehiclePool.map(v=>upgradedVehicle(v,effective,cap))};
     raceLaunching=false;closeSetup(false);closeGarage();makeSession(true);if(startNow)start();
-  }catch(error){console.error(error);toast('No se ha podido preparar la salida. Vuelve a intentarlo.');}
+  }catch(error){console.error(error);toast(error.message||'No se ha podido preparar la salida. Vuelve a intentarlo.');}
   finally{raceLaunching=false;if(button?.isConnected){button.disabled=false;button.innerHTML=`Salir a pista ${clubIcon('flag-checkered')}`;}}
 }
 
@@ -426,12 +468,13 @@ async function openGarage(inspectId,context) {
   garageContext=context||(state==='hub'?'hub':'session');garagePanel=null;
   modalFocus=document.activeElement;
   if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
-  const selected=typeof inspectId==='string'&&league.owns(inspectId)?inspectId:league.owns(lastGarageVehicle)?lastGarageVehicle:league.owns(playgroundOptions.vehicleId)?playgroundOptions.vehicleId:league.state.owned[0];
-  $('garage-content').innerHTML=renderGarage(null,selected,{testing:false,ownedVehicleIds:league.state.owned});$('garage-content').querySelector('.studio-actions').insertAdjacentHTML('beforeend','<button type="button" class="league-use-car" data-league-use>Usar en carrera</button>');$('garage-overlay').classList.remove('hidden');garageSurface='garage';
+  const selected=typeof inspectId==='string'&&VEHICLES.some(v=>v.id===inspectId)?inspectId:league.owns(lastGarageVehicle)?lastGarageVehicle:league.owns(playgroundOptions.vehicleId)?playgroundOptions.vehicleId:league.state.owned[0];
+  const allowed=league.owns(selected)?league.state.owned:[selected];
+  $('garage-content').innerHTML=renderGarage(null,selected,{testing:!league.owns(selected),ownedVehicleIds:allowed});$('garage-content').querySelector('.studio-actions').insertAdjacentHTML('beforeend',league.owns(selected)?'<button type="button" class="league-use-car" data-league-use>Usar en carrera</button>':'<button type="button" class="league-use-car" data-league-test>Probar en pista · sin premios</button>');$('garage-overlay').classList.remove('hidden');garageSurface='garage';
   for(const node of document.querySelectorAll('header.topbar, main, #result-overlay'))node.inert=true;
-  try{await garage.mount($('garage-stage'),selected,{presentation:'garage',allowedIds:league.state.owned});}catch(error){console.error(error);toast('No se ha podido cargar el coche del garaje.');closeGarage();return;}
+  try{await garage.mount($('garage-stage'),selected,{presentation:'garage',allowedIds:allowed});}catch(error){console.error(error);toast('No se ha podido cargar el coche del garaje.');closeGarage();return;}
   if(!fullGarage())return;updateGarage();applyGraphics();
-  $('garage-content').querySelector('[data-action="close-garage"]')?.focus({preventScroll:true});updateInputPrompts();
+  $('garage-content').querySelector('[data-action="close-garage"]')?.focus({preventScroll:true});updateInputPrompts();syncNavigation();
 }
 
 function closeGarage() {
@@ -441,7 +484,7 @@ function closeGarage() {
   if(garageSurface==='garage'){garage?.hide();garageSurface=null;}
   for (const node of document.querySelectorAll('header.topbar, main, #result-overlay')) node.inert=false;
   if (wasOpen && modalFocus?.isConnected) modalFocus.focus();
-  garagePanel=null;if(wasOpen&&state==='hub')mountHomeGarage();
+  garagePanel=null;if(wasOpen&&state==='hub')mountHomeGarage();syncNavigation();
 }
 async function openKit() {
   if(!world||state==='loading'||workbench?.visible||kitLoading)return;
@@ -461,7 +504,7 @@ async function openKit() {
   $('track-kit-overlay').classList.remove('hidden');workbench.mount($('track-kit-content'));
   applyGraphics();
   for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=true;
-  $('track-kit-content').querySelector('[data-kit="close"]').focus();
+  $('track-kit-content').querySelector('[data-kit="close"]').focus();syncNavigation();
 }
 function closeKit() {
   const open=workbench?.visible;$('track-kit-overlay').classList.add('hidden');workbench?.hide();
@@ -542,6 +585,7 @@ function updateOptions() {
 
 function clearPointers(){touchControls?.clear();mouseControls?.clear();pointers.clear();}
 function setState(next) {
+  syncNavigation();
   const previous=state;
   if(['hub','ready','finished'].includes(next)&&$('pause-all-music'))$('pause-all-music').checked=false;
   if(next==='finished'&&previous!=='finished')audio.ui('notify');
@@ -621,16 +665,19 @@ function calculateRanking(report){
     if(activeReport!==report)return;report.leaderboard={status:'ready',entries};if(report.tab==='ranking')paintResult();
   }).catch(error=>{if(error.name==='AbortError'||activeReport!==report)return;report.leaderboard={status:'error',error:error.message,entries:[]};if(report.tab==='ranking')paintResult();});
 }
-function showTimingResults(complete){
-  const totalTime=race?(race.player.finishTime??race.elapsed):laps.elapsed;if(totalTime<=0)return;
+async function showTimingResults(complete){
+  if(resultsSettling)return;resultsSettling=true;
+  const totalTime=race?(race.player.finishTime??race.elapsed):laps.elapsed;if(totalTime<=0){resultsSettling=false;return;}
   const lapTimes=race?race.player.tracker.lapTimes:laps.lapTimes;
   const racers=race?race.standings().map(r=>({id:r.id,name:r.name,isPlayer:r.isPlayer,level:r.level,finishTime:r.finishTime})):[];
   activeReport=createReport({context:timingContext,lapTimes,totalTime,complete,position:race?.position,racers,records:resultRecords,previousBestLap:previousPersonalLap});
-  if(leagueAttempt){activeReport.leagueReceipt=league.settle(leagueAttempt.id,{complete,lapTimes,position:race?.position||4,racers});}
+  if(leagueAttempt){setState('paused');try{activeReport.leagueReceipt=await league.execute(()=>league.settle(leagueAttempt.id,{complete,lapTimes,position:race?.position||4,racers,contextSignature:timingContext.key}));}catch(error){toast(error.message);}}
+  resultsSettling=false;
   finishedTime=totalTime;best=activeReport.personalBest;$('best-time').textContent=formatTime(best);
   $('result-content').classList.remove('race-result-modal');$('result-content').classList.add('session-result-modal');
   $('result-overlay').setAttribute('aria-label','Tiempos y clasificación');paintResult(true);setState('finished');updateHUD();
   $('result-content').querySelector('h2').focus({preventScroll:true});calculateRanking(activeReport);
+  if(activeReport.leagueReceipt)celebration.show(activeReport.leagueReceipt,{animations:league.state.animations,saved:league.saved});
 }
 function finish(lap){
   if(leagueAttempt?.mode==='practice'){showTimingResults(true);return;}
@@ -682,6 +729,7 @@ function drawMap(){
 
 function setupInput(){
   window.addEventListener('keydown',e=>{
+    if(celebration.visible){if(e.code==='Escape'){e.preventDefault();celebration.close();}return;}
     if(styledSelectOpen())return;
     if(preferencesOpen){
       if(e.code==='Escape'){e.preventDefault();closePreferences();}
@@ -753,13 +801,20 @@ function setupInput(){
   });
   $('preferences-overlay').addEventListener('change',e=>{const key=e.target.dataset.preference;if(!key)return;const value=['samples','sensitivity','targetFPS'].includes(key)?Number(e.target.value):typeof preferences[key]==='boolean'?e.target.value==='true':e.target.value;changePreferences({...preferences,[key]:value});$('preferences-content').querySelector(`[data-preference="${key}"]`)?.focus();});
   $('playground-hub').addEventListener('click',e=>{
+    const metric=e.target.closest('[data-ranking-metric]')?.dataset.rankingMetric;if(metric){rankingMetric=metric;refreshPlayground();return;}
     const page=e.target.closest('[data-league-page]')?.dataset.leaguePage;
     if(page){leaguePage=page;leagueSelection=null;leagueMessage='';refreshPlayground();$('playground-hub').scrollTop=0;return;}
+    if(e.target.closest('[data-league-back]')){leaveLeagueDetail();return;}
+    const carDetail=e.target.closest('[data-league-car]')?.dataset.leagueCar;if(carDetail){rememberLeagueOrigin(`[data-league-car="${carDetail}"]`);leagueSelection='car:'+carDetail;refreshPlayground();$('playground-hub').scrollTop=0;return;}
+    const unlock=e.target.closest('[data-economy-unlock]')?.dataset.economyUnlock;if(unlock){economyAction(()=>league.unlock(unlock));return;}
+    const upgrade=e.target.closest('[data-economy-upgrade]')?.dataset.economyUpgrade;if(upgrade){economyAction(()=>league.upgrade(upgrade));return;}
+    const focus=e.target.closest('[data-economy-focus]')?.dataset.economyFocus;if(focus){economyAction(()=>league.setFocus(focus));return;}
+    if(e.target.closest('[data-economy-export]')){const url=URL.createObjectURL(new Blob([league.export()],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='prl-progreso-local.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);return;}
     const event=e.target.closest('[data-league-event]')?.dataset.leagueEvent;
-    if(event){leagueSelection=event;leaguePage='events';leagueMessage='';refreshPlayground();$('playground-hub').scrollTop=0;return;}
-    const launch=e.target.closest('[data-league-launch]')?.dataset.leagueLaunch;if(launch){launchLeague(launch);return;}
-    if(e.target.closest('[data-league-quick]')){leagueAttempt=null;playgroundOptions.mode='race';playgroundOptions.count=4;playgroundOptions.laps=1;playgroundOptions.difficulty='novice';playgroundOptions.carCategory='same-model';showSetup();return;}
-    if(e.target.closest('[data-league-retire]')){league.retire();leagueMessage='Competición retirada. Puedes volver a inscribirte cuando quieras.';refreshPlayground();return;}
+    if(event){rememberLeagueOrigin(`[data-league-event="${event}"]`);leagueSelection=event;leaguePage='events';leagueMessage='';refreshPlayground();$('playground-hub').scrollTop=0;return;}
+    const launch=e.target.closest('[data-league-launch]')?.dataset.leagueLaunch;if(launch){prepareLeague(launch);return;}
+    if(e.target.closest('[data-league-quick]')||e.target.closest('[data-league-practice]')){leagueAttempt=null;workshopLoaner=null;Object.assign(playgroundOptions,{mode:e.target.closest('[data-league-practice]')?'practice':'race',count:4,laps:1,difficulty:'novice',carCategory:'same-model',weather:'clear',surface:'track',pace:'normal',width:'original'});showSetup();return;}
+    if(e.target.closest('[data-league-retire]')){if(confirm('¿Retirarte de la competición? La entrada pagada no se devuelve. Cerrar la ficha permite continuar más tarde.'))economyAction(()=>{league.retire();leagueMessage='Competición retirada.';});return;}
     const buy=e.target.closest('[data-league-buy]')?.dataset.leagueBuy;if(buy){try{const car=league.buy(buy);leagueMessage=car.name+' ya está en tu garaje.';audio.ui('confirm');}catch(error){leagueMessage=error.message;}refreshPlayground();return;}
     const inspect=e.target.closest('[data-league-inspect]')?.dataset.leagueInspect;if(inspect){openGarage(inspect,'hub');return;}
     const mode=e.target.closest('[data-play-mode]');if(mode){playgroundOptions.mode=mode.dataset.playMode;savePlayground(storage,playgroundOptions);refreshPlayground();hubFocusMode(mode.dataset.playMode);}
@@ -768,7 +823,7 @@ function setupInput(){
     if(action==='tracks')showSetup('circuit');if(action==='close-setup')closeSetup();
     if(e.target.closest('[data-setup-back]'))backSetup();
     const step=e.target.closest('[data-setup-go]');if(step&&!step.disabled)showSetup(step.dataset.setupGo);
-    if(e.target.closest('[data-setup-next]')){const next=SETUP_STEPS[SETUP_STEPS.indexOf(setupStep)+1];if(next)showSetup(next);else launchPlayground();}
+    if(e.target.closest('[data-setup-next]')){const next=SETUP_STEPS[SETUP_STEPS.indexOf(setupStep)+1];if(next)showSetup(next);else if(eventPreparation)launchLeague(eventPreparation.id,eventPreparation.revision,playgroundOptions.vehicleId);else launchPlayground();}
     const car=e.target.closest('[data-race-car]');if(car)chooseRaceCar(car.dataset.raceCar);
     if(e.target.closest('[data-race-facts]'))showRaceFacts();
     if(e.target.closest('[data-race-close-facts]'))closeRaceFacts();
@@ -777,20 +832,24 @@ function setupInput(){
   document.body.addEventListener('click',e=>{
     const target=e.target.closest('[data-club-nav]');if(!target||state==='loading')return;
     const destination=target.dataset.clubNav;
-    if(destination==='garage'){if(!fullGarage())openGarage();return;}
+    if(destination==='garage'){leaguePage='collection';leagueSelection=null;showHub();return;}
+    if(destination==='events'||destination==='rankings'){leaguePage=destination;leagueSelection=null;showHub();return;}
     if(destination==='race'){leaguePage='home';leagueSelection=null;showHub();return;}
     if(destination==='tracks'){leaguePage='events';leagueSelection=null;showHub();return;}
     if(destination==='profile'){leaguePage='profile';leagueSelection=null;showHub();}
   });
   $('playground-hub').addEventListener('change',e=>{
+    if(e.target.hasAttribute('data-ranking-track')){rankingTrack=e.target.value;refreshPlayground();return;}
+    if(e.target.hasAttribute('data-economy-animations')){economyAction(()=>league.setAnimations(e.target.value==='true'));return;}
     const key=e.target.dataset.playground;if(!key)return;
     const value=['width','count','laps'].includes(key)&&e.target.value!=='original'?Number(e.target.value):e.target.value;
     Object.assign(playgroundOptions,normalizePlayground({...playgroundOptions,[key]:value},playgroundTracks(settings.track,storage)));
     if(key==='trackId'&&resolvePlayground(playgroundOptions,playgroundTracks(settings.track,storage)).error)playgroundOptions.width='original';
     savePlayground(storage,playgroundOptions);refreshPlayground();$('playground-hub').querySelector(`[data-playground="${key}"]`)?.focus();
   });
-  $('playground-hub').addEventListener('submit',e=>{e.preventDefault();if(e.target.matches('[data-league-name]')){league.rename(new FormData(e.target).get('driver'));leagueMessage='Nombre guardado.';refreshPlayground();}else showSetup('circuit');});
+  $('playground-hub').addEventListener('submit',e=>{e.preventDefault();if(e.target.matches('[data-league-name]')){const name=new FormData(e.target).get('driver');economyAction(()=>{league.rename(name);leagueMessage='Nombre guardado.';});}else showSetup('circuit');});
   $('garage-overlay').addEventListener('click',async e=>{
+    if(e.target.closest('[data-league-test]')){workshopLoaner=garage.selectedId;leagueAttempt=null;Object.assign(playgroundOptions,{vehicleId:workshopLoaner,trackId:'puerto',mode:'practice',laps:1,pace:'normal',weather:'clear',surface:'track',width:'original'});closeGarage();await launchPlayground();return;}
     if(e.target.closest('[data-league-use]')){await selectVehicle(garage.selectedId);return;}
     if(e.target.closest('[data-action="close-garage"]')||e.target===$('garage-overlay')){cancelGarage();return;}
     const direction=e.target.closest('[data-studio-direction]');if(direction&&!direction.disabled)inspectVehicle(garage.neighbor(Number(direction.dataset.studioDirection)));

@@ -1,4 +1,10 @@
-# Pocket Racing League — progression v1
+# Pocket Racing League — local economy
+
+**Economía v2 implementada:** consulta [estado, reglas activas y validación](docs/economy/IMPLEMENTATION.md). Incluye cartas, nueve ligas, mejoras, torneos, cinco destinos y celebraciones. Los importes de recuperación se ajustaron tras simular la progresión.
+
+## Histórico v1 · conservado para eventos ya inscritos
+
+> Next design iteration: [Economy v2 proposal](docs/economy/ECONOMY_V2_PROPOSAL.md), [54-car acquisition catalogue](docs/economy/CATALOG.md), and [balance model](docs/economy/BALANCE_CHECK.md). The user confirmed design and mockups first on 2 November 2026. The proposal led to the v2 implementation linked above; the rules below document legacy events only.
 
 This release implements a local league against the game's driving AI. It does not simulate real online opponents, global tournament participation, seasons or purchases with real money. Save key: `prl.league.v1`; existing lap/ghost/career data remain separate and unchanged.
 

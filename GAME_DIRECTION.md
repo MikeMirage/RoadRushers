@@ -1,6 +1,6 @@
 # RoadRushers · propuesta de meta y experiencia móvil
 
-Dirección para la siguiente fase. Pistas, entornos, colección y entrenamiento están implementados; la economía, el matchmaking online y la nueva navegación de este documento son propuestas para validar.
+Dirección para la siguiente fase. Pistas, entornos, colección y entrenamiento están implementados; la economía local v2 y su navegación están implementadas; el matchmaking y los servicios online siguen pendientes.
 
 ## Identidad
 
@@ -27,6 +27,8 @@ Los duelos de una vuelta pueden comenzar con IA y posteriormente ghosts verifica
 
 ## Progresión
 
+La propuesta detallada de evolución local está en [Economía v2](docs/economy/ECONOMY_V2_PROPOSAL.md): cartas por vehículo, nueve ligas, entradas y premios netos, mejoras limitadas por reglamento y migración futura a servidor. Incluye catálogo y comprobación numérica. La [implementación local y sus comprobaciones](docs/economy/IMPLEMENTATION.md) documenta lo que ya está activo y los ajustes posteriores de balance.
+
 | Eje | Qué mide | Qué abre |
 | --- | --- | --- |
 | Licencia | Curva, freno, derrape, terreno y desniveles | Pruebas y clases más exigentes |
@@ -41,11 +43,11 @@ La economía inicial puede usar créditos por participar y completar objetivos, 
 
 ## Interfaz móvil
 
-Cuatro entradas persistentes: **Carrera, Garaje, Circuitos, Perfil**. El inicio presenta la miniatura 3D en el mismo estudio gris azulado del garaje, el circuito resumido y una única acción «Jugar». El modo Entrenamiento/Carrera IA se elige en Reglas. Sonido y cámara viven en un menú breve; el editor y la dirección de arte se abren desde Circuitos.
+La primera propuesta usaba cuatro entradas: Carrera, Garaje, Circuitos y Perfil. La revisión de economía propone **Events, Career, Drive, Cars y Rankings**, con Drive central; el usuario sugirió World Champions y se recomienda Rankings como etiqueta corta. Véase el [contrato de navegación, salidas y celebraciones](docs/economy/NAVIGATION_AND_CELEBRATIONS.md). Todas las pantallas subordinadas tendrán Atrás/Cerrar visible, especialmente en móvil. Premios, coches nuevos y grandes resultados tendrán celebraciones omisibles y monedas/cartas hacia sus contadores; cerrar nunca elimina una recompensa. Esta revisión está implementada en la economía local v2. El inicio presenta la miniatura 3D en el mismo estudio gris azulado del garaje, el circuito resumido y una única acción «Jugar». El modo Entrenamiento/Carrera IA se elige en Reglas. Sonido y cámara viven en un menú breve; el editor y la dirección de arte se abren desde Circuitos.
 
 El flujo habitual llega a la salida en tres decisiones ordenadas: circuito, reglas y coche. Las reglas determinan qué coches son elegibles; circuito y reglas se resumen en el último paso. Después, la acción principal es revancha o siguiente prueba; los premios se agrupan en una pantalla.
 
-El **Garaje** es un estudio para explorar y personalizar la colección. El usuario elige una categoría y encuentra todos sus coches desbloqueados en una fila horizontal continua. En vertical se ve el elegido centrado y parte de los vecinos; flechas laterales y gesto horizontal desplazan la fila hasta centrar el siguiente modelo, manteniendo el encuadre y la iluminación. El fondo es difuso, en grises y azules, con luz principal suave, luz de relleno y luz de contorno que separa la miniatura del fondo. El nombre, tres índices de serie sobre 10 y la acción «Personalizar» quedan bajo el escenario. Los coches iniciales tienen índices alrededor de 3–5/10; las mejoras mecánicas todavía no existen y los coches de fábrica conservan margen. Cada modelo tiene un perfil propio de conducción. La selección interpola el desplazamiento de la fila y una pequeña rotación del coche, junto con las cifras y barras; respeta la preferencia de movimiento reducido. El [mockup de estudio](art/ui-references/garage-studio-2026-11-02/01-garaje-estudio.png) sustituye la propuesta anterior de taller con pedestal y miniaturas en una tira de botones. Personalización y mejoras tienen entradas propias, vista previa y acciones para aplicar o revertir.
+El **Garaje** es un estudio para explorar y personalizar la colección. El usuario elige una categoría y encuentra todos sus coches desbloqueados en una fila horizontal continua. En vertical se ve el elegido centrado y parte de los vecinos; flechas laterales y gesto horizontal desplazan la fila hasta centrar el siguiente modelo, manteniendo el encuadre y la iluminación. El fondo es difuso, en grises y azules, con luz principal suave, luz de relleno y luz de contorno que separa la miniatura del fondo. El nombre, tres índices de serie sobre 10 y la acción «Personalizar» quedan bajo el escenario. Los coches iniciales tienen índices alrededor de 3–5/10; las mejoras mecánicas N1–N5 están disponibles en Cars, con límite efectivo por competición y los coches de fábrica conservan margen. Cada modelo tiene un perfil propio de conducción. La selección interpola el desplazamiento de la fila y una pequeña rotación del coche, junto con las cifras y barras; respeta la preferencia de movimiento reducido. El [mockup de estudio](art/ui-references/garage-studio-2026-11-02/01-garaje-estudio.png) sustituye la propuesta anterior de taller con pedestal y miniaturas en una tira de botones. Personalización y mejoras tienen entradas propias, vista previa y acciones para aplicar o revertir.
 
 La **elección de coche para carrera** es una vista distinta: cuadrícula de dos columnas en vertical, con tarjetas de todos los coches elegibles según las reglas ya elegidas. Resume circuito, reglas y categoría, permite recorrer la lista verticalmente y mantiene «Salir a pista» accesible con el coche seleccionado. El recorrido de tres pasos sustituye aquí la navegación global. La referencia aportada para las tarjetas se conserva en [selección de Gran Turismo](art/ui-references/garage-studio-2026-11-02/00-referencia-tarjetas.png). Ambas vistas y el recorrido Circuito → Reglas → Coche están implementados. Las tarjetas se generan a partir del mismo modelo 3D y la personalización usados en carrera.
 

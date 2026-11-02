@@ -36,7 +36,7 @@ export function normalizePlayground(input={},tracks=playgroundTracks()){
   const options={...DEFAULT_PLAYGROUND};
   const choices={mode:['practice','race'],vehicleId:VEHICLES.map(v=>v.id),trackId:tracks.map(t=>t.id),
     surface:['track',...Object.keys(SURFACES)],weather:['track',...Object.keys(WEATHER)],theme:Object.keys(CIRCUIT_THEMES),
-    pace:Object.keys(PACES),camera:CAMERA_VIEWS.map(view=>view.id),width:['original',12,14,16],count:[4,8,12],laps:[1,3,5],
+    pace:Object.keys(PACES),camera:CAMERA_VIEWS.map(view=>view.id),width:['original',12,14,16],count:[2,4,8,12],laps:[1,3,5],
     interaction:['ghost','contact'],difficulty:Object.keys(AI_LEVELS),fieldLevels:['mixed','uniform'],carCategory:CAR_CATEGORIES.map(c=>c.id)};
   for(const [key,values]of Object.entries(choices))if(values.includes(input?.[key]))options[key]=input[key];
   if(!tracks.some(t=>t.id===options.trackId))options.trackId=tracks[0].id;
