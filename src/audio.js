@@ -1,4 +1,4 @@
-import {MUSIC_TRACKS,MusicDirector} from './music-library.js';
+import {MUSIC_TRACKS,MusicDirector,musicPresence} from './music-library.js';
 import {drivingMix,blendLoopEdges} from './driving-audio-mix.js';
 /** Sample mixer: approved Magnific music/FX plus lightweight environmental and UI layers. */
 const clamp=v=>Math.max(0,Math.min(1,Number.isFinite(v)?v:0));
@@ -13,7 +13,8 @@ export class EngineAudio {
   setOptions(options={}){Object.assign(this.options,options);this.enabled=this.options.soundEnabled!==false;this.applyLevels();}
   setHidden(hidden){this.hidden=hidden;this.applyLevels();if(hidden)for(const track of this.music.values())track.element.pause();}
   applyLevels(){if(!this.context)return;const t=this.context.currentTime,o=this.options;approach(this.master.gain,this.enabled&&!this.hidden?clamp(o.masterVolume):0,t);for(const [bus,key] of [[this.engineBus,'engineVolume'],[this.fxBus,'effectsVolume'],[this.ambientBus,'ambientVolume'],[this.uiBus,'uiVolume']])approach(bus.gain,clamp(o[key]),t);}
-  unlock(){
+  unlock(snapshot){
+    if(snapshot)this.lastScene={...this.lastScene,...snapshot};
     if(!this.enabled)return false;
     if(!this.context){
       const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
@@ -53,9 +54,14 @@ export class EngineAudio {
   }
   oneShot(name,volume=1,bus=this.fxBus){const buffer=this.buffers.get(name);if(!buffer)return;const source=this.context.createBufferSource(),gain=this.context.createGain();source.buffer=buffer;gain.gain.value=volume;source.connect(gain);gain.connect(bus);source.start();source.onended=()=>{source.disconnect();gain.disconnect();};}
   get currentMusic(){return this.musicDirector.current;}
-  nextMusic(){
+  setMusicScope(options={}){
+    this.musicDirector.setScope(options);
+    if(this.context&&this.lastScene)this.updateMusic(this.lastScene);
+    return this.currentMusic;
+  }
+  nextMusic(options={}){
     if(!this.lastScene)return null;
-    this.musicFor(this.lastScene);this.musicDirector.skipAll();
+    this.musicFor(this.lastScene);this.musicDirector.skip(options);
     if(this.context)this.updateMusic(this.lastScene);
     return this.currentMusic;
   }
@@ -65,12 +71,12 @@ export class EngineAudio {
     const current=this.music.get(target);
     if(current&&!current.retired&&this.enabled&&!this.hidden&&this.options.musicVolume>0&&this.options.masterVolume>0&&this.musicDirector.plan?.tracks.length>1&&((Number.isFinite(current.element.duration)&&current.element.duration-current.element.currentTime<1.8)||current.element.ended))target=this.musicDirector.advance();
     if(target&&!this.music.has(target)){
-      const element=new Audio(MUSIC_TRACKS[target].file);element.preload='metadata';
+      const element=new Audio(MUSIC_TRACKS[target].file);element.preload='auto';element.hidden=true;element.dataset.gameMusic=target;document.body.append(element);
       const source=c.createMediaElementSource(element),gain=c.createGain();gain.gain.value=0;source.connect(gain);gain.connect(this.musicBus);
       this.music.set(target,{element,gain,blocked:false,pending:false,retired:false});
     }
     const duck=1-clamp(Math.max((s.slip||0)*.22,(s.impact||0)*.35));
-    approach(this.musicBus.gain,clamp(this.options.musicVolume)*.38*duck,c.currentTime,.15);
+    approach(this.musicBus.gain,clamp(this.options.musicVolume)*musicPresence(s.scene)*duck,c.currentTime,.15);
     for(const [name,track] of this.music){const audible=name===target&&this.enabled&&!this.hidden&&this.options.musicVolume>0&&this.options.masterVolume>0;
       track.element.loop=this.musicDirector.plan?.tracks.length===1;
       approach(track.gain.gain,audible?1:0,c.currentTime,.45);

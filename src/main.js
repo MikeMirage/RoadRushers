@@ -1,3 +1,4 @@
+import {gameAudioScene} from './music-library.js';
 import '@fontsource/barlow-condensed/500.css';
 import '@fontsource/barlow-condensed/600.css';
 import '@fontsource/barlow-condensed/700.css';
@@ -98,8 +99,8 @@ let race=null;
 const keys = new Set(), pointers = new Map(), audio = new EngineAudio();
 audio.setOptions(preferences);
 let audioInput='pointer';
-window.addEventListener('pointerdown',()=>{audioInput='pointer';audio.unlock();},{capture:true,passive:true});
-window.addEventListener('keydown',e=>{audioInput='keyboard';if(!e.repeat)audio.unlock();},true);
+window.addEventListener('pointerdown',()=>{audioInput='pointer';audio.unlock({scene:audioScene()});},{capture:true,passive:true});
+window.addEventListener('keydown',e=>{audioInput='keyboard';if(!e.repeat)audio.unlock({scene:audioScene()});},true);
 document.addEventListener('visibilitychange',()=>audio.setHidden(document.hidden));
 document.addEventListener('focusin',e=>{if((audioInput==='keyboard'||inputDevice==='gamepad')&&e.target.matches('button,select,summary,input'))audio.ui('navigate');});
 document.addEventListener('click',e=>{const b=e.target.closest('button,summary');if(!b||b.disabled||b.closest('#touch-steering'))return;const action=b.dataset.action||b.dataset.raceAction||b.dataset.editorAction||b.dataset.result||b.dataset.kit;const back=/close|back|cancel/.test((b.id+' '+Object.keys(b.dataset).join(' ')).toLowerCase())||['close','close-garage','hub','cancel-place'].includes(action);audio.ui(back?'back':'confirm');},true);
@@ -166,7 +167,7 @@ function pollGamepad(now,dt){
   let pads=[];try{pads=navigator.getGamepads?.()||[];}catch{/* Keyboard, mouse and touch remain available. */}
   const sample=gamepadReader.sample(pads,now);gamepadState=sample.pad;
   if(sample.disconnected&&inputDevice==='gamepad'&&['running','countdown'].includes(state)){setState('paused');toast('Mando desconectado · Carrera en pausa');}
-  if(sample.active){setInputDevice('gamepad',sample.pad.family);audio.unlock();}
+  if(sample.active){setInputDevice('gamepad',sample.pad.family);audio.unlock({scene:audioScene()});}
   for(const action of sample.actions){
     if(action==='pause'){
       audio.ui('confirm');
@@ -207,7 +208,7 @@ function updateTouchGuide(){
 function paintPreferences(){
   const host=$('preferences-content'),open=host.querySelector('.preferences-advanced')?.open,scroll=host.querySelector('.preferences-body')?.scrollTop||0;
   host.innerHTML=renderPreferences(preferences,preferencesTab,{soundEnabled:audio.enabled,profile:preferencesContext==='profile'});
-  if(preferencesTab==='audio'){const settings=host.querySelector('.audio-settings');settings.insertAdjacentHTML('afterbegin','<div class="pause-music"><span class="pause-music-label">BANDA SONORA</span><p id="pause-current-music" aria-live="polite" aria-atomic="true">Sin canción seleccionada</p><button type="button" id="pause-next-music" class="text-button">Siguiente canción <span aria-hidden="true">→</span></button><small>Recorre las 9 versiones de la biblioteca</small></div>' );settings.querySelector('#pause-next-music').addEventListener('click',()=>{audio.unlock();audio.nextMusic();updatePauseMusic();});updatePauseMusic();}
+  if(preferencesTab==='audio'){const settings=host.querySelector('.audio-settings');settings.insertAdjacentHTML('afterbegin','<div class="pause-music"><span class="pause-music-label">BANDA SONORA</span><p id="pause-current-music" aria-live="polite" aria-atomic="true">Sin canción seleccionada</p><button type="button" id="pause-next-music" class="text-button">Siguiente canción <span aria-hidden="true">→</span></button><small>Siguiente respeta los temas de esta pantalla</small><label class="pause-music-test"><input type="checkbox" id="pause-all-music"> Escuchar también lobby y resultados</label></div>' );settings.querySelector('#pause-next-music').addEventListener('click',()=>{audio.unlock({scene:audioScene()});audio.nextMusic({all:$('pause-all-music')?.checked===true});updatePauseMusic();});settings.querySelector('#pause-all-music').addEventListener('change',e=>{audio.setMusicScope({all:e.target.checked});updatePauseMusic();});updatePauseMusic();}
   const advanced=host.querySelector('.preferences-advanced');if(advanced&&open)advanced.open=true;
   host.querySelector('.preferences-body').scrollTop=scroll;updatePreferencesReadout();updateInputPrompts();
 }
@@ -250,14 +251,12 @@ function applyHUDPreferences(){
   performanceStats.setEnabled(preferences.showStats,{detailed:preferences.statsDetailed});
 }
 function toggleSound(){
-  preferences=normalizePreferences({...preferences,soundEnabled:!preferences.soundEnabled});audio.setOptions(preferences);if(preferences.soundEnabled)audio.unlock();savePreferences(storage,preferences);
+  preferences=normalizePreferences({...preferences,soundEnabled:!preferences.soundEnabled});audio.setOptions(preferences);if(preferences.soundEnabled)audio.unlock({scene:audioScene()});savePreferences(storage,preferences);
   if(preferencesOpen){paintPreferences();$('preferences-content').querySelector('[data-sound-toggle]')?.focus();}
   const button=$('pause-audio-settings')?.querySelector('[data-sound-toggle]');if(button){button.setAttribute('aria-pressed',String(preferences.soundEnabled));button.textContent=`Sonido: ${preferences.soundEnabled?'activado':'silenciado'}`;}
 }
 function audioScene(){
-  const screen=state==='finished'?'results':fullGarage()||workbench?.visible?'garage':state==='hub'?'menu':
-    ['ready','countdown','running','paused'].includes(state)?'race':'loading';
-  return {screen,trackId:settings.track?.id,biome:settings.track?.biome,weather:settings.weather,mode:settings.mode};
+  return gameAudioScene({state,garageOpen:fullGarage(),editorOpen:workbench?.visible,track:settings.track,weather:settings.weather,mode:settings.mode});
 }
 function updatePauseMusic(){
   const track=audio.currentMusic,label=track?`${track.title} · Versión ${track.variant}`:'Sin canción seleccionada',node=$('pause-current-music');
@@ -538,6 +537,7 @@ function updateOptions() {
 function clearPointers(){touchControls?.clear();mouseControls?.clear();pointers.clear();}
 function setState(next) {
   const previous=state;
+  if(['hub','ready','finished'].includes(next)&&$('pause-all-music'))$('pause-all-music').checked=false;
   if(next==='finished'&&previous!=='finished')audio.ui('notify');
   if(next!=='hub'&&garageSurface==='home'){garage?.hide();garageSurface=null;}
   state=next;document.body.dataset.state=next;
