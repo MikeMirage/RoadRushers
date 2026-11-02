@@ -61,12 +61,33 @@ export function trackStructures(circuit) {
   }
   const tunnelMaterial=new THREE.MeshStandardMaterial({color:'#7a827e',roughness:.95}),portalMaterial=new THREE.MeshStandardMaterial({color:'#bdc3b1',roughness:.9});
   let tunnelCount=0;
-  for(const section of circuit.layout.sections.filter(s=>s.spec.kind==='tunnel')){
-    const mid=circuit.at((section.from+section.to)/2/circuit.length),length=section.to-section.from,width=circuit.widthAt((section.from+section.to)/2/circuit.length),shell=new THREE.Group();
-    shell.name='tunnel';shell.position.set(mid.x,mid.y,mid.z);shell.rotation.y=mid.heading;
-    for(const side of [-1,1]){const wall=new THREE.Mesh(new THREE.BoxGeometry(.55,5.4,length),tunnelMaterial);wall.position.set(side*(width/2+1.25),2.7,0);wall.castShadow=wall.receiveShadow=true;shell.add(markPlayerOccluder(wall));}
-    const roof=new THREE.Mesh(new THREE.BoxGeometry(width+3.1,.6,length),tunnelMaterial);roof.position.y=5.1;roof.castShadow=roof.receiveShadow=true;shell.add(markPlayerOccluder(roof));
-    for(const sign of [-1,1]){const portal=new THREE.Mesh(new THREE.BoxGeometry(width+3.2,.45,.5),portalMaterial);portal.position.set(0,4.9,sign*length/2);portal.castShadow=true;shell.add(markPlayerOccluder(portal));}
+  const tunnelSpans=[];
+  for(const section of circuit.layout.sections){
+    if(section.spec.kind!=='tunnel'&&!section.spec.tunnel)continue;
+    const previous=tunnelSpans.at(-1);
+    if(previous&&Math.abs(previous.to-section.from)<1e-6)previous.to=section.to;
+    else tunnelSpans.push({from:section.from,to:section.to});
+  }
+  for(const span of tunnelSpans){
+    const shell=new THREE.Group();shell.name='tunnel';
+    const positions=[],indices=[],steps=Math.max(2,Math.ceil((span.to-span.from)/1.5));
+    // Extrude an open-bottom concrete shell along the actual road, including bends.
+    for(let i=0;i<=steps;i++){
+      const u=(span.from+(span.to-span.from)*i/steps)/circuit.length,half=circuit.widthAt(u)/2;
+      for(const [offset,height]of [[-half-1.55,0],[-half-1.55,5.4],[half+1.55,5.4],[half+1.55,0],[half+1,0],[half+1,4.8],[-half-1,4.8],[-half-1,0]]){
+        const point=circuit.at(u,offset);positions.push(point.x,point.y+height,point.z);
+      }
+      if(i<steps)for(let j=0;j<8;j++){const a=i*8+j,b=i*8+(j+1)%8;indices.push(a,a+8,b,b,a+8,b+8);}
+    }
+    for(const ring of [0,steps*8])for(const [a,b,c,d]of [[0,1,6,7],[1,2,5,6],[2,3,4,5]]){
+      const cap=[a,b,c,a,c,d].map(index=>ring+index);if(ring)cap.reverse();indices.push(...cap);
+    }
+    const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();
+    const roof=markPlayerOccluder(new THREE.Mesh(geometry,tunnelMaterial));roof.castShadow=roof.receiveShadow=true;shell.add(roof);
+    for(const distance of [span.from,span.to]){
+      const u=distance/circuit.length,p=circuit.at(u),width=circuit.widthAt(u),portal=new THREE.Mesh(new THREE.BoxGeometry(width+3.2,.45,.5),portalMaterial);
+      portal.position.set(p.x,p.y+4.9,p.z);portal.rotation.y=p.heading;portal.castShadow=true;shell.add(markPlayerOccluder(portal));
+    }
     group.add(shell);tunnelCount++;
   }
   if(!tunnelCount){tunnelMaterial.dispose();portalMaterial.dispose();}

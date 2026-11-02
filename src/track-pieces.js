@@ -32,7 +32,9 @@ const specOf=piece=>{
   if(typeof piece==='object'){
     for(const key of ['length','radius','bank','rise','height','waves','amplitude','angle','widthFactorTo','launchLength','gapLength','landingLength'])if(piece[key]!=null)spec[key]=piece[key];
     if(piece.surface!=null){if(!['asphalt','gravel','dirt','ice','mud'].includes(piece.surface))throw new Error('Superficie de tramo no válida');spec.surface=piece.surface;}
+    if(piece.tunnel!=null){if(typeof piece.tunnel!=='boolean')throw new Error('Cubierta de tramo no válida');spec.tunnel=piece.tunnel;}
     if(piece.mirrored){spec.direction=spec.direction==='left'?'right':'left';if(spec.amplitude)spec.amplitude*=-1;if(spec.bank)spec.bank*=-1;}
+    if(spec.kind==='curve'&&(piece.radius!=null||piece.angle!=null))spec.name=`${Number(spec.angle.toFixed(3))}° · R${Number(spec.radius.toFixed(1))} ${spec.direction==='left'?'izq.':'dcha.'}`;
   }
   return spec.kind==='gap-jump'?configureGapJump(spec):spec;
 };

@@ -1,0 +1,709 @@
+{
+  "version": 2,
+  "name": "Spa · GP compacto",
+  "startHeight": 6,
+  "pieces": [
+    {
+      "id": "straight",
+      "length": 78.684834073
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.063130063,
+      "angle": 66.726225335
+    },
+    {
+      "id": "straight",
+      "length": 2.071216535
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.080455604,
+      "angle": 32.436110648
+    },
+    {
+      "id": "straight",
+      "length": 2.071216535
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.063130063,
+      "angle": 54.491454334
+    },
+    {
+      "id": "straight",
+      "length": 2.789508218
+    },
+    {
+      "id": "ramp-down",
+      "length": 21.838900244,
+      "rise": -0.253358597
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 292.634134591,
+      "angle": 4.150258635,
+      "rise": -0.69055797
+    },
+    {
+      "id": "ramp-down",
+      "length": 9.787858035,
+      "rise": -0.43824216
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 136.050046152,
+      "angle": 8.327054403,
+      "rise": -1.03709122
+    },
+    {
+      "id": "ramp-down",
+      "length": 8.488990668,
+      "rise": -0.479025655
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 174.028212467,
+      "angle": 6.514298065,
+      "rise": -1.105327343
+    },
+    {
+      "id": "ramp-down",
+      "length": 55.312819894,
+      "rise": -1.94722901
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 92.306946874,
+      "angle": 5.937213892,
+      "rise": -0.049168046
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 92.306946874,
+      "angle": 7.265029941,
+      "rise": 0.159534317
+    },
+    {
+      "id": "ramp-up",
+      "length": 15.130885403,
+      "rise": 0.668560851
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 21.364360205,
+      "angle": 24.851461978,
+      "rise": 0.651777487
+    },
+    {
+      "id": "ramp-up",
+      "length": 4.034844481,
+      "rise": 0.337067609
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 31.914508921,
+      "angle": 16.781002752,
+      "rise": 0.894791823
+    },
+    {
+      "id": "ramp-up",
+      "length": 12.517751041,
+      "rise": 1.417164177
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 52.020034159,
+      "angle": 20.218912249,
+      "rise": 2.41716844
+    },
+    {
+      "id": "ramp-up",
+      "length": 64.685422492,
+      "rise": 8.693084505
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 85.150558922,
+      "angle": 8.179315585,
+      "rise": 1.142912528
+    },
+    {
+      "id": "ramp-up",
+      "length": 5.218473456,
+      "rise": 0.406252789
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 89.80419588,
+      "angle": 7.756793666,
+      "rise": 0.728862612
+    },
+    {
+      "id": "ramp-up",
+      "length": 20.423648495,
+      "rise": 0.482822863
+    },
+    {
+      "id": "straight",
+      "length": 187.34590256
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.934678922,
+      "angle": 36.943550884
+    },
+    {
+      "id": "straight",
+      "length": 2.558235843
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 10.446336293,
+      "angle": 31.890193149
+    },
+    {
+      "id": "straight",
+      "length": 7.208578919
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 10.646058104,
+      "angle": 29.650014887
+    },
+    {
+      "id": "straight",
+      "length": 2.415241222
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 9.042909234,
+      "angle": 34.61419429
+    },
+    {
+      "id": "straight",
+      "length": 11.924425264
+    },
+    {
+      "id": "ramp-down",
+      "length": 11.83306391,
+      "rise": -0.018760647
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 18.86726736,
+      "angle": 29.00232705,
+      "rise": -0.04241683
+    },
+    {
+      "id": "ramp-down",
+      "length": 4.182699326,
+      "rise": -0.0261972
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 14.192477138,
+      "angle": 37.949132856,
+      "rise": -0.075649026
+    },
+    {
+      "id": "ramp-down",
+      "length": 81.751195918,
+      "rise": -1.55486271
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 9.413085797,
+      "angle": 51.561253002,
+      "rise": -0.240150765
+    },
+    {
+      "id": "ramp-down",
+      "length": 4.911639519,
+      "rise": -0.144665184
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.063130063,
+      "angle": 47.310164786,
+      "rise": -0.202045214
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.145510707,
+      "rise": -0.066497695
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 9.525276249,
+      "angle": 32.978996978,
+      "rise": -0.172838101
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.416814089,
+      "rise": -0.077462436
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 9.521726674,
+      "angle": 32.99062307,
+      "rise": -0.178447692
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.965732848,
+      "rise": -0.098025747
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 19.940764328,
+      "angle": 17.758197364,
+      "rise": -0.207411757
+    },
+    {
+      "id": "ramp-down",
+      "length": 28.580142732,
+      "rise": -1.002726078
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 15.386818609,
+      "angle": 21.079440988,
+      "rise": -0.204659338
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.453839771,
+      "rise": -0.089101624
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 9.133882889,
+      "angle": 34.804885633,
+      "rise": -0.202138277
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.699673694,
+      "rise": -0.098609893
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 17.009306621,
+      "angle": 19.973768803,
+      "rise": -0.216941318
+    },
+    {
+      "id": "ramp-down",
+      "length": 31.320007198,
+      "rise": -1.138721637
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 294.442376998,
+      "angle": 7.181651351,
+      "rise": -1.266283316
+    },
+    {
+      "id": "ramp-down",
+      "length": 52.57233465,
+      "rise": -1.492312563
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 24.248405092,
+      "angle": 25.541855588,
+      "rise": -0.243444728
+    },
+    {
+      "id": "ramp-down",
+      "length": 6.294588269,
+      "rise": -0.130136001
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 16.592468736,
+      "angle": 26.53642924,
+      "rise": -0.146782142
+    },
+    {
+      "id": "ramp-down",
+      "length": 3.353636124,
+      "rise": -0.05977751
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 17.646353761,
+      "angle": 25.00292786,
+      "rise": -0.12716852
+    },
+    {
+      "id": "ramp-down",
+      "length": 19.173263634,
+      "rise": -0.253378943
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 28.270405706,
+      "angle": 26.67007118,
+      "rise": -0.119714745
+    },
+    {
+      "id": "ramp-down",
+      "length": 5.743796857,
+      "rise": -0.038057025
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 25.476687653,
+      "angle": 29.473263888,
+      "rise": -0.054066387
+    },
+    {
+      "id": "ramp-down",
+      "length": 8.421198809,
+      "rise": -0.010521713
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 66.124552304,
+      "angle": 14.040459848,
+      "rise": -0.033397262
+    },
+    {
+      "id": "ramp-down",
+      "length": 79.222611273,
+      "rise": -1.101980227
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 14.808860976,
+      "angle": 29.952325931,
+      "rise": -0.177281043
+    },
+    {
+      "id": "ramp-down",
+      "length": 3.799647151,
+      "rise": -0.090393883
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 14.017187285,
+      "angle": 28.479748765,
+      "rise": -0.171049187
+    },
+    {
+      "id": "ramp-down",
+      "length": 3.04909304,
+      "rise": -0.076854292
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 11.703526437,
+      "angle": 33.813194283,
+      "rise": -0.178155467
+    },
+    {
+      "id": "ramp-down",
+      "length": 13.239284751,
+      "rise": -0.354843736
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 21.213958236,
+      "angle": 29.34671082,
+      "rise": -0.30106854
+    },
+    {
+      "id": "ramp-down",
+      "length": 5.066350214,
+      "rise": -0.142440593
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 13.667070084,
+      "angle": 42.02539153,
+      "rise": -0.284053276
+    },
+    {
+      "id": "ramp-down",
+      "length": 4.499804222,
+      "rise": -0.127918617
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 61.635432325,
+      "angle": 9.736786572,
+      "rise": -0.297082211
+    },
+    {
+      "id": "ramp-down",
+      "length": 46.360450927,
+      "rise": -1.236053197
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.259746847,
+      "angle": 36.530609051,
+      "rise": -0.125494178
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.336659249,
+      "rise": -0.054346225
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.959424025,
+      "angle": 33.847080453,
+      "rise": -0.119880146
+    },
+    {
+      "id": "ramp-down",
+      "length": 2.882193022,
+      "rise": -0.063319963
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 15.328522947,
+      "angle": 22.290075221,
+      "rise": -0.126373914
+    },
+    {
+      "id": "ramp-down",
+      "length": 28.353759178,
+      "rise": -0.50451396
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 24.228811479,
+      "angle": 22.808254983,
+      "rise": -0.131081394
+    },
+    {
+      "id": "ramp-down",
+      "length": 4.189030066,
+      "rise": -0.049974123
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 18.971954733,
+      "angle": 28.890825,
+      "rise": -0.097776978
+    },
+    {
+      "id": "ramp-down",
+      "length": 5.482047763,
+      "rise": -0.045541462
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 28.279906051,
+      "angle": 22.337098878,
+      "rise": -0.06786553
+    },
+    {
+      "id": "ramp-down",
+      "length": 9.556127829,
+      "rise": -0.032733447
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 78.095125023,
+      "angle": 5.847690808,
+      "rise": -0.008554386
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 78.095125023,
+      "angle": 6.070954381,
+      "rise": 0.006164642
+    },
+    {
+      "id": "ramp-up",
+      "length": 8.166310215,
+      "rise": 0.018097941
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 71.905568891,
+      "angle": 13.933946182,
+      "rise": 0.077698459
+    },
+    {
+      "id": "ramp-up",
+      "length": 26.170986184,
+      "rise": 0.206274364
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 134.263775568,
+      "angle": 15.961408802,
+      "rise": 0.432973375
+    },
+    {
+      "id": "ramp-up",
+      "length": 34.559935021,
+      "rise": 0.459633471
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 96.269197881,
+      "angle": 9.809574945,
+      "rise": 0.210112477
+    },
+    {
+      "id": "ramp-up",
+      "length": 7.081101231,
+      "rise": 0.084683193
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 50.995401436,
+      "angle": 18.404011448,
+      "rise": 0.177529833
+    },
+    {
+      "id": "ramp-up",
+      "length": 10.085152839,
+      "rise": 0.093659602
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 111.983552386,
+      "angle": 10.082819926,
+      "rise": 0.141161043
+    },
+    {
+      "id": "ramp-up",
+      "length": 28.641914032,
+      "rise": 0.090869237
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 34.24362135,
+      "angle": 5.957547236,
+      "rise": 0.001142364
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 34.24362135,
+      "angle": 17.059196417,
+      "rise": 0.016608901
+    },
+    {
+      "id": "ramp-up",
+      "length": 5.976132265,
+      "rise": 0.02500104
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 36.647128268,
+      "angle": 21.543697784,
+      "rise": 0.098710832
+    },
+    {
+      "id": "ramp-up",
+      "length": 44.079407307,
+      "rise": 0.616556208
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 138.355152006,
+      "angle": 10.952108997,
+      "rise": 0.468989222
+    },
+    {
+      "id": "ramp-up",
+      "length": 11.368911145,
+      "rise": 0.192226668
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 214.401345216,
+      "angle": 7.080071816,
+      "rise": 0.368704948
+    },
+    {
+      "id": "ramp-up",
+      "length": 18.861062052,
+      "rise": 0.160030947
+    },
+    {
+      "id": "curve-medium-right",
+      "radius": 8.063130063,
+      "angle": 83.759344943,
+      "rise": 0.046385549
+    },
+    {
+      "id": "ramp-up",
+      "length": 2.071216535,
+      "rise": 0.003628356
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 8.074118295,
+      "angle": 31.509677472,
+      "rise": 0.003157328
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 8.074118295,
+      "angle": 17.76488194
+    },
+    {
+      "id": "straight",
+      "length": 2.071216535
+    },
+    {
+      "id": "curve-medium-left",
+      "radius": 8.063130063,
+      "angle": 64.286040008
+    },
+    {
+      "id": "straight",
+      "length": 64.378500605
+    }
+  ],
+  "environment": {
+    "theme": "grandprix",
+    "biome": "meadow",
+    "climate": "temperate",
+    "weather": "clear",
+    "solarMode": "time",
+    "hour": 13,
+    "latitude": 35,
+    "day": 172,
+    "sunAzimuth": 225,
+    "sunElevation": 48,
+    "clouds": 0.22,
+    "fog": 0.08,
+    "precipitation": 0,
+    "wind": 3,
+    "windDirection": 70,
+    "temperature": 20,
+    "wetness": 0,
+    "snow": 0,
+    "exposure": 1.05,
+    "contrast": 1.04,
+    "saturation": 1.06,
+    "warmth": 0,
+    "tint": 0,
+    "vignette": 0.1,
+    "grassDensity": 0.7,
+    "quality": "balanced"
+  },
+  "props": [],
+  "attribution": {
+    "author": "Tomislav Bacinger",
+    "copyright": "Copyright (c) 2019-2025 Tomislav Bacinger",
+    "license": "MIT",
+    "source": "https://github.com/bacinger/f1-circuits",
+    "notice": "Geographic reference adapted into compact modular game circuits. Full MIT license: ../licenses/f1-circuits.txt",
+    "officialReferences": [
+      "https://www.formula1.com/en/latest/article/explained-how-every-corner-at-the-circuit-de-spa-francorchamps-got-names.1o6cyXf5F6q9VFFcgMqTqs",
+      "https://www.spa-francorchamps.be/en/the-circuit"
+    ]
+  }
+}

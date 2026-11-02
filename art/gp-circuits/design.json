@@ -1,0 +1,489 @@
+[
+  {
+    "slug": "suzuka",
+    "sourceId": "jp-1962",
+    "id": "gp-suzuka-compact-v1",
+    "name": "Suzuka · GP compacto",
+    "inspiration": "Suzuka",
+    "country": "Japón",
+    "character": "Enlazadas rápidas · Horquilla · Doble ápice",
+    "description": "Las Esses, Spoon y 130R conectadas por un cruce a dos niveles.",
+    "targetLength": 1850,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        0.17,
+        3
+      ],
+      [
+        0.38,
+        0
+      ],
+      [
+        0.5,
+        2
+      ],
+      [
+        0.66,
+        2
+      ],
+      [
+        0.76,
+        8
+      ],
+      [
+        0.86,
+        8
+      ],
+      [
+        0.95,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "Esses y Degner",
+        "line": "Encadena los apoyos sin agotar el espacio en la primera S. Prepara la frenada corta de Degner."
+      },
+      {
+        "name": "Horquilla y Spoon",
+        "line": "Gira tarde en la horquilla. En Spoon, reserva margen en el primer ápice para acelerar al salir del segundo."
+      },
+      {
+        "name": "130R y chicane",
+        "line": "Mantén una línea amplia en 130R y frena con el coche recto antes del último cambio de dirección."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/latest/article/circuit-guide-everything-you-need-to-know-about-the-suzuka-circuit.2BbgsRdkeux78UBGbmYiZV",
+      "https://www.suzukacircuit.jp/eng/f1/map/pdf/map.pdf"
+    ],
+    "startAtSourcePhase": 0
+  },
+  {
+    "slug": "silverstone",
+    "sourceId": "gb-1948",
+    "id": "gp-silverstone-compact-v1",
+    "name": "Silverstone · GP compacto",
+    "inspiration": "Silverstone",
+    "country": "Reino Unido",
+    "character": "Apoyos rápidos · Curva de radio largo · S enlazadas",
+    "description": "Abbey, The Loop, Copse y Maggotts–Becketts con dos grandes rectas.",
+    "targetLength": 1700,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        0.25,
+        0.5
+      ],
+      [
+        0.6,
+        0
+      ],
+      [
+        0.85,
+        0.8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "Abbey, Village y The Loop",
+        "line": "Distingue la entrada rápida de Abbey de la frenada de Village. Busca una salida limpia de The Loop."
+      },
+      {
+        "name": "Brooklands y Luffield",
+        "line": "Frena antes de girar. La paciencia en el radio largo de Luffield evita abrir la trayectoria demasiado pronto."
+      },
+      {
+        "name": "Copse, Maggotts y Becketts",
+        "line": "Entra con margen en el primer apoyo; la velocidad de salida de Chapel prepara toda la recta Hangar."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/latest/article/explained-how-every-silverstone-corner-got-its-name.idMlxFC2gfN2ApcPmifxN",
+      "https://www.silverstone.co.uk/sites/default/files/pdf/British%20Grand%20Prix%202025%20Map.pdf"
+    ],
+    "startAtSourcePhase": 0.5
+  },
+  {
+    "slug": "spa",
+    "sourceId": "be-1925",
+    "id": "gp-spa-compact-v1",
+    "name": "Spa · GP compacto",
+    "inspiration": "Spa",
+    "country": "Bélgica",
+    "character": "Desnivel · Doble izquierda · Frenadas fuertes",
+    "description": "La Source, la subida de Raidillon, Pouhon y la chicane Bus Stop.",
+    "targetLength": 1950,
+    "startHeight": 6,
+    "heightProfile": [
+      [
+        0,
+        6
+      ],
+      [
+        0.055,
+        6
+      ],
+      [
+        0.14,
+        0
+      ],
+      [
+        0.24,
+        18
+      ],
+      [
+        0.36,
+        18
+      ],
+      [
+        0.58,
+        8
+      ],
+      [
+        0.75,
+        2
+      ],
+      [
+        0.87,
+        4
+      ],
+      [
+        0.96,
+        6
+      ],
+      [
+        1,
+        6
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "La Source y Raidillon",
+        "line": "Cierra la horquilla con una salida recta. Coloca el coche antes de enlazar la subida izquierda–derecha–izquierda."
+      },
+      {
+        "name": "Kemmel, Les Combes y Pouhon",
+        "line": "Aprovecha la recta para preparar la frenada. En la doble izquierda, conserva un apoyo continuo."
+      },
+      {
+        "name": "Blanchimont y Bus Stop",
+        "line": "Mantén fluidez en las curvas abiertas y separa la frenada final de los dos giros de la chicane."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/latest/article/explained-how-every-corner-at-the-circuit-de-spa-francorchamps-got-names.1o6cyXf5F6q9VFFcgMqTqs",
+      "https://www.spa-francorchamps.be/en/the-circuit"
+    ],
+    "startAtSourcePhase": 0
+  },
+  {
+    "slug": "monza",
+    "sourceId": "it-1922",
+    "id": "gp-monza-compact-v1",
+    "name": "Monza · GP compacto",
+    "inspiration": "Monza",
+    "country": "Italia",
+    "character": "Rectas largas · Chicanes · Curvas de salida",
+    "description": "Rettifilo, Roggia, las dos Lesmo, Ascari y la Parabólica.",
+    "targetLength": 1650,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "Rettifilo y Roggia",
+        "line": "Frena en línea recta y sacrifica la entrada del primer giro para orientar la salida del segundo."
+      },
+      {
+        "name": "Las dos Lesmo",
+        "line": "Trátalas como curvas distintas: recoloca el coche entre ambas y evita arrastrar el error de la primera."
+      },
+      {
+        "name": "Ascari y Parabólica",
+        "line": "Enlaza Ascari sin movimientos bruscos. En la última curva importa más la aceleración de salida que la entrada."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/latest/article/circuit-guide-everything-you-need-to-know-about-the-autodromo-nazionale-monza.51PKqBRlxNs0fzLWQzsnd0",
+      "https://www.monzanet.it/en/circuit/"
+    ],
+    "startAtSourcePhase": 0
+  },
+  {
+    "slug": "monaco",
+    "sourceId": "mc-1929",
+    "id": "gp-monaco-compact-v1",
+    "name": "Mónaco · GP compacto",
+    "inspiration": "Mónaco",
+    "country": "Mónaco",
+    "character": "Urbano estrecho · Horquilla · Túnel curvo",
+    "description": "Sainte Dévote, Casino, la horquilla, el túnel y la Piscina.",
+    "targetLength": 1900,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        0.05,
+        0
+      ],
+      [
+        0.18,
+        16
+      ],
+      [
+        0.28,
+        8
+      ],
+      [
+        0.43,
+        2
+      ],
+      [
+        0.61,
+        2
+      ],
+      [
+        0.67,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": [
+      0.46,
+      0.61
+    ],
+    "guide": [
+      {
+        "name": "Sainte Dévote y Casino",
+        "line": "Frena antes de la primera derecha. Recoloca el coche durante la subida antes del giro que abre Casino."
+      },
+      {
+        "name": "Horquilla, Portier y túnel",
+        "line": "Reduce mucho la velocidad en la horquilla. Prioriza la salida de Portier para entrar alineado en el túnel."
+      },
+      {
+        "name": "Nouvelle Chicane, Piscina y Rascasse",
+        "line": "Frena al salir del túnel. Enlaza la Piscina con movimientos cortos y reserva espacio para la lenta Rascasse."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/latest/article/circuit-guide-everything-you-need-to-know-about-the-circuit-de-monaco.vFsmfGHr6RWyLFtxi58wi",
+      "https://www.formula1.com/en/latest/article/explained-how-every-monaco-corner-got-its-name.5ClYqWmfpeUpsRJA6mDNaX"
+    ],
+    "startAtSourcePhase": 0.75
+  },
+  {
+    "slug": "interlagos",
+    "sourceId": "br-1940",
+    "id": "gp-interlagos-compact-v1",
+    "name": "Interlagos · GP compacto",
+    "inspiration": "Interlagos",
+    "country": "Brasil",
+    "character": "S en bajada · Infield técnico · Salida en subida",
+    "description": "Las S de Senna, Bico de Pato y la aceleración desde Junção.",
+    "targetLength": 1450,
+    "startHeight": 9,
+    "heightProfile": [
+      [
+        0,
+        9
+      ],
+      [
+        0.03,
+        9
+      ],
+      [
+        0.14,
+        0
+      ],
+      [
+        0.3,
+        0
+      ],
+      [
+        0.5,
+        6
+      ],
+      [
+        0.65,
+        4
+      ],
+      [
+        0.76,
+        0
+      ],
+      [
+        0.95,
+        9
+      ],
+      [
+        1,
+        9
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "S de Senna y Curva do Sol",
+        "line": "Da prioridad a la segunda S y a la salida de Curva do Sol: preparan toda la recta opuesta."
+      },
+      {
+        "name": "Ferradura y Bico de Pato",
+        "line": "Alterna el apoyo sostenido con una frenada clara para Bico de Pato; no intentes pasar ambos al mismo ritmo."
+      },
+      {
+        "name": "Junção y subida final",
+        "line": "Busca un ápice tardío en Junção. La tracción de salida debe mantenerse durante toda la subida a meta."
+      }
+    ],
+    "sources": [
+      "https://www.formula1.com/en/information/brazil-autodromo-jose-carlos-pace-sao-paulo.5z2RfrmiTTfEP6Wnxv1yIW",
+      "https://f1saopaulo.com.br/interlagos/"
+    ],
+    "startAtSourcePhase": 0
+  },
+  {
+    "slug": "austin",
+    "sourceId": "us-2012",
+    "id": "gp-austin-compact-v1",
+    "name": "Austin · GP compacto",
+    "inspiration": "Austin",
+    "country": "Estados Unidos",
+    "character": "Cresta y horquilla · Esses · Triple ápice",
+    "description": "La subida a la primera curva, las Esses y el gran apoyo de tres ápices.",
+    "targetLength": 1800,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        0.055,
+        10
+      ],
+      [
+        0.18,
+        3
+      ],
+      [
+        0.36,
+        0
+      ],
+      [
+        0.63,
+        0
+      ],
+      [
+        0.77,
+        2
+      ],
+      [
+        0.91,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "Subida a T1 y Esses",
+        "line": "Frena antes de la cresta y completa el giro cerrado de T1. En las Esses, cuida el ritmo del último apoyo."
+      },
+      {
+        "name": "Horquilla y recta trasera",
+        "line": "Sacrifica la entrada de la horquilla para acelerar con el coche recto; prepara con tiempo la frenada de T12."
+      },
+      {
+        "name": "Estadio y triple ápice",
+        "line": "Conecta los tres ápices con un radio continuo. Recoloca el coche antes de las dos curvas que cierran la vuelta."
+      }
+    ],
+    "sources": [
+      "https://circuitoftheamericas.com/blog/2024/2/16/what-your-favorite-cota-turn-says-about-you/",
+      "https://www.formula1.com/en/latest/article/good-lap-vs-great-lap-tackling-texas-with-max-verstappen-and-sergio-perez.1iSZFW9wBMKdIyodZH3reZ"
+    ],
+    "startAtSourcePhase": 0
+  },
+  {
+    "slug": "albert-park",
+    "sourceId": "au-1953",
+    "id": "gp-albert-park-compact-v1",
+    "name": "Albert Park · GP compacto",
+    "inspiration": "Albert Park",
+    "country": "Australia",
+    "character": "Rápido y fluido · Cambios de apoyo · Frenadas separadas",
+    "description": "Los enlaces del lago y el trazado moderno sin la antigua chicane intermedia.",
+    "targetLength": 1550,
+    "startHeight": 0,
+    "heightProfile": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "tunnelRange": null,
+    "guide": [
+      {
+        "name": "Primeros cambios de dirección",
+        "line": "Separa el enlace rápido de la primera frenada fuerte. Mantén margen para completar la salida de T4."
+      },
+      {
+        "name": "Lakeside y enlace rápido",
+        "line": "Aprovecha el tramo fluido junto al lago y prepara un solo movimiento limpio para cada cambio de apoyo."
+      },
+      {
+        "name": "Últimas curvas y meta",
+        "line": "Recoloca el coche entre las últimas frenadas. Una salida ordenada de la última curva vale toda la recta de meta."
+      }
+    ],
+    "sources": [
+      "https://program.grandprix.com.au/issue-0-formula-1/track-guide/",
+      "https://www.formula1.com/en/racing/2026/australia"
+    ],
+    "startAtSourcePhase": 0
+  }
+]

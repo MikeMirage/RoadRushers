@@ -69,7 +69,7 @@ export class LocalOcclusion {
     this.clear();this.circuit=circuit;
     // Flat circuits keep the original single-draw rendering path and materials.
     this.enabled=Boolean(circuit.layout&&(circuit.layout.maxHeight-circuit.layout.minHeight>CLEARANCE ||
-      circuit.layout.sections.some(s=>s.spec.kind==='tunnel')));
+      circuit.layout.sections.some(s=>s.spec.kind==='tunnel'||s.spec.tunnel)));
     if(!this.enabled)return;
     root.traverse(mesh=>{
       if(!mesh.isMesh||!mesh.userData.playerOccluder)return;

@@ -1,0 +1,9 @@
+{
+  "source": "https://github.com/bacinger/f1-circuits",
+  "sourceFile": "f1-circuits.geojson",
+  "sourceSha256": "7dcd3b9a5fe25b46c7ea276ea513475854a4187cebcf4384f9cd9a3465deee55",
+  "license": "MIT",
+  "author": "Tomislav Bacinger",
+  "retrievedAt": "2026-11-02",
+  "method": "Local geographic projection, compact scaling, constrained circular fillets, editable modular construction and authored elevation profiles."
+}

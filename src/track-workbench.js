@@ -79,7 +79,7 @@ export class TrackWorkbench {
     for(const b of this.host.querySelectorAll('[data-editor-tab]'))b.setAttribute('aria-pressed',String(b.dataset.editorTab===this.tab));
   }
   renderSequence(){
-    this.$('editor-sequence').innerHTML=this.document.value.pieces.map((p,i)=>`<button data-editor-section="${i}" aria-pressed="${i===this.focusSection}"><small>${String(i+1).padStart(2,'0')}</small>${escapeHTML(PIECE_CATALOG.find(d=>d.id===(p.id||p)).name)}</button>`).join('')||'<span>Empieza insertando un tramo de la biblioteca.</span>';
+    this.$('editor-sequence').innerHTML=this.document.value.pieces.map((p,i)=>`<button data-editor-section="${i}" aria-pressed="${i===this.focusSection}"><small>${String(i+1).padStart(2,'0')}</small>${escapeHTML(this.compiled.sections[i]?.spec.name||PIECE_CATALOG.find(d=>d.id===(p.id||p)).name)}</button>`).join('')||'<span>Empieza insertando un tramo de la biblioteca.</span>';
   }
   status(){
     if(!this.host)return;this.propWarnings=this.basicOnly?[]:propRoadWarnings(this.document.value.props,this.circuit);
@@ -114,7 +114,7 @@ export class TrackWorkbench {
     if(action==='export'){this.export();return;}
     if(action==='import'){this.$('editor-import-file').click();return;}
     if(action==='test'){this.finish();try{this.onTest(editorTrackConfig(this.document.value));}catch(error){this.error(error);}return;}
-    if(action==='new'){this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{doc.name='Mi circuito';doc.pieces=[];doc.props=[];},{fit:true,props:true});return;}
+    if(action==='new'){this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{doc.name='Mi circuito';doc.pieces=[];doc.props=[];delete doc.startHeight;},{fit:true,props:true});return;}
     if(action==='undo'||action==='redo'){this.finish();if(this.document[action]()){this.refresh({props:true});this.save();}return;}
     if(action==='cancel-place'){this.cancelPlacement();this.renderPanel();return;}
     if(action==='place-center'){this.placeAt(this.groundAt(this.controls.target.x,this.controls.target.z));return;}
@@ -142,12 +142,12 @@ export class TrackWorkbench {
   }
   async input(e,final){
     const input=e.target;
-    if(input.id==='editor-import-file'){if(final&&input.files[0]){try{const file=input.files[0];if(file.size>1024*1024)throw new Error('El archivo supera 1 MB.');const value=parseEditorFile(await file.text());this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>Object.assign(doc,value),{fit:true,props:true});}catch(error){this.error(error);}input.value='';}return;}
+    if(input.id==='editor-import-file'){if(final&&input.files[0]){try{const file=input.files[0];if(file.size>1024*1024)throw new Error('El archivo supera 1 MB.');const value=parseEditorFile(await file.text());this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{delete doc.startHeight;Object.assign(doc,value);},{fit:true,props:true});}catch(error){this.error(error);}input.value='';}return;}
     if(input.hasAttribute('data-editor-grid')){this.grid.visible=input.checked;return;}
     if(input.hasAttribute('data-editor-snap')){this.snap=input.checked;this.applySnap();return;}
     if(input.hasAttribute('data-editor-search')){this.search=input.value;const start=input.selectionStart;this.renderPanel();const next=this.host.querySelector('[data-editor-search]');next.focus();next.setSelectionRange(start,start);return;}
     if(input.hasAttribute('data-editor-family')){if(final){this.family=input.value;this.renderPanel();}return;}
-    if(input.hasAttribute('data-editor-preset')){if(final){const preset=KIT_PRESETS.find(p=>p.id===input.value);if(preset){this.cancelPlacement();this.focusSection=null;this.mutate(doc=>{doc.pieces=clone(preset.pieces);doc.name=preset.name;if(preset.environmentTheme)doc.environment=themePreset(preset.environmentTheme);},{fit:true});}}return;}
+    if(input.hasAttribute('data-editor-preset')){if(final){const preset=KIT_PRESETS.find(p=>p.id===input.value);if(preset){this.cancelPlacement();this.focusSection=null;this.mutate(doc=>{doc.pieces=clone(preset.pieces);doc.name=preset.name;delete doc.startHeight;if(preset.environmentTheme)doc.environment=themePreset(preset.environmentTheme);},{fit:true});}}return;}
     if(input.hasAttribute('data-editor-name')){this.document.begin();this.document.value.name=input.value.slice(0,60);if(final)this.finish();return;}
     const {editScope:scope,editKey:key}=input.dataset;if(!scope||!key)return;
     if(!final&&input.tagName==='SELECT')return;
@@ -155,6 +155,7 @@ export class TrackWorkbench {
     const value=input.type==='checkbox'?input.checked:['range','number'].includes(input.type)?Number(input.value):input.value;
     this.document.begin();
     try{
+      if(scope==='document'&&key==='startHeight'){this.document.value.startHeight=value;this.courseDue||=performance.now()+40;this.landscapeDue=performance.now()+350;}
       if(scope==='piece'){
         let v=value;const record=this.document.value.pieces[this.focusSection];if(key==='bank')v*=rad;if(record?.mirrored&&['bank','amplitude'].includes(key))v=-v;if(key==='widthFactorTo')v/=10;
         this.document.patchPiece(this.focusSection,{[key]:v===''?undefined:v});this.courseDue||=performance.now()+40;this.landscapeDue=performance.now()+350;
@@ -218,7 +219,7 @@ export class TrackWorkbench {
   }
   placeAt(position){if(!this.placementType||this.document.value.props.length>=MAX_MANUAL_PROPS)return;this.finish();try{const id=this.document.addProp(this.placementType,position.toArray());this.selectedProp=id;this.cancelPlacement();this.transform.detach();this.layer.setRecords(this.document.value.props);this.selectProp(id);this.save();this.renderer.shadowMap.needsUpdate=true;}catch(error){this.error(error);}}
   rebuildCourse(){
-    this.courseDue=0;dispose(this.course);this.course=new THREE.Group();this.scene.add(this.course);this.roadMeshes=[];this.compiled=compileLayout(this.document.value.pieces);this.circuit=this.document.value.pieces.length?new Circuit({...kitConfig(this.document.value.pieces,this.document.value.name),surface:this.document.value.environment.theme==='reunion'?'mud':'asphalt'}):null;
+    this.courseDue=0;dispose(this.course);this.course=new THREE.Group();this.scene.add(this.course);this.roadMeshes=[];this.compiled=compileLayout(this.document.value.pieces,10,this.document.value.startHeight||0);this.circuit=this.document.value.pieces.length?new Circuit({...kitConfig(this.document.value.pieces,this.document.value.name),startHeight:this.document.value.startHeight||0,surface:this.document.value.environment.theme==='reunion'?'mud':'asphalt'}):null;
     this.atmosphereCircuit=this.circuit||new Circuit(kitConfig(['straight-short']));
     if(this.circuit){const c=this.circuit;
       for(const section of c.layout.sections){const surfaceId=c.surfaceAt((section.from+.01)/c.length),surface=SURFACES[surfaceId]||SURFACES.asphalt,material=new THREE.MeshStandardMaterial({color:surface.color,roughness:surface.roughness,side:THREE.DoubleSide});const mesh=roadRibbon(c,u=>-c.widthAt(u)/2,u=>c.widthAt(u)/2,.035,material,[section.from/c.length,section.to/c.length]);mesh.userData.sectionIndex=section.index;mesh.userData.baseColor=surface.color;mesh.userData.surface=surfaceId;mesh.receiveShadow=true;this.course.add(mesh);this.roadMeshes.push(mesh);}

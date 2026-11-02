@@ -43,6 +43,7 @@ import { readDrivingInput,bindTouchSteering,bindMouseDriving } from './input.js'
 import {GamepadReader,createMenuNavigation} from './gamepad.js';
 import { RaceSession } from './race.js';
 import { readSavedEditorDocument,savedEditorTrackId } from './track-editor-state.js';
+import {findBundledEditorTrack} from './community-tracks.js';
 import { renderRaceHUD } from './race-ui.js';
 
 const $ = id => document.getElementById(id);
@@ -53,6 +54,8 @@ const icons = {
 let storage;
 try { storage = localStorage; } catch { storage = null; }
 const playgroundOptions=loadPlayground(storage);
+const linkedTrack=new URLSearchParams(location.search).get('track');
+if(linkedTrack&&playgroundTracks(undefined,storage).some(track=>track.id===linkedTrack))Object.assign(playgroundOptions,{trackId:linkedTrack,width:'original'});
 let preferences=loadPreferences(storage),preferencesOpen=false,preferencesTab='graphics',preferencesFocus;
 const resultRecords=new ResultRecords(storage);
 const ghostRecords=new GhostRecords(storage);
@@ -267,7 +270,8 @@ async function openKit() {
   closeGarage();kitFocus=document.activeElement;
   if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
   workbench ||= new TrackWorkbench(config=>{
-    closeKit();Object.assign(playgroundOptions,{trackId:config.id,width:'original',theme:'basic',weather:'clear',surface:'track'});settings.track=config;launchPlayground();
+    const bundled=findBundledEditorTrack(workbench.document.value);
+    closeKit();Object.assign(playgroundOptions,{trackId:bundled?.id||config.id,width:'original',theme:'basic',weather:'clear',surface:'track'});settings.track=bundled||config;launchPlayground();
   },closeKit,{basicOnly:true});
   const selectedTrack=playgroundTracks(settings.track,storage).find(track=>track.id===playgroundOptions.trackId);
   const savedDocument=readSavedEditorDocument(storage,playgroundOptions.trackId)||selectedTrack?.editorDocument;
@@ -280,7 +284,10 @@ async function openKit() {
 function closeKit() {
   const open=workbench?.visible;$('track-kit-overlay').classList.add('hidden');workbench?.hide();
   if(open){
-    if(workbench.document.value.pieces.length){playgroundOptions.trackId=savedEditorTrackId(workbench.document.value);playgroundOptions.width='original';savePlayground(storage,playgroundOptions);}
+    if(workbench.document.value.pieces.length){
+      const bundled=findBundledEditorTrack(workbench.document.value);if(!bundled)workbench.save();
+      playgroundOptions.trackId=bundled?.id||savedEditorTrackId(workbench.document.value);playgroundOptions.width='original';savePlayground(storage,playgroundOptions);
+    }
     for(const node of document.querySelectorAll('header.topbar,main,#result-overlay'))node.inert=false;refreshPlayground();if(kitFocus?.isConnected)kitFocus.focus();}
 }
 function inspectVehicle(id) {
