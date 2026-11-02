@@ -190,3 +190,9 @@ El editor conserva sus atajos de teclado, órbita, zoom y edición con ratón. L
 ## Estudio Corvette C7 · Astra
 
 Abrir [el garaje Corvette](http://127.0.0.1:5174/corvette-garage.html) con `npm run dev`. Estudio 3D independiente con pintura PBR, skins UV, neumáticos intercambiables, dirección y suspensión inspeccionables, estadísticas de referencia y descarga GLB. Se incluye en la compilación. Detalles de uso y alcance en [art/corvette-c7/GARAGE.md](art/corvette-c7/GARAGE.md); no añade automáticamente el coche al catálogo de carreras.
+
+## Criterio de UX por dispositivo
+
+El garaje, la preparación de carrera y la pausa deben poder completarse con táctil, teclado y mando. Mantener acciones principales de al menos 44 px, foco visible y recuperable, selección y vuelta sin ratón, desplazamiento interno accesible y coche completo en vertical, horizontal y pantallas pequeñas. No depender de hover o gestos sin alternativa visible.
+
+La dirección táctil debe liberar entradas al pausar, cancelar un gesto o girar la pantalla; dos dedos frenan. Teclado y mando conservan sus indicaciones y navegación sin trampas de foco. Una prueba con mando en el navegador no certifica ejecución en una consola: iOS/Android y hardware de consola requieren validación física propia.

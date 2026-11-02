@@ -37,6 +37,7 @@ import { cameraView,nextCameraMode } from './camera-views.js';
 import { EngineAudio } from './audio.js';
 import {renderAudioSettings,AUDIO_LEVELS} from './audio-settings-ui.js';
 import './audio-settings.css';
+import './pause-menu.css';
 import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
 import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
@@ -434,8 +435,14 @@ function updateGarage(){
   $('studio-category-count').innerHTML=`${clubIcon('car-profile')}${count}`;
   $('studio-category-count').setAttribute('aria-label',`${count} coches disponibles`);
   $('studio-position-count').textContent=`${String(index+1).padStart(2,'0')} / ${String(count).padStart(2,'0')}`;
-  $('garage-content').querySelector('[data-studio-direction="-1"]').disabled=index===0;
-  $('garage-content').querySelector('[data-studio-direction="1"]').disabled=index===count-1;
+  const previous=$('garage-content').querySelector('[data-studio-direction="-1"]');
+  const next=$('garage-content').querySelector('[data-studio-direction="1"]');
+  const focused=document.activeElement;
+  previous.disabled=index===0;next.disabled=index===count-1;
+  if((focused===previous||focused===next)&&focused.disabled){
+    const neighbor=focused===next?previous:next;
+    (neighbor.disabled?category.parentElement.querySelector('.prl-select-trigger'):neighbor)?.focus({preventScroll:true});
+  }
   updateInputPrompts();
 }
 function openStudioPanel(mode){
@@ -491,11 +498,10 @@ function setState(next) {
   $('result-overlay').classList.toggle('hidden',next!=='finished');
   $('race-hud').classList.toggle('hidden',!race||!['countdown','running','paused','finished'].includes(next));
   $('pause-btn').setAttribute('aria-label',next==='paused'?'Continuar':'Pausar');$('pause-btn').textContent=next==='paused'?'▷':'Ⅱ';
-  $('end-session-btn').textContent=race?'Retirarse y ver tiempos':'Finalizar y ver tiempos';$('end-session-btn').disabled=(race?race.elapsed:laps?.elapsed||0)<=0;
   $('footer-label').textContent=next==='running'?`${settings.vehicle.name.toUpperCase()} · TU SIGUIENTE CURVA`:'BUSCA TU PROPIA TRAZADA';
   updateAudio(next==='running');keys.clear();clearPointers();
   updateInputPrompts();if(next==='hub')mountHomeGarage();
-  if(next==='paused'){$('pause-audio-settings').innerHTML=renderAudioSettings(preferences,'pause-audio');$('resume-btn').focus({preventScroll:true});}
+  if(next==='paused'){$('pause-session-summary').textContent=`${settings.track.name} · ${settings.vehicle.name}`;$('restart-pause-btn').querySelector('strong').textContent=race?'Reiniciar carrera':'Reiniciar sesión';$('resume-btn').focus({preventScroll:true});}
   else if(previous==='paused'&&next==='running')$('pause-btn').focus({preventScroll:true});
 }
 function makeSession(rebuild) {
@@ -667,12 +673,11 @@ function setupInput(){
   $('playground-hub').addEventListener('scroll',syncPlaygroundScroll,true);
   $('playground-hub').addEventListener('toggle',()=>requestAnimationFrame(syncPlaygroundScroll),true);
   document.fonts.ready.then(syncPlaygroundScroll);
-  $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('intro-back').addEventListener('click',showHub);$('pause-hub-btn').addEventListener('click',showHub);
-  $('end-session-btn').addEventListener('click',()=>{if(state==='paused')showTimingResults(false);});
+  $('start-btn').addEventListener('click',start);$('camera-btn').addEventListener('click',toggleCamera);$('hub-btn').addEventListener('click',showHub);$('intro-back').addEventListener('click',showHub);
+  $('end-session-btn').addEventListener('click',()=>{if(state==='paused')showHub();});
   $('intro-race-btn').addEventListener('click',()=>{playgroundOptions.mode='race';savePlayground(storage,playgroundOptions);showHub();});
   for(const id of['reset-btn','restart-pause-btn'])$(id).addEventListener('click',()=>reset());$('pause-btn').addEventListener('click',pause);$('resume-btn').addEventListener('click',()=>setState('running'));
-  $('preferences-btn').addEventListener('click',openPreferences);$('pause-preferences-btn').addEventListener('click',openPreferences);
-  $('pause-audio-settings').addEventListener('click',e=>{if(e.target.closest('[data-sound-toggle]'))toggleSound();});
+  $('preferences-btn').addEventListener('click',openPreferences);$('pause-preferences-btn').addEventListener('click',()=>{preferencesTab='game';openPreferences();});
   $('preferences-overlay').addEventListener('click',e=>{
     if(e.target===$('preferences-overlay')||e.target.closest('[data-preferences-close]')){closePreferences();return;}
     if(e.target.closest('[data-sound-toggle]'))toggleSound();

@@ -61,7 +61,14 @@
       <div id="countdown" class="countdown hidden" aria-live="assertive"></div>
 
       <section id="pause-overlay" class="pause-overlay hidden" role="dialog" aria-modal="true" aria-label="Juego en pausa">
-        <div class="pause-card glass"><span class="eyebrow">UN RESPIRO</span><h2>En boxes.</h2><p>La pista te espera.</p><button id="resume-btn" class="primary-button">Continuar <span>↗</span></button><details class="pause-audio"><summary>Sonido y volumen</summary><div id="pause-audio-settings"></div></details><button id="pause-preferences-btn" class="text-button">Opciones de juego</button><button id="restart-pause-btn" class="text-button">Reiniciar vuelta</button><button id="end-session-btn" class="text-button">Finalizar y ver tiempos</button><button id="pause-hub-btn" class="text-button">Cambiar configuración</button></div>
+        <div class="pause-card glass">
+          <header class="pause-header"><span class="eyebrow">CARRERA EN PAUSA</span><h2>Pausa</h2><p id="pause-session-summary"></p></header>
+          <div class="pause-content">
+            <button type="button" id="pause-preferences-btn" class="pause-option"><strong>Opciones</strong><span>Sonido, controles y pantalla</span></button>
+            <button type="button" id="restart-pause-btn" class="pause-option"><strong>Reiniciar sesión</strong><span>Volver a la salida y empezar de nuevo</span></button>
+          </div>
+          <footer class="pause-actions" aria-label="Salir o continuar la sesión"><button type="button" id="end-session-btn" class="pause-abandon">Abandonar</button><button type="button" id="resume-btn" class="primary-button">Continuar</button></footer>
+        </div>
       </section>
 
       <footer class="bottom-bar">
