@@ -9,6 +9,24 @@ import { kitConfig,KIT_PRESETS } from '../src/track-pieces.js';
 import { COMMUNITY_TRACKS } from '../src/community-tracks.js';
 import { availableEligibleVehicles } from '../src/vehicle-regulations.js';
 const memory=()=>{const values=new Map();return {values,getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)};};
+test('Basic and Grass persist and toggle scenery without modifying the original circuit',async()=>{
+  const {activeCircuitDressing}=await import('../src/circuit-dressing.js');
+  const storage=memory(),base=kitConfig(KIT_PRESETS[0].pieces,'Theme test','theme-test'),tracks=[base];
+  const original=structuredClone(base),options={...DEFAULT_PLAYGROUND,trackId:base.id,theme:'grass'};
+  const grass=resolvePlayground(options,tracks).settings.track;
+  assert.equal(grass.environmentTheme,'grass');assert.equal(grass.biome,'meadow');
+  assert.ok(activeCircuitDressing({config:grass}));
+  assert.equal(resolvePlayground(options,tracks).settings.track.circuitDressing,grass.circuitDressing);
+  const saved={...base,circuitDressing:grass.circuitDressing};
+  assert.equal(resolvePlayground(options,[saved]).settings.track.circuitDressing,saved.circuitDressing);
+  const basic=resolvePlayground({...options,theme:'basic'},[saved]).settings.track;
+  assert.equal(basic.environmentTheme,'basic');assert.equal(basic.circuitDressing,undefined);
+  assert.ok(saved.circuitDressing);assert.deepEqual(base,original);
+  const wider=resolvePlayground({...options,width:14},tracks).settings.track;
+  assert.ok(activeCircuitDressing({config:wider}));assert.notEqual(wider.circuitDressing.sourceKey,grass.circuitDressing.sourceKey);
+  savePlayground(storage,{...DEFAULT_PLAYGROUND,theme:'grass'});assert.equal(loadPlayground(storage).theme,'grass');
+  const html=renderPlayground(options,tracks);assert.match(html,/data-playground="theme"/);assert.match(html,/>Basic<\/option>/);assert.match(html,/value="grass" selected/);
+});
 
 test('every car can be selected and driven in testing without changing saved championship progression',()=>{
   const storage=memory(),career=new Career(storage);assert.deepEqual(career.unlocked,['coda']);
@@ -53,12 +71,12 @@ test('the home screen enters ordered preparation and leaves the session mode to 
   assert.ok(html.includes('data-play-action="tracks"'));assert.ok(html.includes('data-play-action="garage"'));
 });
 
-test('saved visual themes always resolve to basic while driving and race settings survive',()=>{
+test('legacy visual themes fall back to basic while circuit theme choices remain available',()=>{
  const storage=memory();storage.setItem(PLAYGROUND_KEY,JSON.stringify({version:1,options:{...DEFAULT_PLAYGROUND,theme:'tokyo',weather:'rain',vehicleId:'velo',count:8,mode:'race'}}));
  const options=loadPlayground(storage),resolved=resolvePlayground(options);
  assert.equal(options.theme,'basic');assert.equal(resolved.settings.track.environmentTheme,'basic');assert.equal(resolved.settings.track.biome,'workshop');
  assert.equal(options.weather,'rain');assert.equal(options.vehicleId,'velo');assert.equal(options.count,8);assert.equal(options.mode,'race');
- const html=renderPlayground(options,playgroundTracks());assert.ok(!html.includes('data-playground="theme"'));assert.ok(!html.includes('data-play-action="environment"'));assert.ok(html.includes('data-play-action="preferences"'));
+ const html=renderPlayground(options,playgroundTracks());assert.ok(html.includes('data-playground="theme"'));assert.ok(!html.includes('data-play-action="environment"'));assert.ok(html.includes('data-play-action="preferences"'));
 });
 
 test('all camera views survive saving, loading and launching a session',async()=>{

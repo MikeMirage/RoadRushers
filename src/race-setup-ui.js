@@ -5,6 +5,7 @@ import { CAR_CATEGORIES,carCategory,availableEligibleVehicles,vehicleOrigin,vehi
 import { circuitPreview } from './circuit-preview.js';
 import { makeRaceTrack } from './race.js';
 import { clubIcon,clubWordmark,countryFlag } from './club-ui.js';
+import { CIRCUIT_THEMES } from './playground.js';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const SETUP_STEPS=['circuit','rules','car'];
@@ -17,7 +18,7 @@ export function renderRaceSetup(options,tracks,{step='circuit',ready=true}={}){
   const widths=['original',12,14,16].map(width=>({width,...makeRaceTrack(track,width)})),chosen=widths.find(w=>w.width===options.width)||widths[0];
   const preview=circuitPreview(chosen.config||track),category=carCategory(options.carCategory),eligible=availableEligibleVehicles(VEHICLES,options.carCategory),index=SETUP_STEPS.indexOf(step);
   const forecastIcon={clear:'sun',rain:'cloud-rain',fog:'cloud-fog',snow:'cloud-snow',sunset:'cloud-sun'}[options.weather==='track'?track.weather:options.weather]||'sun';
-  const fieldIcons={trackId:'path',carCategory:'car-profile',mode:options.mode==='race'?'flag-checkered':'timer',laps:'arrow-clockwise',count:'users-three',difficulty:'gauge',interaction:'intersect',fieldLevels:'sliders-horizontal',surface:'road-horizon',weather:forecastIcon,width:'arrows-horizontal',pace:'gauge',camera:'camera'};
+  const fieldIcons={theme:'sun',trackId:'path',carCategory:'car-profile',mode:options.mode==='race'?'flag-checkered':'timer',laps:'arrow-clockwise',count:'users-three',difficulty:'gauge',interaction:'intersect',fieldLevels:'sliders-horizontal',surface:'road-horizon',weather:forecastIcon,width:'arrows-horizontal',pace:'gauge',camera:'camera'};
   const select=(key,label,values)=>{
     const option=([id,name,disabled])=>`<option value="${esc(id)}" ${options[key]===id?'selected':''} ${disabled?'disabled':''}>${esc(name)}</option>`;
     const gpIds=new Set(tracks.filter(t=>t.gp).map(t=>t.id));
@@ -34,7 +35,8 @@ export function renderRaceSetup(options,tracks,{step='circuit',ready=true}={}){
       <header class="race-setup-header"><button type="button" data-setup-back class="icon-button" aria-label="${index?'Volver al paso anterior':'Volver al inicio'}">${clubIcon('caret-right','icon-back')}</button>${clubWordmark()}<h1 id="club-setup-title">${['Circuito','Reglas','Coche'][index]}</h1></header>
       <nav class="race-setup-progress" aria-label="Preparar salida">${SETUP_STEPS.map((id,i)=>`<button type="button" data-setup-go="${id}" aria-label="${['Circuito','Reglas','Coche'][i]}" title="${['Circuito','Reglas','Coche'][i]}" ${i>index?'disabled':''} ${id===step?'aria-current="step"':''}><span>0${i+1}</span>${clubIcon(['path','sliders-horizontal','car-profile'][i])}${i<index?clubIcon('check'):''}</button>`).join('')}</nav>
       <section class="setup-circuit setup-body ${step==='circuit'?'':'hidden'}" data-setup-step="circuit" aria-label="Elegir circuito">
-        <div class="setup-circuit-selector">${select('trackId','Circuito',tracks.map(t=>[t.id,`${t.name}${t.editorError?' · Revisar en editor':''}`]))}</div>
+        <div class="setup-circuit-selector">${select('trackId','Circuito',tracks.map(t=>[t.id,`${t.name}${t.editorError?' · Revisar en editor':''}`]))}
+        <div class="setup-circuit-theme">${select('theme','Theme',Object.entries(CIRCUIT_THEMES))}<p class="setup-help">${options.theme==='grass'?'Hierba y equipamiento de circuito generado.':'Pista sobre una base sencilla.'}</p></div></div>
         <div class="setup-map-panel" role="img" aria-label="Trazado de ${esc(track.name)}"><div class="setup-map-svg">${map.svg}</div></div>
         <div class="setup-track-facts"><div class="setup-track-location" title="Ubicación">${clubIcon('map-pin')}<strong>${esc(location)}</strong></div><div title="Distancia">${clubIcon('ruler')}<strong>${preview.length} <span>km</span></strong></div><div title="${esc(forecast)}" aria-label="Previsión: ${esc(forecast)}">${clubIcon(forecastIcon)}<strong class="sr-only">${esc(forecast)}</strong></div></div>
         <span class="sr-only">${availableEligibleVehicles(VEHICLES).length} coches disponibles · ${tracks.length} circuitos</span>

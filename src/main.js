@@ -417,7 +417,7 @@ async function openKit() {
   if(state==='running')setState('paused');else if(state==='countdown')setState('ready');
   workbench ||= new TrackWorkbench(config=>{
     const bundled=findBundledEditorTrack(workbench.document.value);
-    closeKit();Object.assign(playgroundOptions,{trackId:bundled?.id||config.id,width:'original',theme:'basic',weather:'clear',surface:'track'});settings.track=bundled||config;launchPlayground();
+    closeKit();Object.assign(playgroundOptions,{trackId:bundled?.id||config.id,width:'original',theme:config.circuitDressing?'grass':'basic',weather:'clear',surface:'track'});settings.track=bundled||config;launchPlayground();
   },closeKit,{basicOnly:true});
   const selectedTrack=playgroundTracks(settings.track,storage).find(track=>track.id===playgroundOptions.trackId);
   const savedDocument=readSavedEditorDocument(storage,playgroundOptions.trackId)||selectedTrack?.editorDocument;
