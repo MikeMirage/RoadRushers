@@ -1,10 +1,14 @@
+import { activeCircuitDressing } from './circuit-dressing.js';
+import { buildCircuitDressing,circuitAsphaltMaterial } from './circuit-dressing-view.js';
+import { animateVehicle } from './vehicle-pose.js';
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { SURFACES, VEHICLES } from './config.js';
 import { buildVehicle, preloadVehicles } from './vehicles.js';
 import { CameraRig } from './camera.js';
 import { DriftEffects } from './drift-effects.js';
 import { BrakeEffects } from './brake-effects.js';
-import { roadRibbon as ribbon,trackStructures } from './road-geometry.js';
+import { roadRibbon as ribbon,trackStructures,trackCurbs } from './road-geometry.js';
 import { RivalFleet } from './rival-fleet.js';
 import { GhostView } from './ghost-view.js';
 import { basicFloor,disposeSceneGroup } from './basic-scene.js';
@@ -58,7 +62,7 @@ export class World {
   }
 
   async loadCar(vehicle = VEHICLES[0]) {
-    await preloadVehicles();
+    await preloadVehicles(vehicle);
     this.setVehicle(vehicle);
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(1.6, 32), new THREE.MeshBasicMaterial({ color: 0x162a22, transparent: true, opacity: 0.15, depthWrite: false }));
     shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.025; shadow.scale.y = 1.25;
@@ -69,13 +73,24 @@ export class World {
 
   setVehicle(vehicle) {
     if (this.vehicleId === vehicle.id && !vehicle.prototype) return;
+    const model = buildVehicle(vehicle);
+    if(model.assetOwnership==='shared-cache'){
+      if(!this.vehicleEnvironment){
+        const studio=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(this.renderer);
+        this.vehicleEnvironment=pmrem.fromScene(studio,.05);studio.dispose();pmrem.dispose();
+        this.scene.userData.vehicleEnvironment=this.vehicleEnvironment.texture;
+      }
+      model.group.traverse(o=>{if(o.isMesh&&o.material.userData.vehicleAtlas)o.material.envMap=this.vehicleEnvironment.texture;});
+    }
     if (this.body) {
       this.body.removeFromParent();
+      if(this.vehicleModel?.dispose)this.vehicleModel.dispose();
+      else {
       const geometries = new Set(), materials = new Set();
       this.body.traverse(node => { if(node.geometry)geometries.add(node.geometry);if(node.material)materials.add(node.material); });
       geometries.forEach(g => g.dispose());materials.forEach(m => {m.map?.dispose();m.dispose();});
+      }
     }
-    const model = buildVehicle(vehicle);
     this.vehicleModel = model;
     this.body = model.group; this.wheels = model.wheels; this.frontWheels = model.frontWheels;
     this.vehicleId = vehicle.id; this.car.add(this.body);
@@ -116,9 +131,10 @@ export class World {
     this.circuit = circuit;
     this.environment = new THREE.Group();
     this.scene.add(this.environment);
+    const dressing=activeCircuitDressing(circuit);
     const half = u => circuit.widthAt(u) / 2;
-    this.roadMaterials = Object.values(SURFACES).map(surface=>mat(surface.color,{roughness:surface.roughness,side:THREE.DoubleSide}));
-    this.environment.add(ribbon(circuit, u => -half(u)-1, u => half(u)+1, 0.015, mat('#bcb393', { side: THREE.DoubleSide })));
+    this.roadMaterials = Object.entries(SURFACES).map(([id,surface])=>dressing&&id==='asphalt'?circuitAsphaltMaterial():mat(surface.color,{roughness:surface.roughness,side:THREE.DoubleSide}));
+    this.environment.add(ribbon(circuit, u => -half(u)-1, u => half(u)+1, dressing?-.02:0.015, mat('#bcb393', { side: THREE.DoubleSide })));
     this.roadMesh = ribbon(circuit, u => -half(u), u => half(u), 0.035, this.roadMaterials);
     this.environment.add(this.roadMesh);
     const stripe = mat('#eee9cf', { side: THREE.DoubleSide });
@@ -126,7 +142,7 @@ export class World {
     this.environment.add(ribbon(circuit, u => half(u)-0.48, u => half(u)-0.34, 0.055, stripe));
     this.environment.add(trackStructures(circuit));
     this.addTrackDetails();
-    this.environment.add(basicFloor(circuit));
+    this.environment.add(dressing?buildCircuitDressing(circuit,dressing):basicFloor(circuit));
     this.environment.updateMatrixWorld(true);
     this.environment.traverse(node=>{node.matrixAutoUpdate=false;});
     this.setConditions(surfaceId, weatherId);
@@ -138,18 +154,7 @@ export class World {
 
   addTrackDetails() {
     const circuit = this.circuit;
-    const count = Math.floor(circuit.length / 2.3);
-    const curbs = new THREE.InstancedMesh(new THREE.BoxGeometry(0.65, 0.16, 2.36), mat('#efead5'), count * 2);
-    const curbRoutes=new Float32Array(count*2);
-    const red = new THREE.Color('#d96f49'), white = new THREE.Color('#f3efdc');
-    for (let i = 0; i < count; i++) for (let side = 0; side < 2; side++) {
-      const p = circuit.at(i / count, (side ? 1 : -1) * (circuit.widthAt(i / count) / 2 + 0.07));
-      temp.position.set(p.x, p.y+0.09, p.z); temp.rotation.set(-p.pitch, p.heading, p.bank, 'YXZ'); temp.scale.setScalar(circuit.hasRoad(i/count-1.2/circuit.length)&&circuit.hasRoad(i/count+1.2/circuit.length)?1:0); temp.updateMatrix();
-      curbs.setMatrixAt(i * 2 + side, temp.matrix); curbs.setColorAt(i * 2 + side, i % 2 ? red : white);
-      curbRoutes[i*2+side]=i/count;
-    }
-    this.environment.add(markPlayerOccluder(curbs,curbRoutes));
-    curbs.castShadow=curbs.receiveShadow=true;
+    this.environment.add(trackCurbs(circuit));
     // A checkered start line, without roadside scenery or an overhead gantry.
     const start = new THREE.Group(), spawn = circuit.at(0);
     start.position.set(spawn.x, spawn.y+0.07, spawn.z); start.rotation.y = spawn.heading;
@@ -213,11 +218,7 @@ export class World {
     this.car.position.set(drive.x, (drive.y||0)+0.075, drive.z);
     this.car.rotation.y = drive.heading;
     if (this.body) {
-      this.body.rotation.x=-(drive.pitch||0);
-      this.body.rotation.z = THREE.MathUtils.damp(this.body.rotation.z, (drive.roll||0)+drive.steer * drive.speed * 0.003, 6, dt);
-      this.body.position.y = 0;
-      for (const wheel of this.wheels) wheel.rotation.x += running ? drive.speed * dt * 3.3 : 0;
-      for (const wheel of this.frontWheels || []) wheel.rotation.y = -drive.steer * 0.35;
+      animateVehicle(this.vehicleModel,drive,dt,running);
     }
     if(this.contactShadow){
       this.contactShadow.visible=!this.renderer.shadowMap.enabled&&drive.roadSupported!==false;
@@ -229,9 +230,12 @@ export class World {
     this.camera.position.copy(rig.position);this.camera.lookAt(rig.look);
     if(this.camera.fov!==rig.fov){this.camera.fov=rig.fov;this.camera.updateProjectionMatrix();}
     this.cameraReady=true;
+    this.camera.updateMatrixWorld();
+    this.vehicleModel?.updateLOD?.(this.camera,this.renderer.domElement.clientHeight);
+    this.ghost?.updateLOD?.(this.camera,this.renderer.domElement.clientHeight);
     if(this.effectsEnabled)this.driftEffects?.update(animateWeather?dt:0,drive,running,this.circuit.surfaceAt(drive.progress||0,this.surfaceId));
     this.brakeEffects.update(drive,this.circuit,running);
-    this.fleet?.update(dt,alpha,running);
+    this.fleet?.update(dt,alpha,running,this.camera,this.renderer.domElement.clientHeight);
     this.occlusion?.update(dt,drive,this.camera,this.renderer);
     this.updateShadows(dt,drive,running);
     this.renderPipeline.render(dt);

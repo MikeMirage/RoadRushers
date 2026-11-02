@@ -1,43 +1,10 @@
+/* Touch input geometry only. All visible HUD styling lives in prl-theme.css. */
 .mobile-touch-guide{display:none}
 @media(max-width:760px),(max-width:1000px) and (max-height:500px),(pointer:coarse){
   .touch-steering{position:fixed;inset:50% 0 0;display:none;grid-template-columns:1fr 1fr;gap:0;z-index:2;pointer-events:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-  body[data-state="running"] .touch-steering{display:grid}
+  body[data-state=running] .touch-steering{display:grid}
   .touch-steering button,.touch-steering button.pressed,.touch-steering button:active{width:100%;height:100%;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:transparent;font-size:0;transform:none;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   .touch-brake-hint{display:none!important}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .topbar,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .session-info,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .bottom-left,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .controls-hint,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .driving-status{display:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing{top:calc(env(safe-area-inset-top,0px) + 12px);left:12px;right:auto;transform:none;padding:7px 10px;gap:10px;border-radius:8px;pointer-events:none;background:#183329b8;backdrop-filter:none;-webkit-backdrop-filter:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing .best-time{display:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing .tiny-label{font-size:5px;letter-spacing:.5px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .timing strong{font:500 25px/28px 'Barlow Condensed',sans-serif;letter-spacing:.3px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .lap-counter{padding-right:10px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap{position:fixed;display:block;top:calc(env(safe-area-inset-top,0px) + 88px);left:calc(env(safe-area-inset-left,0px) + 12px);width:clamp(120px,32vw,144px);padding:8px;border-radius:8px;background:#183329a6;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap canvas{width:100%;height:auto;aspect-ratio:360/250}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading .tiny-label{font-size:6px;letter-spacing:.5px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading>span:last-child{font-size:7px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-footer{font-size:6px;letter-spacing:.5px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .bottom-bar{position:fixed;inset:0;margin:0;pointer-events:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speedometer{position:static;width:auto;margin:0;pointer-events:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speed-row>strong,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speed-row>span,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .speed-track{display:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) #pause-btn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;width:44px;height:44px;margin:0;border:1px solid #e0eed533;background:#183329a6;border-radius:9px;font-size:19px;pointer-events:auto;z-index:6}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-hud{top:calc(env(safe-area-inset-top,0px) + 12px);right:65px;width:auto;min-width:68px;padding:8px 10px;background:#183329b8;border-radius:8px;backdrop-filter:none;-webkit-backdrop-filter:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-position>span,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-position>b,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-level-summary,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-nearby{display:none}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-position>strong{font:500 28px/28px 'Barlow Condensed',sans-serif;margin:0;white-space:nowrap}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .race-position small{font-size:14px}
-  body[data-state="running"] .toast{top:86px;padding:9px 14px;font-size:9px;min-width:0;max-width:85%;pointer-events:none}
-  body[data-state="countdown"] .mobile-touch-guide{position:fixed;inset:64% 0 14%;display:grid;grid-template-columns:1fr 1fr;align-items:center;text-align:center;gap:10px;color:#f0f6e2cc;font-size:9px;letter-spacing:1px;pointer-events:none;z-index:7;text-shadow:0 1px 9px #132c22}
-  .mobile-touch-guide small{grid-column:1/-1;font-size:8px;letter-spacing:.2px;color:#e1edcfaa}
-}
-@media(max-height:500px) and (max-width:1000px),(max-height:500px) and (pointer:coarse){
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .minimap-wrap{top:calc(env(safe-area-inset-top,0px) + 76px);width:108px;padding:5px}
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-heading,
-  body:is([data-state="running"],[data-state="countdown"],[data-state="paused"]) .map-footer{display:none}
+  body[data-state=countdown] .mobile-touch-guide{position:fixed;inset:64% 0 14%;display:grid;grid-template-columns:1fr 1fr;align-items:center;text-align:center;gap:10px;font-size:9px;letter-spacing:1px;pointer-events:none;z-index:7}
+  .mobile-touch-guide small{grid-column:1/-1;font-size:8px;letter-spacing:.2px}
 }

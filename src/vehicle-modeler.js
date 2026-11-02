@@ -400,6 +400,7 @@ export function customizeVehicle(model,patch){
 }
 
 export function disposeVehicle(model){
+  if(model.dispose){model.dispose();return;}
   const gs=new Set(),ms=new Set(),ts=new Set();
   model.group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])ms.add(m);});
   ms.forEach(m=>{if(m.map)ts.add(m.map);m.dispose();});gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());model.group.removeFromParent();

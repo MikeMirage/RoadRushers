@@ -1,0 +1,400 @@
+{
+  "status": "draft",
+  "model": "model.glb",
+  "source": {
+    "creation": "EbZlVU0uuO",
+    "provider": "Tripo 3.1",
+    "file": "art/vehicle-pipeline/magnific/corvette-user-parts/textured-pbr.glb"
+  },
+  "stage": "simple colors and rig preview; normal atlas pending",
+  "triangles": 39334,
+  "glbBytes": 2237860,
+  "dimensions": {
+    "length": 4.490161418914795,
+    "width": 2.037662148475647,
+    "height": 1.3384819626808167,
+    "wheelbase": 2.616,
+    "track": 1.5525,
+    "wheelRadius": 0.351
+  },
+  "wheelCenters": {
+    "FL": [
+      -0.7777,
+      0.3504,
+      1.2719
+    ],
+    "FR": [
+      0.7748,
+      0.354,
+      1.2715
+    ],
+    "RL": [
+      -0.783,
+      0.352,
+      -1.344
+    ],
+    "RR": [
+      0.7916,
+      0.3522,
+      -1.3445
+    ]
+  },
+  "notes": [
+    "Approved source proportions retained with uniform scale to 4.49m length.",
+    "Rear-left wheel faces separated from the original base-body object; no replacement wheel design.",
+    "Conservative reduction by source piece; not a race-budget asset."
+  ],
+  "parts": [
+    {
+      "source": "tripo_part_12",
+      "wheel": null,
+      "highTriangles": 1989,
+      "lowTriangles": 716,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.0014997788239270449,
+      "surfaceErrorMaxm": 0.006708050612360239
+    },
+    {
+      "source": "tripo_part_14",
+      "wheel": null,
+      "highTriangles": 596,
+      "lowTriangles": 387,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0013231933116912842,
+      "surfaceErrorMaxm": 0.013070995919406414
+    },
+    {
+      "source": "tripo_part_20",
+      "wheel": null,
+      "highTriangles": 1210,
+      "lowTriangles": 786,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0002360809172387229,
+      "surfaceErrorMaxm": 0.0005032742628827691
+    },
+    {
+      "source": "tripo_part_25",
+      "wheel": null,
+      "highTriangles": 797,
+      "lowTriangles": 286,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.005713413469493389,
+      "surfaceErrorMaxm": 0.014093263074755669
+    },
+    {
+      "source": "tripo_part_23",
+      "wheel": null,
+      "highTriangles": 902,
+      "lowTriangles": 252,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.008610437996685505,
+      "surfaceErrorMaxm": 0.02806735783815384
+    },
+    {
+      "source": "tripo_part_29",
+      "wheel": null,
+      "highTriangles": 522,
+      "lowTriangles": 338,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0006234392640180881,
+      "surfaceErrorMaxm": 0.0017797957407310605
+    },
+    {
+      "source": "tripo_part_32",
+      "wheel": null,
+      "highTriangles": 430,
+      "lowTriangles": 279,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0007463840360287557,
+      "surfaceErrorMaxm": 0.002901581348851323
+    },
+    {
+      "source": "tripo_part_35",
+      "wheel": null,
+      "highTriangles": 245,
+      "lowTriangles": 159,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0011176115367561579,
+      "surfaceErrorMaxm": 0.00232233596034348
+    },
+    {
+      "source": "tripo_part_8",
+      "wheel": null,
+      "highTriangles": 1598,
+      "lowTriangles": 575,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.00490141287446022,
+      "surfaceErrorMaxm": 0.019343124702572823
+    },
+    {
+      "source": "tripo_part_11",
+      "wheel": null,
+      "highTriangles": 1843,
+      "lowTriangles": 516,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.008507586549967527,
+      "surfaceErrorMaxm": 0.027548285201191902
+    },
+    {
+      "source": "tripo_part_24",
+      "wheel": null,
+      "highTriangles": 880,
+      "lowTriangles": 572,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.00013350319932214916,
+      "surfaceErrorMaxm": 0.0003681009984575212
+    },
+    {
+      "source": "tripo_part_18",
+      "wheel": null,
+      "highTriangles": 2351,
+      "lowTriangles": 658,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.0034545052563771605,
+      "surfaceErrorMaxm": 0.01282457634806633
+    },
+    {
+      "source": "tripo_part_22",
+      "wheel": null,
+      "highTriangles": 881,
+      "lowTriangles": 571,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.000176739614107646,
+      "surfaceErrorMaxm": 0.0006284479168243706
+    },
+    {
+      "source": "tripo_part_31",
+      "wheel": null,
+      "highTriangles": 431,
+      "lowTriangles": 301,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.0014469132991507638,
+      "surfaceErrorMaxm": 0.003704138332977891
+    },
+    {
+      "source": "tripo_part_4",
+      "wheel": "FR",
+      "highTriangles": 5469,
+      "lowTriangles": 2295,
+      "ratio": 0.42,
+      "surfaceErrorP95m": 0.002327364543452858,
+      "surfaceErrorMaxm": 0.006665034219622612
+    },
+    {
+      "source": "tripo_part_7",
+      "wheel": null,
+      "highTriangles": 2904,
+      "lowTriangles": 2031,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.00028077498718630516,
+      "surfaceErrorMaxm": 0.0008556750253774226
+    },
+    {
+      "source": "tripo_part_37",
+      "wheel": null,
+      "highTriangles": 171,
+      "lowTriangles": 47,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.02165148314088583,
+      "surfaceErrorMaxm": 0.035175468772649765
+    },
+    {
+      "source": "tripo_part_3",
+      "wheel": "FL",
+      "highTriangles": 5616,
+      "lowTriangles": 2357,
+      "ratio": 0.42,
+      "surfaceErrorP95m": 0.0020764791988767684,
+      "surfaceErrorMaxm": 0.005845445673912764
+    },
+    {
+      "source": "tripo_part_6",
+      "wheel": null,
+      "highTriangles": 1202,
+      "lowTriangles": 780,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.00023858993372414254,
+      "surfaceErrorMaxm": 0.0003845345927402377
+    },
+    {
+      "source": "tripo_part_0",
+      "wheel": null,
+      "highTriangles": 16269,
+      "lowTriangles": 5855,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.000697157229296863,
+      "surfaceErrorMaxm": 0.001867426559329033
+    },
+    {
+      "source": "tripo_part_1",
+      "wheel": null,
+      "highTriangles": 7112,
+      "lowTriangles": 2559,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.001054654741892591,
+      "surfaceErrorMaxm": 0.002616767305880785
+    },
+    {
+      "source": "tripo_part_10",
+      "wheel": null,
+      "highTriangles": 1679,
+      "lowTriangles": 470,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.009537521842867134,
+      "surfaceErrorMaxm": 0.026140181347727776
+    },
+    {
+      "source": "tripo_part_13",
+      "wheel": null,
+      "highTriangles": 1216,
+      "lowTriangles": 437,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.007613496668636798,
+      "surfaceErrorMaxm": 0.015818653628230095
+    },
+    {
+      "source": "tripo_part_15",
+      "wheel": null,
+      "highTriangles": 975,
+      "lowTriangles": 273,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.014634300023317337,
+      "surfaceErrorMaxm": 0.027997342869639397
+    },
+    {
+      "source": "tripo_part_16",
+      "wheel": null,
+      "highTriangles": 898,
+      "lowTriangles": 323,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.008053609356284134,
+      "surfaceErrorMaxm": 0.02355312928557396
+    },
+    {
+      "source": "tripo_part_17",
+      "wheel": null,
+      "highTriangles": 13917,
+      "lowTriangles": 5010,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.0008999749436043202,
+      "surfaceErrorMaxm": 0.0020769534166902304
+    },
+    {
+      "source": "tripo_part_21",
+      "wheel": null,
+      "highTriangles": 1078,
+      "lowTriangles": 387,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.008013912197202445,
+      "surfaceErrorMaxm": 0.015392075292766094
+    },
+    {
+      "source": "tripo_part_26",
+      "wheel": null,
+      "highTriangles": 595,
+      "lowTriangles": 386,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0006138443539384736,
+      "surfaceErrorMaxm": 0.007069617044180632
+    },
+    {
+      "source": "tripo_part_28",
+      "wheel": null,
+      "highTriangles": 549,
+      "lowTriangles": 356,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.002540629170835017,
+      "surfaceErrorMaxm": 0.008577991276979446
+    },
+    {
+      "source": "tripo_part_30",
+      "wheel": null,
+      "highTriangles": 456,
+      "lowTriangles": 319,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.0012725642649456846,
+      "surfaceErrorMaxm": 0.003984467126429081
+    },
+    {
+      "source": "tripo_part_34",
+      "wheel": null,
+      "highTriangles": 239,
+      "lowTriangles": 167,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.000954089107108299,
+      "surfaceErrorMaxm": 0.002594803925603628
+    },
+    {
+      "source": "tripo_part_19",
+      "wheel": null,
+      "highTriangles": 1274,
+      "lowTriangles": 890,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.00023899530933704227,
+      "surfaceErrorMaxm": 0.0003914908447768539
+    },
+    {
+      "source": "tripo_part_2",
+      "wheel": null,
+      "highTriangles": 6454,
+      "lowTriangles": 2322,
+      "ratio": 0.36,
+      "surfaceErrorP95m": 0.001316750538535415,
+      "surfaceErrorMaxm": 0.004060380160808563
+    },
+    {
+      "source": "tripo_part_27",
+      "wheel": null,
+      "highTriangles": 555,
+      "lowTriangles": 360,
+      "ratio": 0.65,
+      "surfaceErrorP95m": 0.0019325416942592676,
+      "surfaceErrorMaxm": 0.006796045228838921
+    },
+    {
+      "source": "tripo_part_33",
+      "wheel": null,
+      "highTriangles": 311,
+      "lowTriangles": 217,
+      "ratio": 0.7,
+      "surfaceErrorP95m": 0.0007791701355017704,
+      "surfaceErrorMaxm": 0.003417125903069973
+    },
+    {
+      "source": "tripo_part_36",
+      "wheel": null,
+      "highTriangles": 200,
+      "lowTriangles": 56,
+      "ratio": 0.28,
+      "surfaceErrorP95m": 0.018008295446634293,
+      "surfaceErrorMaxm": 0.030320633202791214
+    },
+    {
+      "source": "tripo_part_5",
+      "wheel": "RR",
+      "highTriangles": 4195,
+      "lowTriangles": 1760,
+      "ratio": 0.42,
+      "surfaceErrorP95m": 0.0024561589583754536,
+      "surfaceErrorMaxm": 0.006819961126893759
+    },
+    {
+      "source": "tripo_part_9",
+      "wheel": "RR",
+      "highTriangles": 1788,
+      "lowTriangles": 749,
+      "ratio": 0.42,
+      "surfaceErrorP95m": 0.0018924724368844174,
+      "surfaceErrorMaxm": 0.0033739260397851467
+    },
+    {
+      "source": "source_rear_left_wheel",
+      "wheel": "RL",
+      "highTriangles": 6029,
+      "lowTriangles": 2532,
+      "ratio": 0.42,
+      "surfaceErrorP95m": 0.0017662299098446946,
+      "surfaceErrorMaxm": 0.0041923983953893185
+    }
+  ]
+}

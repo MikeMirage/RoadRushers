@@ -1,0 +1,179 @@
+[
+  {
+    "id": "menu-lounge",
+    "creation": "4RaVAIT9Aa",
+    "kind": "music",
+    "model": "elevenlabs-music-generation-v2",
+    "file": "/audio/magnific-v2/menu-lounge.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/4RaVAIT9Aa",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "coastal-velocity",
+    "creation": "SyBG98fUb8",
+    "kind": "music",
+    "model": "google-lyria-3-pro",
+    "file": "/audio/magnific-v2/coastal-velocity.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/SyBG98fUb8",
+    "reviewStatus": "adjust",
+    "reviewNote": "demasiado disonante"
+  },
+  {
+    "id": "neon-surge",
+    "creation": "gOXA4QcSXO",
+    "kind": "music",
+    "model": "elevenlabs-music-generation-v2",
+    "file": "/audio/magnific-v2/neon-surge.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/gOXA4QcSXO",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "v8-steady",
+    "creation": "9ZfMGw7NYZ",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/v8-steady.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/9ZfMGw7NYZ",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "tire-scrub",
+    "creation": "8aykutZIrU",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/tire-scrub.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/8aykutZIrU",
+    "reviewStatus": "adjust",
+    "reviewNote": "Demasiado estridente; recuerda a tiza sobre pizarra."
+  },
+  {
+    "id": "gravel-roll",
+    "creation": "1lTNwUkr4r",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/gravel-roll.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/1lTNwUkr4r",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "guardrail-a",
+    "creation": "5jWPgOpKxe",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/guardrail-a.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/5jWPgOpKxe",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "guardrail-b",
+    "creation": "jUD3O6KLD0",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/guardrail-b.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/jUD3O6KLD0",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "coastal-velocity-r2",
+    "creation": "vQ6LZ5Pa47",
+    "kind": "music",
+    "model": "elevenlabs-music-generation-v2",
+    "previewUrl": "https://pikaso.cdnpk.net/private/production/5911492891/a320c1d8-1479-4bf0-bdac-d1e0e0eba00e.mp3?token=exp=1793923200~hmac=29aa159b702ed6e41956a5ffdcc86b85f7390e0ae6f7a59754be25d3e5028767",
+    "sourcePage": "https://www.magnific.com/app/creation/vQ6LZ5Pa47",
+    "reviewStatus": "pending",
+    "replaces": "coastal-velocity",
+    "previewTemporary": true
+  },
+  {
+    "id": "ui-navigate",
+    "creation": "O6mcqZgynm",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "sourcePage": "https://www.magnific.com/app/creation/O6mcqZgynm",
+    "reviewStatus": "approved",
+    "file": "/audio/magnific-v2/ui-navigate.mp3"
+  },
+  {
+    "id": "ui-confirm",
+    "creation": "1lTNI3dr4r",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "sourcePage": "https://www.magnific.com/app/creation/1lTNI3dr4r",
+    "reviewStatus": "approved",
+    "file": "/audio/magnific-v2/ui-confirm.mp3"
+  },
+  {
+    "id": "ui-back",
+    "creation": "u52UMikQLD",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "previewUrl": "https://pikaso.cdnpk.net/private/production/5911548622/a320c3db-31ce-40b3-8dbc-a1aef65d018e.mp3?token=exp=1793923200~hmac=987abef9c15114fd45f772fcb38a360f4d9d27d7450d53c6e56810b5548d5deb",
+    "sourcePage": "https://www.magnific.com/app/creation/u52UMikQLD",
+    "reviewStatus": "approved",
+    "previewTemporary": true
+  },
+  {
+    "id": "ui-notify",
+    "creation": "N2CD1Fi6D9",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "previewUrl": "https://pikaso.cdnpk.net/private/production/5911549920/a320c3e5-8031-4612-b03e-7c8e14996e80.mp3?token=exp=1793923200~hmac=cb539bf62f64a4569eb9339c1d5c27ddb0cc29a924cf25956401fbb6ac8029e6",
+    "sourcePage": "https://www.magnific.com/app/creation/N2CD1Fi6D9",
+    "reviewStatus": "approved",
+    "previewTemporary": true
+  },
+  {
+    "id": "ui-confirm-r3",
+    "kind": "sfx",
+    "model": "original-digital-synthesis",
+    "file": "/audio/magnific-v2/ui-confirm-r3.wav",
+    "reviewStatus": "pending",
+    "generator": "scripts/generate-ui-signals.py",
+    "replaces": "ui-confirm"
+  },
+  {
+    "id": "ui-back-r3",
+    "kind": "sfx",
+    "model": "original-digital-synthesis",
+    "file": "/audio/magnific-v2/ui-back-r3.wav",
+    "reviewStatus": "pending",
+    "generator": "scripts/generate-ui-signals.py",
+    "replaces": "ui-back"
+  },
+  {
+    "id": "race-countdown-tick",
+    "kind": "sfx",
+    "model": "original-digital-synthesis",
+    "file": "/audio/magnific-v2/race-countdown-tick.wav",
+    "reviewStatus": "pending",
+    "generator": "scripts/generate-ui-signals.py"
+  },
+  {
+    "id": "race-start",
+    "kind": "sfx",
+    "model": "original-digital-synthesis",
+    "file": "/audio/magnific-v2/race-start.wav",
+    "reviewStatus": "pending",
+    "generator": "scripts/generate-ui-signals.py"
+  },
+  {
+    "id": "race-countdown-preview",
+    "kind": "sfx",
+    "model": "original-digital-synthesis",
+    "file": "/audio/magnific-v2/race-countdown-preview.wav",
+    "reviewStatus": "pending",
+    "generator": "scripts/generate-ui-signals.py"
+  },
+  {
+    "id": "tire-scrub-r4",
+    "creation": "EbZU0lVuuO",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/tire-scrub-r4.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/EbZU0lVuuO",
+    "reviewStatus": "pending",
+    "replaces": "tire-scrub",
+    "credits": 40,
+    "runtimeProcessing": "High-pass 100 Hz; broad -10 dB cut at 2700 Hz; low-pass 1250–1700 Hz; 35 ms loop edge blend. Maximum gain .14 before user controls."
+  }
+]

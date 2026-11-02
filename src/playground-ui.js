@@ -1,38 +1,31 @@
-import { VEHICLES, SURFACES, WEATHER, PACES } from './config.js';
-import { AI_LEVELS } from './race-driver.js';
+import { VEHICLES } from './config.js';
 import { makeRaceTrack } from './race.js';
-import { Circuit } from './circuit.js';
-import { carIllustration } from './vehicles.js';
-import { CAMERA_VIEWS } from './camera-views.js';
+import { circuitPreview } from './circuit-preview.js';
+import { renderRaceSetup } from './race-setup-ui.js';
+import { clubIcon,renderClubNavigation } from './club-ui.js';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function circuitPreview(track){
-  const circuit=new Circuit(track),points=circuit.samples.filter((_,i)=>i%4===0);
-  const xs=points.map(p=>p.x),zs=points.map(p=>p.z),minX=Math.min(...xs),minZ=Math.min(...zs);
-  const width=Math.max(...xs)-minX,height=Math.max(...zs)-minZ,scale=Math.min(154/Math.max(1,width),94/Math.max(1,height));
-  const project=p=>`${((p.x-minX)*scale+(180-width*scale)/2).toFixed(2)},${((p.z-minZ)*scale+(120-height*scale)/2).toFixed(2)}`;
-  const start=project(points[0]).split(',');
-  return {length:(circuit.length/1000).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}),svg:`<svg viewBox="0 0 180 120" fill="none" aria-hidden="true"><polyline points="${points.map(project).join(' ')} ${circuit.closed?project(points[0]):project(circuit.samples.at(-1))}" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${start[0]}" cy="${start[1]}" r="4" fill="currentColor"/></svg>`};
-}
-export function renderPlayground(options,tracks,ready=true){
+export function renderPlayground(options,tracks,ready=true,setupStep='circuit'){
   const vehicle=VEHICLES.find(v=>v.id===options.vehicleId)||VEHICLES[0],track=tracks.find(t=>t.id===options.trackId)||tracks[0];
   const widths=['original',12,14,16].map(width=>({width,...makeRaceTrack(track,width)})),chosen=widths.find(v=>v.width===options.width)||widths[0];
   if(track.editorError)chosen.error=track.editorError;
-  const preview=circuitPreview(chosen.config||track),weather=WEATHER[options.weather==='track'?track.weather:options.weather]?.name||'Del circuito',surface=options.surface==='track'?'Sectores':SURFACES[options.surface]?.name;
-  const gpIds=new Set(tracks.filter(t=>t.gp).map(t=>t.id));
-  const select=(key,label,values)=>{
-    const option=([id,name,disabled])=>`<option value="${esc(id)}" ${options[key]===id?'selected':''} ${disabled?'disabled':''}>${esc(name)}</option>`;
-    const choices=key==='trackId'&&gpIds.size?`<optgroup label="GP mundiales · 1–2 km">${values.filter(([id])=>gpIds.has(id)).map(option).join('')}</optgroup><optgroup label="Circuitos y creaciones">${values.filter(([id])=>!gpIds.has(id)).map(option).join('')}</optgroup>`:values.map(option).join('');
-    return `<label class="play-field">${label}<select data-playground="${key}">${choices}</select></label>`;
-  };
-  const disclosure=(id,title,description,content)=>`<details class="play-disclosure" data-play-details="${id}"><summary><span>${title}<small>${esc(description)}</small></span><b aria-hidden="true">+</b></summary>${content}</details>`;
-  return `<section class="play-showroom" aria-label="Tu coche"><div id="home-car-stage" class="home-car-stage">${carIllustration(vehicle)}</div><div class="home-car-caption"><div><span class="play-label">TU COCHE</span><strong>${esc(vehicle.name)}</strong><small>${esc(vehicle.category)}</small></div><button type="button" data-play-action="garage">Cambiar coche <span aria-hidden="true">→</span></button></div></section><form id="playground-form" class="play-config"><header class="play-heading"><div><span class="eyebrow">PADDOCK</span><h1>Prepara tu carrera.</h1></div><span class="play-access">${VEHICLES.length} coches disponibles<br>${tracks.length} circuitos</span></header>
-  <div class="play-config-body" tabindex="0" role="region" aria-label="Configuración de carrera"><div class="play-mode" role="group" aria-label="Tipo de sesión"><button type="button" data-play-mode="practice" aria-pressed="${options.mode==='practice'}"><strong>Entrenamiento</strong><small>Supera tu mejor vuelta</small></button><button type="button" data-play-mode="race" aria-pressed="${options.mode==='race'}"><strong>Carrera IA</strong><small>Compite por la posición</small></button></div>
-  <div class="play-selection-grid">
-  <div class="play-track-choice"><div>${select('trackId','CIRCUITO',tracks.map(t=>[t.id,`${t.name}${t.editorError?' · Revisar en editor':''}`]))}<p class="play-track-meta">${preview.length} km <span>·</span> ${chosen.minWidth.toFixed(1)}–${chosen.maxWidth.toFixed(1)} m</p>${track.gp?`<p class="gp-track-character">${esc(track.gp.country)} · ${esc(track.gp.character)}</p>`:''}${track.savedEditor||track.editorDocument?'<button type="button" data-play-action="kit">Editar este circuito ↗</button>':''}</div><div class="play-track-preview">${preview.svg}</div></div>
-  </div>${track.gp?disclosure('gp-guide','Guía de trazada',`${track.gp.inspiration} · Tres claves para la vuelta`,`<ol class="gp-driving-guide">${track.gp.guide.map((sector,index)=>`<li><strong>${index+1} · ${esc(sector.name)}</strong><p>${esc(sector.line)}</p></li>`).join('')}</ol>`):''}${options.mode==='race'?disclosure('grid','Parrilla',`${options.count} coches · ${options.laps} ${options.laps===1?'vuelta':'vueltas'} · ${AI_LEVELS[options.difficulty]?.name}`,`<div class="play-grid">${select('count','COCHES',[4,8,12].map(n=>[n,`${n} coches`]))}${select('laps','VUELTAS',[1,3,5].map(n=>[n,`${n} ${n===1?'vuelta':'vueltas'}`]))}${select('difficulty','DIFICULTAD IA',Object.entries(AI_LEVELS).map(([id,l])=>[id,l.name]))}${select('fieldLevels','NIVELES',[['mixed','Variados'],['uniform','Mismo nivel']])}${select('interaction','INTERACCIÓN',[['ghost','Ghosts · sin contacto'],['contact','Contacto físico']])}</div>`):''}
-  ${disclosure('driving','Pista y conducción',`${surface} · ${weather}`,`<div class="play-grid">${select('surface','SUPERFICIE',[['track','Sectores del circuito'],...Object.entries(SURFACES).map(([id,s])=>[id,s.name])])}${select('weather','CONDICIONES DE AGARRE',[['track','Clima del circuito'],...Object.entries(WEATHER).map(([id,w])=>[id,w.name])])}${select('width','ANCHURA',widths.map(w=>[w.width,w.width==='original'?'Original':`${w.width} m`,Boolean(w.error)]))}${select('pace','RITMO',Object.entries(PACES).map(([id,p])=>[id,p.name]))}${select('camera','CÁMARA',CAMERA_VIEWS.map(view=>[view.id,view.label]))}</div><p class="preferences-help play-grip-help">Las condiciones cambian el agarre. La pista mantiene siempre el aspecto básico.</p>`)}
-  <div class="play-tools"><button type="button" data-play-action="kit">Editor de pistas ↗</button><button type="button" data-play-action="preferences">Controles y opciones</button></div>
-  ${chosen.warnings.length?`<p class="play-width-note" role="status">Aviso: ${chosen.warnings.map(esc).join(' · ')}</p>`:''}${chosen.error?`<p class="play-width-note invalid" role="alert">${esc(chosen.error)}</p>`:''}</div>
-  <footer class="play-config-footer"><div><span class="controller-status"></span><span class="gamepad-context-hint"></span><span class="play-scroll-hint" hidden>Más opciones al desplazar ↓</span><strong>${options.mode==='race'?'Carrera IA':'Entrenamiento'}</strong><small>${options.mode==='race'?`${options.count} coches · ${options.laps} ${options.laps===1?'vuelta':'vueltas'} · ${options.interaction==='contact'?'Contacto':'Ghosts'}`:'Tú y el cronómetro'}</small></div><button type="submit" class="primary-button" ${!ready||chosen.error?'disabled':''}>${ready?'Salir a pista':'Preparando pista…'} <span aria-hidden="true">→</span></button></footer></form>`;
+  const preview=circuitPreview(chosen.config||track);
+  return `<form id="playground-form" class="club-home" aria-label="Preparar carrera">
+    <section class="club-home-hero" aria-label="Circuito y coche seleccionados">
+      <div class="club-track-identity"><span class="eyebrow">CIRCUITO ACTUAL</span><h1>${esc(track.name)}</h1><p>${preview.length} km</p><div class="club-track-map">${preview.svg}</div></div>
+      <div id="home-car-stage" class="club-car-stage" aria-label="Vista 3D de tu coche"><span class="club-car-loading" role="status">Preparando miniatura…</span></div>
+      <div class="club-selected-car"><div><strong>${esc(vehicle.name)}</strong><small>${esc(vehicle.category)}</small></div><button type="button" data-play-action="garage" aria-label="Ver garaje" title="Ver garaje">${clubIcon('garage')}</button></div>
+    </section>
+    <section class="club-home-controls" aria-label="Tu próxima salida">
+      <div class="club-mode" role="group" aria-label="Tipo de sesión">
+        <button type="button" data-play-mode="practice" aria-pressed="${options.mode==='practice'}">${clubIcon('timer')}<span><strong>Entrenamiento</strong><small>Tú y el cronómetro</small></span>${clubIcon('caret-right','club-mode-chevron')}</button>
+        <button type="button" data-play-mode="race" aria-pressed="${options.mode==='race'}">${clubIcon('flag-checkered')}<span><strong>Carrera IA</strong><small>${options.count} coches · ${options.laps} ${options.laps===1?'vuelta':'vueltas'}</small></span>${clubIcon('caret-right','club-mode-chevron')}</button>
+      </div>
+
+      ${chosen.error?`<p class="play-width-note invalid" role="alert">${esc(chosen.error)}</p>`:''}
+      <button type="submit" class="primary-button club-launch" ${!ready||chosen.error?'disabled':''}>${ready?'Preparar salida':'Preparando pista…'} ${clubIcon('caret-right')}</button>
+    </section>
+  </form>
+  ${renderClubNavigation('race')}
+  ${renderRaceSetup(options,tracks,{step:setupStep,ready})}`;
 }

@@ -1,0 +1,18 @@
+Música de Suno para Pocket Racing League
+
+Deja aquí los archivos de audio descargados, preferiblemente WAV o MP3.
+Si incluyes las versiones A y B, ambas están seleccionadas para usarse en el juego.
+
+Nombres sugeridos (puedes conservar también los títulos originales):
+menu-sunday-collection-a.mp3
+menu-sunday-collection-b.mp3
+garaje-precision-objects-a.mp3
+costa-coastal-velocity-a.mp3
+noche-afterlight-express-a.mp3
+bosque-timberline-run-a.mp3
+faro-golden-apex-a.mp3
+contrarreloj-one-more-lap-a.mp3
+resultados-club-record-a.mp3
+
+Si no está claro dónde usar una canción, añade notas.txt indicando título y destino.
+Los archivos se integran después de revisar formato, nivel y transiciones.

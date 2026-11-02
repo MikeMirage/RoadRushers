@@ -84,15 +84,16 @@ export function resolveCarContacts(racers,circuit,iterations=3) {
 }
 
 export class RaceSession {
-  constructor(circuit,vehicle,{count=12,interaction='ghost',laps=3,seed=38171,difficulty='club',fieldLevels='mixed'}={}){
+  constructor(circuit,vehicle,{count=12,interaction='ghost',laps=3,seed=38171,difficulty='club',fieldLevels='mixed',vehiclePool=[vehicle]}={}){
     if(!circuit.closed)throw new Error('La carrera requiere un circuito cerrado.');
     this.circuit=circuit;this.vehicle=vehicle;this.count=[4,8,12].includes(count)?count:12;
     this.interaction=interaction==='contact'?'contact':'ghost';this.lapCount=[1,3,5].includes(laps)?laps:3;this.seed=seed;
     this.difficulty=aiLevel(difficulty);this.fieldLevels=fieldLevels==='uniform'?'uniform':'mixed';
     const random=seeded(seed),guide=new RaceGuide(circuit),levels=gridLevels(this.count-1,this.difficulty,this.fieldLevels,random);
+    const grid=raceGridVehicles(vehicle,{count:this.count,seed,vehiclePool});
     this.racers=Array.from({length:this.count},(_,index)=>{
       const isPlayer=index===this.count-1,controller=isPlayer?null:new RivalDriver(random,index,levels[index],guide);
-      return {id:isPlayer?'player':`rival-${index}`,slot:index,isPlayer,name:isPlayer?'TÚ':NAMES[index],color:isPlayer?vehicle.color:COLORS[index],drive:new DriveModel(circuit,vehicle),controller,level:isPlayer?null:levels[index]};
+      return {id:isPlayer?'player':`rival-${index}`,slot:index,isPlayer,name:isPlayer?'TÚ':NAMES[index],color:isPlayer?vehicle.color:COLORS[index],drive:new DriveModel(circuit,grid[index]),controller,level:isPlayer?null:levels[index]};
     });
     this.player=this.racers.at(-1);this.rivals=this.racers.slice(0,-1);this.reset();
   }
@@ -122,4 +123,10 @@ export class RaceSession {
   }
   standings(){return [...this.racers].sort((a,b)=>a.place&&b.place?a.place-b.place:a.place?-1:b.place?1:b.tracker.absolute-a.tracker.absolute||a.slot-b.slot);}
   get position(){return this.player.place||this.standings().indexOf(this.player)+1;}
+}
+
+/** Use a separate seed stream so choosing a field never changes AI difficulty. */
+export function raceGridVehicles(vehicle,{count=12,seed=38171,vehiclePool=[vehicle]}={}){
+  const random=seeded(seed^0x52414345),pool=vehiclePool.length?vehiclePool:[vehicle],size=[4,8,12].includes(count)?count:12;
+  return Array.from({length:size},(_,i)=>i===size-1?vehicle:pool[Math.floor(random()*pool.length)]);
 }

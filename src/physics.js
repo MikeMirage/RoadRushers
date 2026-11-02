@@ -2,8 +2,9 @@ import { SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
 
 const damp = (a, b, rate, dt) => b + (a - b) * Math.exp(-rate * dt);
 const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
-const POSE_FIELDS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 'speed', 'steer', 'slip', 'impact', 'pitch', 'roll', 'landing', 'brake'];
+const POSE_FIELDS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 'speed', 'steer', 'slip', 'impact', 'pitch', 'roll', 'landing', 'brake', 'bodyPitch', 'bodyRoll', 'heave', 'steeringAngle'];
 export const START_PROGRESS = 0;
+const vehicleFrontLoad=vehicle=>vehicle.handling?.frontWeight??.5;
 
 export class DriveModel {
   constructor(circuit, vehicle = VEHICLES[0]) { this.vehicle = vehicle; this.reset(circuit); }
@@ -13,7 +14,9 @@ export class DriveModel {
     const start = circuit.at(progress,offset);
     Object.assign(this, { x: start.x, y:start.y||0, z: start.z, heading: start.heading, vx: 0, vy:0, vz: 0,
       grounded:true, airTime:0, pitch:0, roll:0, landing:0,activeGap:null,recoveries:0,respawned:false,recoveryRewind:0,
-      braking:false, brake:0,
+      braking:false, brake:0, bodyPitch:0, bodyRoll:0, heave:0, steeringAngle:0,
+      pitchVelocity:0, rollVelocity:0, heaveVelocity:0, longitudinalAcceleration:0, lateralAcceleration:0,
+      frontLoad:vehicleFrontLoad(this.vehicle), rearLoad:1-vehicleFrontLoad(this.vehicle), leftLoad:.5, rightLoad:.5, frontUtilization:0, rearUtilization:0,
       steer: 0, angularSpeed: 0, drift: 0, driftAngle: 0, speed: 0, slip: 0, impact: 0, distance: 0 });
     this.road = circuit.nearest(this.x, this.z, {progress,y:this.y});
     this.previousPose = {}; this.renderPose = {};
@@ -32,6 +35,46 @@ export class DriveModel {
     // Pressure builds while held; releasing immediately restores automatic throttle.
     const pressure=typeof brakeInput==='number'?Math.max(0,Math.min(1,brakeInput)):1;
     this.brake=this.braking?damp(this.brake,pressure,3.8,dt):0;
+    const speed = Math.hypot(this.vx, this.vz);
+    if (vehicle.handling) this.stepHandling(dt, input, surface, weather, activeSurface, paceId, throttleInput);
+    else this.stepLegacyHandling(dt, input, surface, weather, activeSurface, paceId, throttleInput);
+    this.x += this.vx * dt;
+    this.z += this.vz * dt;
+    this.distance += speed * dt;
+    this.road = this.circuit.nearest(this.x, this.z, {progress:priorRoad.progress,y:this.y});
+
+    // Solid track edges: project the car inside and remove outward velocity.
+    const limit = this.circuit.widthAt(this.road.progress) / 2 - 0.7;
+    this.impact = Math.max(0, this.impact - dt * 4);
+    if (this.road.supported!==false&&(!this.activeGap||this.y<this.road.y+1)&&Math.abs(this.road.offset) > limit) {
+      const sign = Math.sign(this.road.offset);
+      this.x = this.road.x + this.road.nx * limit * sign;
+      this.z = this.road.z + this.road.nz * limit * sign;
+      const outward = (this.vx * this.road.nx + this.vz * this.road.nz) * sign;
+      if (outward > 0) {
+        // Sliding contact: cancel the outward motion without bouncing every tick.
+        this.vx -= this.road.nx * sign * outward;
+        this.vz -= this.road.nz * sign * outward;
+        const friction = Math.exp(-1.8 * dt);
+        this.vx *= friction;
+        this.vz *= friction;
+        this.impact = Math.min(1, outward / 6);
+      }
+    }
+    this.stepHeight(dt);
+    this.speed = Math.hypot(this.vx, this.vz);
+    // Measure the actual velocity after collisions, not a cosmetic body rotation.
+    const fx=Math.sin(this.heading),fz=Math.cos(this.heading);
+    const forward = this.vx * fx + this.vz * fz;
+    const lateral = this.vx * fz - this.vz * fx;
+    this.driftAngle = Math.atan2(lateral, Math.max(0.1, forward));
+    this.slip = this.speed > 3 ? Math.min(1, Math.abs(this.driftAngle) / 0.75) : 0;
+    if(vehicle.handling&&!this.respawned)this.stepSuspension(dt);
+    return this;
+  }
+
+  stepLegacyHandling(dt,input,surface,weather,activeSurface,paceId,throttleInput){
+    const vehicle=this.vehicle;
     this.steer = damp(this.steer, Math.max(-1, Math.min(1, input)), 9 * vehicle.response, dt);
     const speed = Math.hypot(this.vx, this.vz);
     // Break rear traction progressively while cornering at speed. When released,
@@ -69,37 +112,92 @@ export class DriveModel {
     const velocityScale = Math.min(1, cruiseSpeed * 1.08 / Math.max(0.001, Math.hypot(this.vx, this.vz)));
     this.vx *= velocityScale;
     this.vz *= velocityScale;
-    this.x += this.vx * dt;
-    this.z += this.vz * dt;
-    this.distance += speed * dt;
-    this.road = this.circuit.nearest(this.x, this.z, {progress:priorRoad.progress,y:this.y});
+    this.steeringAngle=-this.steer*.35;
+  }
 
-    // Solid track edges: project the car inside and remove outward velocity.
-    const limit = this.circuit.widthAt(this.road.progress) / 2 - 0.7;
-    this.impact = Math.max(0, this.impact - dt * 4);
-    if (this.road.supported!==false&&(!this.activeGap||this.y<this.road.y+1)&&Math.abs(this.road.offset) > limit) {
-      const sign = Math.sign(this.road.offset);
-      this.x = this.road.x + this.road.nx * limit * sign;
-      this.z = this.road.z + this.road.nz * limit * sign;
-      const outward = (this.vx * this.road.nx + this.vz * this.road.nz) * sign;
-      if (outward > 0) {
-        // Sliding contact: cancel the outward motion without bouncing every tick.
-        this.vx -= this.road.nx * sign * outward;
-        this.vz -= this.road.nz * sign * outward;
-        const friction = Math.exp(-1.8 * dt);
-        this.vx *= friction;
-        this.vz *= friction;
-        this.impact = Math.min(1, outward / 6);
-      }
+  stepHandling(dt,input,surface,weather,activeSurface,paceId,throttleInput){
+    const v=this.vehicle,h=v.handling,speed=Math.hypot(this.vx,this.vz);
+    const demand=Math.max(-1,Math.min(1,Number.isFinite(input)?input:0));
+    this.steer=damp(this.steer,demand,Math.abs(demand)<Math.abs(this.steer)?h.releaseRate:h.steeringRate,dt);
+    const throttle=this.braking?0:Math.max(0,Math.min(1,Number.isFinite(throttleInput)?throttleInput:1));
+    const loose=['dirt','gravel','mud'].includes(activeSurface)?v.looseGrip:1;
+    const roadGrip=Math.max(.12,surface.grip/9.5*weather.grip*loose);
+    // Acceleration shifts normal load rearwards; braking shifts it forward.
+    const transfer=Math.max(-.20,Math.min(.20,this.longitudinalAcceleration/9.81*h.cgHeight/h.wheelbase));
+    this.frontLoad=Math.max(.25,Math.min(.75,h.frontWeight-transfer));this.rearLoad=1-this.frontLoad;
+    const lateralTransfer=Math.max(-.23,Math.min(.23,this.lateralAcceleration/9.81*h.cgHeight/h.track*.45));
+    this.leftLoad=.5+lateralTransfer;this.rightLoad=.5-lateralTransfer;
+    // Tire load sensitivity and combined longitudinal/lateral demand produce mild
+    // power understeer in AWD and progressive rear breakaway in the roadster.
+    const frontLoadGrip=Math.pow(this.frontLoad/h.frontWeight,.18);
+    const rearLoadGrip=Math.pow(this.rearLoad/(1-h.frontWeight),.18);
+    const longitudinalDemand=Math.min(.75,Math.abs(this.longitudinalAcceleration)/(12*roadGrip));
+    const frontCombined=Math.sqrt(Math.max(.35,1-longitudinalDemand**2*(h.drive==='AWD'?.38:this.brake*h.brakeBias)));
+    const rearCombined=Math.sqrt(Math.max(.35,1-longitudinalDemand**2*(this.braking?1-h.brakeBias:h.drive==='RWD'?.42:.22)));
+    const frontGrip=roadGrip*v.grip*h.frontGrip*frontLoadGrip*frontCombined;
+    const rearGrip=roadGrip*v.grip*h.rearGrip*rearLoadGrip*rearCombined;
+    const cornerDemand=Math.abs(this.steer)*speed;
+    const driftTarget=Math.max(0,Math.min(1,(cornerDemand-h.driftEntry)/10));
+    this.drift=damp(this.drift,driftTarget,driftTarget>this.drift?h.driftBuild:h.recovery,dt);
+    const understeer=1/(1+Math.max(0,cornerDemand-8)*h.speedSensitivity*(1-frontGrip*.4)*.13);
+    const turn=2.65*v.turn*Math.max(.4,Math.min(1,speed/7))*understeer*(activeSurface==='ice'?.85:1);
+    const countersteering=this.steer*this.driftAngle<0;
+    const recoveryGain=countersteering?Math.max(.12,Math.min(1,Math.abs(this.driftAngle)/.30)):1;
+    const targetYaw=-this.steer*turn*recoveryGain*(this.grounded?1:.25);
+    this.angularSpeed=damp(this.angularSpeed,targetYaw,h.yawRate*(.85+.15*frontGrip),dt);
+    this.heading=wrap(this.heading+this.angularSpeed*dt);
+    this.steeringAngle=-this.steer*(.40-.10*Math.min(1,speed/25));
+    const fx=Math.sin(this.heading),fz=Math.cos(this.heading);
+    let forward=this.vx*fx+this.vz*fz,lateral=this.vx*fz-this.vz*fx;
+    const oldForward=forward,oldVx=this.vx,oldVz=this.vz;
+    const top=surface.speed*PACES[paceId].speed*v.speed;
+    if(this.grounded){
+      if(throttle>0){
+        const traction=Math.min(1,(h.drive==='AWD'?1.25:this.rearLoad*1.9)*roadGrip);
+        const rate=h.engineForce/h.mass/Math.max(1,top)*(1+Math.min(1,Math.max(0,forward)/top))*traction;
+        forward=damp(forward,top*throttle,rate,dt);
+      }else if(!this.braking)forward*=Math.exp(-.18*dt);
+      if(!this.braking||speed>.05)forward-=Math.sin(Math.atan(this.road.grade||0))*5*dt;
+      // Scrub costs speed according to slip and cornering load, rather than an
+      // arbitrary fixed speed reduction whenever a direction is held.
+      forward*=Math.exp(-h.cornerDrag*(Math.abs(this.angularSpeed)*Math.min(1,speed/10)+Math.abs(lateral)*.10)*dt);
     }
-    this.stepHeight(dt);
-    this.speed = Math.hypot(this.vx, this.vz);
-    // Measure the actual velocity after collisions, not a cosmetic body rotation.
-    forward = this.vx * fx + this.vz * fz;
-    lateral = this.vx * fz - this.vz * fx;
-    this.driftAngle = Math.atan2(lateral, Math.max(0.1, forward));
-    this.slip = this.speed > 3 ? Math.min(1, Math.abs(this.driftAngle) / 0.75) : 0;
-    return this;
+    const axleGrip=(frontGrip*.40+rearGrip*.60)*(1-this.drift*h.rearSlip);
+    lateral*=Math.exp(-(this.grounded?Math.max(.28,9.5*axleGrip):.05)*dt);
+    this.vx=fx*forward+fz*lateral;this.vz=fz*forward-fx*lateral;
+    if(this.braking&&this.grounded){
+      // Each axle is limited by its current normal load. A forward bias is
+      // stable, but cannot use the unloaded rear axle as if all four were equal.
+      const frontCapacity=this.frontLoad/Math.max(.01,h.brakeBias);
+      const rearCapacity=this.rearLoad/Math.max(.01,1-h.brakeBias);
+      const brakeEfficiency=Math.min(1,frontCapacity)*h.brakeBias+Math.min(1,rearCapacity)*(1-h.brakeBias);
+      const deceleration=h.brakeForce/h.mass*this.brake*Math.min(1.15,roadGrip*v.grip)*brakeEfficiency;
+      const current=Math.hypot(this.vx,this.vz),retained=Math.max(0,current-deceleration*dt)/Math.max(1e-9,current);
+      this.vx*=retained;this.vz*=retained;
+    }
+    const scale=Math.min(1,top*1.08/Math.max(.001,Math.hypot(this.vx,this.vz)));this.vx*=scale;this.vz*=scale;
+    const ax=(this.vx-oldVx)/dt,az=(this.vz-oldVz)/dt;
+    // Filter measured acceleration, excluding collisions, before load transfer.
+    this.longitudinalAcceleration=damp(this.longitudinalAcceleration,this.grounded?(this.vx*fx+this.vz*fz-oldForward)/dt:0,12,dt);
+    this.lateralAcceleration=damp(this.lateralAcceleration,this.grounded?ax*fz-az*fx:0,12,dt);
+    this.frontUtilization=Math.min(2,Math.abs(this.angularSpeed)*speed/Math.max(1,9.81*frontGrip));
+    this.rearUtilization=Math.min(2,Math.abs(lateral)/Math.max(1,5*rearGrip)+this.drift*h.rearSlip);
+  }
+
+  stepSuspension(dt){
+    const h=this.vehicle.handling;
+    const rollTarget=this.grounded?Math.max(-.12,Math.min(.12,this.lateralAcceleration*h.cgHeight/(9.81*h.track*h.rollStiffness)*.20)):0;
+    const pitchTarget=this.grounded?Math.max(-.09,Math.min(.09,this.longitudinalAcceleration*h.cgHeight/(9.81*h.wheelbase*h.pitchStiffness)*.28)):0;
+    const heaveTarget=this.grounded?-this.landing*h.suspensionTravel*.75:0;
+    // Analytic damped spring: stable at both simulation rates, no random shake.
+    for(const [key,target]of [['bodyRoll',rollTarget],['bodyPitch',pitchTarget],['heave',heaveTarget]]){
+      const velocityKey=key==='bodyRoll'?'rollVelocity':key==='bodyPitch'?'pitchVelocity':'heaveVelocity';
+      const omega=2*Math.PI*h.springFrequency,zeta=h.dampingRatio,wd=omega*Math.sqrt(1-zeta*zeta);
+      const displacement=this[key]-target,velocity=this[velocityKey],decay=Math.exp(-zeta*omega*dt);
+      const c=Math.cos(wd*dt),sn=Math.sin(wd*dt),b=(velocity+zeta*omega*displacement)/wd;
+      this[key]=target+decay*(displacement*c+b*sn);
+      this[velocityKey]=decay*(velocity*c-(zeta*omega*b+displacement*wd)*sn);
+    }
   }
 
   stepHeight(dt) {
@@ -114,7 +212,7 @@ export class DriveModel {
     else{
       this.airTime+=dt;this.y+=this.vy*dt-12*dt*dt;this.vy-=24*dt;
       const within=Math.abs(this.road.offset)<=this.circuit.widthAt(this.road.progress)/2-.6;
-      if(supported&&within&&(!this.activeGap||previousY>=ground-.2)&&this.y<=ground&&this.vy<=supportVy){
+      if(supported&&within&&(!this.activeGap||previousY>=ground-.2)&&this.y<=ground&&(this.vy<=supportVy||(!this.activeGap&&previousY>=ground-.35))){
         this.landing=this.airTime>.08?Math.min(1,Math.max(0,(supportVy-this.vy)/12)):0;
         const retain=1-this.landing*.04;this.vx*=retain;this.vz*=retain;
         this.y=ground;this.vy=supportVy;this.grounded=true;this.airTime=0;this.activeGap=null;

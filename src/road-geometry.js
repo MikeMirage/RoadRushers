@@ -93,3 +93,22 @@ export function trackStructures(circuit) {
   if(!tunnelCount){tunnelMaterial.dispose();portalMaterial.dispose();}
   return group;
 }
+
+/** Existing curb positions and dimensions, shared unchanged by editor and gameplay. */
+export function trackCurbs(circuit){
+  const count=Math.floor(circuit.length/2.3),temp=new THREE.Object3D();
+  const curbs=new THREE.InstancedMesh(new THREE.BoxGeometry(.65,.16,2.36),new THREE.MeshStandardMaterial({color:'#ffffff',roughness:.92}),count*2);
+  const routes=new Float32Array(count*2),red=new THREE.Color('#bd2028'),white=new THREE.Color('#f4f3ed');
+  for(let i=0;i<count;i++)for(let side=0;side<2;side++){
+    const u=i/count,p=circuit.at(u,(side?1:-1)*(circuit.widthAt(u)/2+.07));
+    temp.position.set(p.x,p.y+.09,p.z);temp.rotation.set(-p.pitch,p.heading,p.bank,'YXZ');
+    const offset=(side?1:-1)*(circuit.widthAt(u)/2+.07),a=circuit.at(u-.5/count,offset),b=circuit.at(u+.5/count,offset);
+    const angle=Math.atan2(Math.sin(b.heading-a.heading),Math.cos(b.heading-a.heading));
+    // Keep the authored band and cadence, but leave a joint instead of overlapping coplanar boxes.
+    const length=Math.max(.05,Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z)-.65*Math.abs(Math.sin(angle/2))-.015);
+    const supported=circuit.hasRoad(u-1.2/circuit.length)&&circuit.hasRoad(u+1.2/circuit.length);
+    temp.scale.set(supported?1:0,supported?1:0,supported?length/2.36:0);temp.updateMatrix();
+    curbs.setMatrixAt(i*2+side,temp.matrix);curbs.setColorAt(i*2+side,i%2?red:white);routes[i*2+side]=u;
+  }
+  curbs.name='track-curbs';curbs.castShadow=true;curbs.receiveShadow=false;curbs.computeBoundingSphere();return markPlayerOccluder(curbs,routes);
+}

@@ -180,9 +180,10 @@ async function download(ref) {
       if (!await exists(path.join(extracted, file))) throw new Error(`Esta versión no contiene ${file} y no se puede preparar.`);
     }
     await mkdir(path.join(extracted, 'scripts'), { recursive: true });
-    for (const file of [playLauncher, 'scripts/launcher.sh', 'scripts/launcher.mjs']) {
+    for (const file of ['scripts/launcher.sh', 'scripts/launcher.mjs']) {
       await copyFile(path.join(root, file), path.join(extracted, file));
     }
+    await writeFile(path.join(extracted, playLauncher), `#!/bin/bash\nROOT="$(cd "$(dirname "${'${BASH_SOURCE[0]}'}")/../.." && pwd)" || exit 1\nexec "$ROOT/${playLauncher}" "$@"\n`);
     await chmod(path.join(extracted, playLauncher), 0o755);
     await chmod(path.join(extracted, 'scripts/launcher.sh'), 0o755);
     await writeFile(path.join(extracted, 'VERSION-DESCARGADA.json'), JSON.stringify({

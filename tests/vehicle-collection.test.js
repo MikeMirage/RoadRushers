@@ -10,11 +10,12 @@ import { loadCustomization, saveCustomization, wrapTexture } from '../src/vehicl
 import { inspectVehicle } from '../scripts/vehicle-qa.mjs';
 import { setBrakeLights } from '../src/vehicles.js';
 
-test('50 original designs form five complete batches, alongside the three cup cars',()=>{
-  assert.equal(NEW_VEHICLES.length,50);assert.equal(VEHICLES.length,53);
-  assert.equal(new Set(VEHICLES.map(v=>v.id)).size,53);
+test('50 collection designs form five complete batches, alongside four implemented production cars',()=>{
+  assert.equal(NEW_VEHICLES.length,50);assert.equal(VEHICLES.length,54);
+  assert.equal(new Set(VEHICLES.map(v=>v.id)).size,54);
+  assert.equal(VEHICLES.some(v=>v.id==='stelvio-suv'),false,'unimplemented SUV must not be selectable');
   for(const b of VEHICLE_BATCHES)assert.equal(vehiclesOnPage(VEHICLES,b.id).length,10);
-  assert.equal(vehiclesOnPage(VEHICLES,'originals').length,3);
+  assert.equal(vehiclesOnPage(VEHICLES,'originals').length,4);
   assert.equal(new Set(NEW_VEHICLES.map(v=>JSON.stringify(v.design))).size,50);
 });
 

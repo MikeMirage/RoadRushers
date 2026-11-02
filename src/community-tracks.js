@@ -12,6 +12,7 @@ export const COMMUNITY_TRACKS=[{
 },...GP_CIRCUITS];
 
 export function findBundledEditorTrack(document){
+  if(document.circuitDressing)return null;
   const signature=JSON.stringify(normalizeEditorDocument(document));
   return COMMUNITY_TRACKS.find(track=>track.editorDocument&&JSON.stringify(normalizeEditorDocument(track.editorDocument))===signature);
 }

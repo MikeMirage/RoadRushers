@@ -12,3 +12,12 @@ reference/
 .codex/
 .agents/
 .aws/
+
+# Private PRL production planning; hosted separately from the public game.
+/PRL-Produccion.html
+/PRL-Modelos-y-Produccion.html
+/docs/plan-producto-2026-11-02/
+/docs/produccion-agentica-2026-11-02/
+/tools/prl-production/
+/tools/prl-production-local/
+/tools/prl-supervision/

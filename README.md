@@ -29,9 +29,9 @@ El coche acelera solo: toca la mitad inferior izquierda o derecha para girar y a
 En macOS puedes hacer doble clic en los lanzadores de la carpeta principal:
 
 - **`Jugar RoadRushers.command`** abre en el navegador el código actual de esta carpeta, incluidos los cambios locales. Prepara las dependencias automáticamente; requiere Node.js (recomendado: 24 LTS) e Internet la primera vez. Deja la ventana de Terminal abierta mientras juegas y pulsa `Ctrl+C` para detenerlo. Si el puerto habitual está ocupado, utiliza otro disponible.
-- **`Descargar versiones.command`** consulta GitHub y permite elegir la última versión de `main`, una etiqueta o una revisión anterior por fecha y descripción. También acepta una rama, etiqueta o SHA escrito a mano. Guarda cada copia en `versiones/RoadRushers-fecha-SHA/`, con su propio **`Jugar RoadRushers.command`** y un registro `VERSION-DESCARGADA.json`. Las copias son independientes de la carpeta de trabajo y no se incluyen en Git. Al terminar, Finder muestra el lanzador de la versión descargada.
+- **`Descargar versiones.command`** consulta GitHub y permite elegir la última versión de `main`, una etiqueta o una revisión anterior por fecha y descripción. También acepta una rama, etiqueta o SHA escrito a mano. Guarda cada copia en `versiones/RoadRushers-fecha-SHA/`, con un registro `VERSION-DESCARGADA.json`. Al abrir el launcher desde una copia descargada, se redirige al juego actual de la carpeta principal, incluidos los cambios locales.
 
-La descarga contiene el código y los recursos del juego web. Las dependencias se preparan al abrir el lanzador de cada copia. Para descargar directamente desde Terminal: `./"Descargar versiones.command" --ref main` (también admite etiquetas o SHA).
+La descarga conserva el código y los recursos de esa revisión para consultarlos. Las dependencias del juego actual se preparan al abrir el launcher principal. Para descargar directamente desde Terminal: `./"Descargar versiones.command" --ref main` (también admite etiquetas o SHA).
 
 También puedes ejecutarlo manualmente:
 
@@ -174,7 +174,9 @@ Abre **Editor** en la barra superior. Combina 122 módulos de pista, 17 tipos de
 
 ## Interfaz y controles PRL
 
-Interfaz clara de blanco, rojo y azul, con foco visible y navegación de juego. La ilustración de arranque es fija: no hay selector de covers. El inicio muestra el coche 3D actual; el garaje y el editor ocupan su propia pantalla, con controles accesibles y zonas de desplazamiento internas.
+Interfaz compartida de gris carbón, rosa y azul claro, con foco visible y navegación de juego. Inspirada en la jerarquía de [Just Roll](https://mikemirage.github.io/just-roll/): paneles grises translúcidos en pista, números grandes para posición, cronómetro y velocidad, y el centro libre para conducir. El rosa identifica las acciones principales y la posición; el azul claro, vueltas, récords y trazado. Inicio, garaje, pausa, opciones, resultados y editor usan los mismos colores y componentes.
+
+El velocímetro está activado por defecto en instalaciones nuevas; las preferencias existentes se conservan y puede cambiarse en **Opciones → Juego → Velocidad**. La pausa enfoca **Continuar**, mantiene la navegación con Tab dentro del menú y recupera el foco al cerrar Opciones. La ilustración de arranque es fija. El inicio muestra el coche 3D actual; el garaje y el editor ocupan su propia pantalla, con controles accesibles y zonas de desplazamiento internas.
 
 - **Móvil:** dos zonas táctiles o trackpad analógico; aceleración automática. Ambas zonas o segundo dedo para frenar.
 - **Teclado:** flechas o A/D para girar; ↓ o S para frenar. Aceleración automática. Esc/Espacio para pausa, R para reiniciar, C para cámara. Menús con flechas, Tab, Enter y Esc.
@@ -184,3 +186,7 @@ Interfaz clara de blanco, rojo y azul, con foco visible y navegación de juego. 
 El mando se lee con la [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API) y el [mapeo estándar del navegador](https://w3c.github.io/gamepad/#remapping). Pulsa un botón después de conectarlo para que el navegador lo exponga. La desconexión del mando activo pausa la carrera. La detección depende del navegador y del mapeo que publique el dispositivo; los tests usan instantáneas simuladas, no sustituyen una prueba física del mando.
 
 El editor conserva sus atajos de teclado, órbita, zoom y edición con ratón. Los originales de Higgsfield siguen en `art/splash-screens/prl-family-2026-11-02-v1/`; los recursos de carga locales están en `public/assets/prl/`. La interfaz compartida vive en `src/prl-theme.css`; la navegación de mando, en `src/gamepad.js`.
+
+## Estudio Corvette C7 · Astra
+
+Abrir [el garaje Corvette](http://127.0.0.1:5174/corvette-garage.html) con `npm run dev`. Estudio 3D independiente con pintura PBR, skins UV, neumáticos intercambiables, dirección y suspensión inspeccionables, estadísticas de referencia y descarga GLB. Se incluye en la compilación. Detalles de uso y alcance en [art/corvette-c7/GARAGE.md](art/corvette-c7/GARAGE.md); no añade automáticamente el coche al catálogo de carreras.

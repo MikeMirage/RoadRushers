@@ -19,7 +19,7 @@ export function renderRaceSetup(options,tracks,vehicle){
 export function renderRaceHUD(race){
   const rows=race.standings(),position=race.position,index=position-1;
   const chosen=position<=3?rows.slice(0,4):[rows[0],...rows.slice(Math.max(1,index-1),Math.min(rows.length,index+2))];
-  return `<div class="race-position"><span>POSICIÓN</span><strong>${position}<small> / ${race.count}</small></strong><b>${race.interaction==='ghost'?'GHOSTS':'CON CONTACTO'}</b><em class="race-level-summary">IA ${AI_LEVELS[race.difficulty].name.toUpperCase()} · ${race.fieldLevels==='mixed'?'VARIADA':'UNIFORME'}</em></div><ol class="race-nearby">${chosen.map(r=>`<li class="${r.isPlayer?'you':''}"><span>${rows.indexOf(r)+1}</span><i style="background:${r.color}"></i><strong>${r.name}</strong><small>${r.isPlayer?'TÚ':`IA · ${AI_LEVELS[r.level].name}`}</small></li>`).join('')}</ol>`;
+  return `<div class="race-position"><span>POSICIÓN</span><strong>${String(position).padStart(2,'0')}<small> / ${race.count}</small></strong><b>${race.interaction==='ghost'?'GHOSTS':'CON CONTACTO'}</b><em class="race-level-summary">IA ${AI_LEVELS[race.difficulty].name.toUpperCase()} · ${race.fieldLevels==='mixed'?'VARIADA':'UNIFORME'}</em></div><ol class="race-nearby">${chosen.map(r=>`<li class="${r.isPlayer?'you':''}"><span>${rows.indexOf(r)+1}</span><i style="background:${r.color}"></i><strong>${r.name}</strong><small>${r.isPlayer?'TÚ':`IA · ${AI_LEVELS[r.level].name}`}</small></li>`).join('')}</ol>`;
 }
 
 export function renderRaceResult(race,track){

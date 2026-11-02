@@ -1,3 +1,4 @@
+import { normalizeCircuitDressing,dressingSourceKey,normalizeDressingOptions } from './circuit-dressing.js';
 import { KIT_PRESETS,MAX_TRACK_PIECES,samplePiece,compileLayout,kitConfig } from './track-pieces.js';
 import { themePreset,normalizeEnvironment } from './environment-config.js';
 import { normalizeProps } from './prop-catalog.js';
@@ -19,7 +20,9 @@ export function normalizeEditorDocument(input){
   });
   const environment=normalizeEnvironment(input.environment||themePreset(input.theme||'grandprix'));
   if(input.startHeight!=null&&(!Number.isFinite(input.startHeight)||input.startHeight<0||input.startHeight>64))throw new Error('La cota de salida debe estar entre 0 y 64 m.');
-  return {version:2,name:typeof input.name==='string'?input.name.slice(0,60):'Mi circuito',pieces:clean,environment,props:normalizeProps(input.props||input.manualProps||[]),...(input.startHeight!=null?{startHeight:input.startHeight}:{})};
+  const dressing=normalizeCircuitDressing(input.circuitDressing);
+  const circuitDressing=dressing?.sourceKey===dressingSourceKey({layout:clean,width:10,startHeight:input.startHeight||0})?dressing:undefined;
+  return {...(input.circuitDressingOptions?{circuitDressingOptions:normalizeDressingOptions(input.circuitDressingOptions)}:{}),...(circuitDressing?{circuitDressing}:{}),version:2,name:typeof input.name==='string'?input.name.slice(0,60):'Mi circuito',pieces:clean,environment,props:normalizeProps(input.props||input.manualProps||[]),...(input.startHeight!=null?{startHeight:input.startHeight}:{})};
 }
 export function defaultEditorDocument(){return normalizeEditorDocument({name:KIT_PRESETS[1].name,pieces:clone(KIT_PRESETS[1].pieces),theme:'grandprix'});}
 export function readEditorDocument(storage){
@@ -46,7 +49,7 @@ export function editorTrackConfig(document,{allowInvalid=false}={}){
   const doc=normalizeEditorDocument(document),layout=compileLayout(doc.pieces,10,doc.startHeight||0);
   const editorError=layout.errors[0]||(!layout.closed?'El circuito debe estar cerrado antes de probarlo.':null);
   if(editorError&&!allowInvalid)throw new Error(editorError);
-  return {...kitConfig(clone(doc.pieces),doc.name,savedEditorTrackId(doc)),...(doc.startHeight!=null?{startHeight:doc.startHeight}:{}),editorError,biome:doc.environment.biome,environmentTheme:doc.environment.theme,weather:doc.environment.weather,surface:doc.environment.theme==='reunion'?'mud':'asphalt',editorEnvironment:clone(doc.environment),manualProps:clone(doc.props)};
+  return {...kitConfig(clone(doc.pieces),doc.name,savedEditorTrackId(doc)),...(doc.startHeight!=null?{startHeight:doc.startHeight}:{}),editorError,biome:doc.environment.biome,environmentTheme:doc.environment.theme,weather:doc.environment.weather,surface:doc.environment.theme==='reunion'?'mud':'asphalt',editorEnvironment:clone(doc.environment),manualProps:clone(doc.props),...(doc.circuitDressing?{circuitDressing:clone(doc.circuitDressing)}:{})};
 }
 
 /** One history entry per gesture, including changes made with sliders or 3D handles. */

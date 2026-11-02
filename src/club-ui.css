@@ -1,0 +1,191 @@
+/* Club: portrait-first home and showroom. Gameplay instruments stay in prl-theme.css. */
+:root{--club-header:54px;--club-nav:62px;--club-gutter:16px;--club-surface:#1c242c;--club-stroke:#c6ddf12b}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.club-icon{display:block;width:24px;height:24px;flex-shrink:0;object-fit:contain;filter:invert(1);pointer-events:none}
+.club-wordmark{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.club-wordmark>b{font:800 italic 36px/.9 'Barlow Condensed',sans-serif;letter-spacing:-1px;color:var(--ui-ink)}
+.club-wordmark>b>span{color:var(--prl-pink)}
+.club-wordmark>small{font:600 6px/1.35 'DM Sans',sans-serif;letter-spacing:1.4px;color:#dbe6ee;border-left:1px solid var(--club-stroke);padding-left:12px;max-width:110px;white-space:normal}
+.club-header-car{display:flex;flex-direction:column;gap:3px;min-width:0;margin-left:auto;color:var(--ui-ink)}
+.club-header-car>strong{font:600 12px/1.2 'Barlow Condensed',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.club-header-car>small{font-size:9px;color:var(--ui-muted)}
+body[data-state=hub] .topbar{height:calc(var(--club-header) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) var(--club-gutter) 0;gap:14px;background:#111a22;border-color:var(--club-stroke)}
+body[data-state=hub] .topbar .toolbar{margin-left:0}
+body[data-state=hub] #preferences-btn.toolbar-button{display:flex;width:44px;min-width:44px;height:44px;padding:10px;border:0;background:transparent}
+body[data-state=hub] #preferences-btn .club-icon{display:block}
+body:not([data-state=hub]) #club-nav-car{display:none}
+#playground-hub{inset:calc(var(--club-header) + env(safe-area-inset-top,0px)) 0 0;display:flex;flex-direction:column;gap:0;max-width:none;overflow:hidden;margin:0;min-height:0;padding:0}
+#playground-hub .club-home{display:flex;flex-direction:column;flex:1;min-height:0;margin:0;overflow:hidden;background:#111a22}
+.club-home-hero{position:relative;flex:1;min-height:190px;isolation:isolate;overflow:hidden;background:#1b2a35 url('/assets/prl/club/coastal-paddock.webp') center 42%/cover no-repeat}
+.club-track-identity{position:absolute;z-index:2;left:var(--club-gutter);right:var(--club-gutter);top:20px;pointer-events:none;text-shadow:0 1px 6px #071019}
+.club-track-identity .eyebrow{color:#dbe6ee;font-size:9px;letter-spacing:1.7px;font-weight:500}
+.club-track-identity h1{font:600 29px/1.05 'Barlow Condensed',sans-serif;letter-spacing:0;margin:8px 0 3px;max-width:85%;color:#f7fafc}
+.club-track-identity p{font:500 20px/1.2 'Barlow Condensed',sans-serif;color:var(--prl-blue);margin:0}
+.club-track-map{width:112px;color:var(--prl-blue);margin-top:8px;filter:drop-shadow(0 1px 4px #0008)}
+.club-track-map svg{display:block;width:100%;height:auto}
+.club-car-stage{position:absolute;z-index:1;left:0;right:0;top:28%;bottom:40px;min-height:100px}
+.club-car-stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.club-car-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--ui-muted);font-size:12px}
+.club-selected-car{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px var(--club-gutter);min-height:58px;background:#15202bd9;border-top:1px solid #ffffff10;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.club-selected-car>div{min-width:0}.club-selected-car strong{display:block;font:600 20px/1.1 'Barlow Condensed',sans-serif;color:#f7fafc}
+.club-selected-car small{display:block;margin-top:3px;font-size:10px;color:#d0d8e0;text-transform:none}
+.club-selected-car button{display:flex;align-items:center;gap:5px;min-height:44px;background:transparent;padding:0;font-size:12px;color:var(--prl-blue);white-space:nowrap}
+.club-selected-car button .club-icon{width:17px;height:17px}
+.club-home-controls{position:relative;z-index:2;padding:10px var(--club-gutter) 12px;background:#131c24;flex-shrink:0;display:grid;gap:10px}
+.club-mode{display:flex;gap:8px}
+.club-mode>button{position:relative;display:flex;align-items:center;gap:10px;flex:1;min-width:0;min-height:62px;padding:12px 10px;background:#1b252e;border:1px solid var(--club-stroke);border-radius:3px;text-align:left;color:#f5f8fa}
+.club-mode>button[aria-pressed=true]{background:#243340;border-top:3px solid var(--prl-blue);padding-top:10px}
+.club-mode>button>span{min-width:0}.club-mode>button strong{display:block;font:600 17px/1.1 'Barlow Condensed',sans-serif;white-space:nowrap}
+.club-mode>button small{display:block;font-size:9px;color:var(--ui-muted);margin-top:4px;white-space:nowrap}
+.club-mode .club-icon{width:24px;height:24px}.club-mode .club-mode-chevron{display:none}
+.club-track-open{display:flex;align-items:center;gap:13px;text-align:left;padding:9px 12px;min-height:52px;background:#18222b;border:1px solid var(--club-stroke);border-radius:3px;color:var(--ui-ink)}
+.club-track-open>span{flex:1;min-width:0}.club-track-open strong{display:block;font:600 17px/1.15 'Barlow Condensed',sans-serif}
+.club-track-open small{display:block;color:var(--ui-muted);font-size:10px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.club-track-open>.club-icon:last-child{width:18px;height:18px}
+.club-launch.primary-button{width:100%;min-width:0;min-height:50px;font:600 24px/1.1 'Barlow Condensed',sans-serif;padding:12px 15px;letter-spacing:0}
+.primary-button .club-icon{filter:none;width:22px;height:22px}
+.club-navigation{flex-shrink:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;min-height:calc(var(--club-nav) + env(safe-area-inset-bottom,0px));padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));border-top:1px solid var(--club-stroke);background:#101921;pointer-events:auto}
+.club-navigation>button{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;min-height:var(--club-nav);padding:8px 3px;background:transparent;border:0;border-radius:0;color:#cbd6de;font:400 11px/1.2 'DM Sans',sans-serif}
+.club-navigation>button+button{border-left:1px solid #ffffff08}
+.club-navigation>button[aria-current=page]{color:var(--prl-blue);border-bottom:3px solid var(--prl-blue);padding-bottom:5px;background:#9bdaff08}
+.club-navigation>button .club-icon{width:25px;height:25px}
+.club-navigation>button:hover{background:#9bdaff12}
+/* The complete existing configurator is a reachable, scrollable bottom sheet. */
+.club-setup{position:fixed;inset:0;z-index:15;display:flex;align-items:flex-end;justify-content:center;padding:0;background:#071019a6;pointer-events:auto;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.club-setup-card{width:min(640px,100%);max-height:calc(100dvh - max(50px,env(safe-area-inset-top,0px)));display:flex;flex-direction:column;overflow:hidden;background:#18232d;border:1px solid var(--club-stroke);border-radius:8px 8px 0 0}
+.club-setup-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px var(--club-gutter);border-bottom:1px solid var(--club-stroke);flex-shrink:0}
+.club-setup-heading .eyebrow{color:var(--prl-blue);font-size:9px;letter-spacing:1.2px}
+.club-setup-heading h2{font:600 28px/1 'Barlow Condensed',sans-serif;margin:6px 0 0}
+.club-setup .play-config-body{padding:16px;overflow:auto;min-height:0;border:0;background:transparent;flex:1}
+.club-setup .play-access{text-align:left;font-size:11px;margin:0 0 16px;color:var(--ui-muted);white-space:normal}
+.club-setup-track{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:12px;align-items:center}
+.club-setup-track .play-field select{font:500 19px 'Barlow Condensed',sans-serif;min-height:46px;background:#26333f}
+.club-setup .play-grid{gap:14px 10px}.club-setup .play-grid select{font-size:13px}
+.club-setup-session{color:var(--ui-muted);font-size:11px;line-height:1.6;margin:16px 0}
+.club-setup .play-disclosure summary{min-height:58px}.club-setup .play-disclosure summary>span{font-size:13px}
+.club-setup .play-tools{display:flex;gap:8px}.club-setup .play-tools button{font-size:12px;min-height:44px;padding:8px}
+.club-setup-footer{display:flex;justify-content:flex-end;align-items:center;gap:16px;flex-shrink:0;padding:12px 16px max(12px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--club-stroke)}
+.club-setup-footer .primary-button{min-height:46px;min-width:150px}
+body:has(#club-setup:not(.hidden)) .topbar{z-index:1}
+/* Garage: full-width real 3D stage, then specifications, roster, fixed action. */
+#garage-overlay{background:#101921}
+#garage-overlay #garage-content{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:0;height:100dvh;width:100%;padding:0;background:#111b24;border:0;overflow:hidden}
+#garage-content .club-garage-topbar{display:flex;align-items:center;gap:12px;min-height:calc(var(--club-header) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) var(--club-gutter) 0;background:#111a22;border-bottom:1px solid var(--club-stroke)}
+#garage-content .club-garage-topbar>.icon-button{width:44px;min-width:44px;height:44px;border:0;padding:10px;background:transparent}
+#garage-content .club-garage-category{display:flex;flex-direction:column;gap:5px;padding:8px var(--club-gutter) 10px;background:#111b24}
+#garage-content .club-garage-category>span{font-size:11px;color:#d0dae3}
+#garage-content .club-garage-category label{min-width:0}
+#garage-content [data-collection-category]{width:100%;height:44px;padding:0 12px;font:500 20px 'Barlow Condensed',sans-serif;background:#1b2833;border:1px solid var(--club-stroke);color:var(--ui-ink)}
+#garage-content .collection-batches{display:none}
+#garage-content .collection-layout{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(160px,1fr) auto;gap:0;margin:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#garage-content .collection-showroom{display:block;min-height:160px;height:100%;overflow:hidden}
+#garage-content .collection-viewport{height:100%;min-height:160px;border:0;border-radius:0;background:#202830 url('/assets/prl/club/collectors-workshop.webp') center 50%/cover no-repeat}
+#garage-content #garage-stage{position:absolute;inset:0;overflow:hidden}
+#garage-content .showroom-hint{bottom:7px;left:8px;right:8px;font-size:9px;text-shadow:0 1px 4px #000;color:#c5d0da;pointer-events:none}
+#garage-content .collection-detail{display:flex;flex-direction:column;height:auto;min-height:max-content;flex-shrink:0;max-height:none;overflow:visible;gap:0;align-items:stretch;text-align:left;padding:12px var(--club-gutter) 8px;background:#14202a;border:0}
+#garage-content .detail-category{order:2;display:flex;align-items:center;gap:0;color:var(--prl-blue);font-size:12px;letter-spacing:0;text-transform:none;margin-top:4px}
+#garage-content .detail-category>i{display:none}
+#garage-content .detail-category>span{position:absolute;right:var(--club-gutter);margin-top:-30px;color:var(--ui-ink);font:500 17px 'Barlow Condensed',sans-serif}
+#garage-content .collection-detail h3{order:1;font:600 28px/1 'Barlow Condensed',sans-serif;font-style:normal;text-transform:none;letter-spacing:0;margin:0;padding-right:65px}
+#garage-content :is(.detail-description,.collection-ownership,.detail-note){display:none}
+#garage-content .collection-detail .vehicle-stats{order:3;display:grid;align-self:stretch;width:100%;gap:8px;margin:12px 0 8px;padding-top:10px;border-top:1px solid var(--club-stroke)}
+#garage-content .vehicle-stats>div{display:grid;width:100%;grid-template-columns:82px minmax(0,1fr);align-items:center;gap:12px;color:#d3dce4;font-size:11px;line-height:1.2}
+#garage-content .vehicle-stats i{width:100%;height:5px;border-radius:1px;background:#d2e4ef22;overflow:hidden}
+#garage-content .vehicle-stats b{display:block;height:100%;background:var(--prl-blue);border-radius:0}
+#garage-content .vehicle-workshop{order:5;flex-shrink:0;margin:8px 0 0;padding:0;border:0}
+#garage-content .vehicle-workshop>summary{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 12px;font:500 18px 'Barlow Condensed',sans-serif;border:1px solid var(--club-stroke);border-radius:3px;background:#1e2c37;list-style:none;cursor:pointer}
+#garage-content .vehicle-workshop>summary>span{flex:1}
+#garage-content .vehicle-workshop .club-icon{width:22px;height:22px}
+#garage-content .vehicle-workshop[open]{padding:0 0 10px}
+#garage-content .vehicle-workshop[open]>summary>.club-icon:last-child{transform:rotate(90deg)}
+#garage-content .workshop-fields{margin:14px 0;gap:12px}
+#garage-content .workshop-fields label{font-size:12px}
+#garage-content .workshop-fields :is(input,select){min-height:44px;height:44px;font-size:13px}
+#garage-content .driving-character{order:4;margin:5px 0 0;padding:0;border:0;font-size:12px}
+#garage-content .driving-character>summary{min-height:44px;display:flex;align-items:center;font-size:12px;color:var(--prl-blue);cursor:pointer}
+#garage-content .driving-character p{font-size:12px;line-height:1.6}
+#garage-content .collection-footer{display:flex;flex-direction:column;gap:8px;margin:0;padding:6px var(--club-gutter) 12px;min-height:0;border-top:1px solid var(--club-stroke);background:#111c25}
+#garage-content .collection-roster{display:flex;gap:8px;width:100%;min-height:0;height:82px;max-height:none;margin:0;padding:2px 1px 4px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-padding-inline:6px}
+#garage-content .collection-roster::-webkit-scrollbar{display:none}
+#garage-content .collection-roster .collection-car{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex:0 0 calc((100% - 16px)/3);min-width:0;height:76px;min-height:0;padding:3px 4px 5px;background:#1a2732;border:1px solid var(--club-stroke);border-radius:3px;text-align:center;color:#f4f8fa}
+#garage-content .collection-car[aria-pressed=true]{border:2px solid var(--prl-blue);background:#243644;padding:2px 3px 4px}
+#garage-content .collection-roster .club-car-thumb{display:block;flex:1;min-height:0;object-fit:contain;width:100%;height:48px}
+#garage-content .collection-roster .club-car-thumb[hidden]{display:none}
+#garage-content .collection-car .collection-number{position:absolute;top:5px;left:6px;font-size:8px;color:var(--ui-muted)}
+#garage-content .collection-number i{display:none}
+#garage-content .collection-car strong{display:block;width:100%;font:500 13px/1.1 'Barlow Condensed',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#garage-content .collection-car small{display:none}
+#garage-content .garage-confirm{width:100%;padding:0}
+#garage-content .garage-confirm .primary-button{width:100%;min-width:0;min-height:48px;height:auto;font:600 22px/1.1 'Barlow Condensed',sans-serif;padding:11px 14px;gap:12px;color:var(--ui-bg);background:var(--prl-pink)}
+#garage-content .club-navigation{background:#101921;border-top:1px solid var(--club-stroke)}
+#garage-content .club-navigation>button{font-size:11px;background:transparent;border:0;border-left:1px solid #ffffff08;border-radius:0;color:#cbd6de}
+#garage-content .club-navigation>button[aria-current=page]{color:var(--prl-blue);background:#9bdaff08;border-bottom:3px solid var(--prl-blue)}
+/* Reflow the selected portrait composition for secondary wide-screen use. */
+@media(min-width:701px) and (orientation:landscape){
+  :root{--club-header:60px;--club-gutter:24px;--club-nav:64px}
+  .club-wordmark>b{font-size:42px}.club-wordmark>small{font-size:8px;max-width:150px}
+  .club-header-car>strong{font-size:15px;max-width:180px}.club-header-car>small{font-size:11px}
+  #playground-hub .club-home{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,32%)}
+  .club-home-hero{height:100%;background-position:50% 36%}
+  .club-track-identity{top:28px}.club-track-identity h1{font-size:40px}.club-track-identity p{font-size:24px}.club-track-map{width:150px}
+  .club-car-stage{top:20%;bottom:54px}
+  .club-home-controls{align-content:end;padding:24px;background:#131e28;border-left:1px solid var(--club-stroke);gap:16px}
+  .club-mode{flex-direction:column}.club-mode>button{min-height:82px;padding:16px}.club-mode>button[aria-pressed=true]{padding-top:14px}
+  .club-mode>button strong{font-size:23px}.club-mode>button small{font-size:12px}.club-mode .club-icon{width:30px;height:30px}.club-mode .club-mode-chevron{display:block;width:18px;height:18px;margin-left:auto}
+  .club-track-open{min-height:72px;padding:14px}.club-track-open strong{font-size:22px}.club-track-open small{font-size:12px}
+  .club-launch.primary-button{min-height:58px;font-size:28px}
+  .club-navigation{padding-inline:max(24px,calc((100vw - 900px)/2))}
+  .club-navigation>button{flex-direction:row;gap:10px;font-size:13px}
+  .club-setup{align-items:center;padding:24px}.club-setup-card{max-height:calc(100dvh - 48px);border-radius:6px}
+  #garage-content .club-garage-category{flex-direction:row;align-items:center;gap:24px;padding-block:12px}
+  #garage-content .club-garage-category>span{font-size:15px}.club-garage-category label{width:300px}
+  #garage-content .collection-layout{grid-template-columns:minmax(0,1fr) minmax(260px,28%);grid-template-rows:minmax(0,1fr);gap:0;overflow:hidden}
+  #garage-content .collection-viewport{background-position:center 45%}
+  #garage-content .collection-detail{height:100%;overflow:auto;padding:28px 24px}
+  #garage-content .collection-detail h3{font-size:40px;padding-right:0}.detail-category>span{position:static}
+  #garage-content .detail-category>span{position:static;margin:0 0 0 auto;font-size:16px}
+  #garage-content .collection-detail .vehicle-stats{gap:18px;margin-top:25px;padding-top:25px}.vehicle-stats>div{font-size:13px}
+  #garage-content .collection-footer{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,28%);gap:24px;padding-block:10px}
+  #garage-content .collection-roster{height:92px}.collection-footer .garage-confirm{align-self:center}
+  #garage-content .collection-roster .collection-car{flex-basis:150px;height:84px}
+  #garage-content .collection-car strong{font-size:15px}
+  #garage-content .garage-confirm .primary-button{min-height:60px}
+}
+@media(max-height:700px) and (orientation:portrait){
+  :root{--club-header:50px;--club-nav:56px;--club-gutter:12px}
+  .club-track-identity{top:14px}.club-track-identity h1{font-size:26px}.club-track-map{width:88px;margin-top:2px}
+  .club-selected-car{padding-block:5px;min-height:48px}.club-selected-car strong{font-size:18px}
+  .club-home-controls{gap:8px;padding-top:8px;padding-bottom:10px}.club-mode>button{min-height:56px;padding:10px 8px}.club-mode>button[aria-pressed=true]{padding-top:8px}
+  .club-mode .club-icon{width:20px;height:20px}.club-mode>button strong{font-size:16px}.club-mode>button small{font-size:8px}
+  .club-track-open{min-height:48px;padding-block:7px}.club-launch.primary-button{min-height:48px;font-size:22px}
+  #garage-content .club-garage-category{padding-top:5px;padding-bottom:6px;gap:3px}
+  #garage-content .club-garage-category>span{font-size:10px}#garage-content [data-collection-category]{height:44px;font-size:18px}
+  #garage-content .collection-layout{grid-template-rows:minmax(132px,1fr) auto}#garage-content .collection-showroom,#garage-content .collection-viewport{min-height:132px}
+  #garage-content .collection-detail{padding:8px 12px 5px}#garage-content .collection-detail h3{font-size:25px}
+  #garage-content .detail-category{font-size:11px}#garage-content .collection-detail .vehicle-stats{gap:6px;margin-top:8px;padding-top:7px;margin-bottom:3px}
+  #garage-content .vehicle-workshop{margin-top:5px}#garage-content .vehicle-workshop>summary{min-height:44px;font-size:16px}
+  #garage-content .collection-footer{gap:6px;padding:4px 12px 8px}#garage-content .collection-roster{height:70px}#garage-content .collection-roster .collection-car{height:66px}
+  #garage-content .garage-confirm .primary-button{min-height:46px;font-size:21px}
+}
+@media(max-width:360px){
+  .club-wordmark>small{display:none}.club-mode>button{gap:7px}.club-mode>button strong{font-size:15px}.club-mode>button small{font-size:8px}
+  .club-selected-car button{font-size:11px}.club-selected-car small{font-size:9px}
+}
+@media(max-height:500px) and (orientation:landscape){
+  :root{--club-header:48px;--club-nav:52px;--club-gutter:14px}
+  #playground-hub .club-home{display:grid;grid-template-columns:minmax(0,1fr) 300px}
+  .club-home-controls{gap:8px;padding:12px 14px}.club-mode{flex-direction:row;gap:6px}.club-mode>button{min-height:54px;padding:9px 7px;gap:7px}.club-mode>button[aria-pressed=true]{padding-top:7px}
+  .club-mode .club-icon{width:20px;height:20px}.club-mode .club-mode-chevron{display:none}.club-mode>button strong{font-size:16px}.club-mode>button small{font-size:8px}
+  .club-track-open{min-height:48px;padding:7px 10px}.club-track-open strong{font-size:18px}.club-track-open small{font-size:9px}.club-launch.primary-button{min-height:46px;font-size:22px}
+  .club-track-identity{top:12px}.club-track-identity h1{font-size:26px}.club-track-identity p{font-size:18px}.club-track-map{width:78px;margin:0}
+  .club-selected-car{min-height:44px;padding-block:4px}.club-selected-car strong{font-size:18px}.club-car-stage{top:18%;bottom:38px}
+  #garage-content .club-garage-category{padding-block:5px;gap:12px}.club-garage-category label{width:220px}
+  #garage-content [data-collection-category]{height:38px;min-height:38px;font-size:17px}
+  #garage-content .collection-layout{grid-template-columns:minmax(0,1fr) 230px;grid-template-rows:minmax(0,1fr)}
+  #garage-content .collection-detail{padding:9px 14px}.collection-detail h3{font-size:26px}
+  #garage-content .collection-detail h3{font-size:26px}#garage-content .collection-detail .vehicle-stats{gap:7px;margin:10px 0 5px;padding-top:10px}
+  #garage-content .collection-footer{grid-template-columns:minmax(0,1fr) 230px;gap:14px;padding-block:5px}
+  #garage-content .collection-roster{height:64px}#garage-content .collection-roster .collection-car{height:60px;flex-basis:125px}
+  #garage-content .garage-confirm .primary-button{min-height:46px;font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){.club-navigation button,.club-mode button{transition:none}}

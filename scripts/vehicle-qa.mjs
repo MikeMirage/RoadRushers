@@ -1,6 +1,8 @@
 import { Box3, Vector3 } from 'three';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import { ORIGINAL_VEHICLES } from '../src/config.js';
+import { buildVehicle } from '../src/vehicles.js';
 import { NEW_VEHICLES, VEHICLE_BATCHES } from '../src/vehicle-catalog.js';
 import { buildCollectionVehicle, disposeVehicle } from '../src/vehicle-modeler.js';
 
@@ -29,8 +31,9 @@ export function inspectVehicle(model){
   for(const name of ['trail-rear-left','trail-rear-right','exhaust-left','exhaust-right'])if(!model.sockets[name])errors.push(`missing ${name}`);
   for(const slot of ['exterior-paint','secondary-paint','windows','rubber','rims','taillights'])if(!materials.has(slot)&&slot!=='secondary-paint')errors.push(`missing ${slot}`);
   if(Math.abs(box.min.y)>.002)errors.push(`ground contact ${box.min.y}`);
-  if(triangles>12000)errors.push(`triangle budget ${triangles}`);
-  return {id:model.vehicle.id,name:model.vehicle.name,batch:model.vehicle.batch,axes:'+Y up, +Z forward',dimensions:size.toArray().map(n=>+n.toFixed(4)),triangles,primitives:meshes.length,materials:[...materials],wheelPivots:4,steeringPivots:2,sockets:Object.keys(model.sockets),uvLayout:'panel-atlas-3x2',degenerateTriangles:degenerate,collapsedPaintUVs,errors,meshes,pass:!errors.length};
+  const budget=model.vehicle.handling?45000:12000;
+  if(triangles>budget)errors.push(`triangle budget ${triangles}/${budget}`);
+  return {id:model.vehicle.id,name:model.vehicle.name,batch:model.vehicle.batch,axes:'+Y up, +Z forward',dimensions:size.toArray().map(n=>+n.toFixed(4)),triangles,primitives:meshes.length,materials:[...materials],wheelPivots:4,steeringPivots:2,sockets:Object.keys(model.sockets),uvLayout:model.vehicle.handling?'vehicle-space-planar':'panel-atlas-3x2',degenerateTriangles:degenerate,collapsedPaintUVs,errors,meshes,pass:!errors.length};
 }
 
 export async function runQA(){
@@ -41,9 +44,11 @@ export async function runQA(){
     }
     console.log(`Tanda ${batch.name}: ${vehicles.filter(v=>v.batch===batch.id&&v.pass).length}/10`);
   }
-  const report={implementation:'Native Three.js procedural meshes, independently exported glTF 2.0',pass:vehicles.every(v=>v.pass),count:vehicles.length,vehicles};
+  const starters=ORIGINAL_VEHICLES.map(v=>{const model=buildVehicle(v),qa=inspectVehicle(model);disposeVehicle(model);return qa;});
+  console.log(`Serie base: ${starters.filter(v=>v.pass).length}/3`);
+  const report={starters,implementation:'Native Three.js procedural meshes, independently exported glTF 2.0',pass:[...vehicles,...starters].every(v=>v.pass),count:vehicles.length,vehicles};
   await mkdir('artifacts',{recursive:true});await writeFile('artifacts/collection-qa.json',JSON.stringify(report,null,2)+'\n');
-  if(!report.pass){console.error(vehicles.filter(v=>!v.pass).map(v=>({id:v.id,errors:v.errors})));process.exitCode=1;}
+  if(!report.pass){console.error([...vehicles,...starters].filter(v=>!v.pass).map(v=>({id:v.id,errors:v.errors})));process.exitCode=1;}
   return report;
 }
-if(import.meta.url===pathToFileURL(process.argv[1]).href)await runQA();
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)await runQA();

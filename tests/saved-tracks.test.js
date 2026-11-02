@@ -30,7 +30,7 @@ test('open or invalid saved circuits stay visible with a reason and cannot be la
   const tracks=playgroundTracks(undefined,storage),id=savedEditorTrackId(doc.value),options={...DEFAULT_PLAYGROUND,trackId:id};
   const result=resolvePlayground(options,tracks);assert.match(result.error,/cerrado/);
   const html=renderPlayground(options,tracks);assert.ok(html.includes('&lt;Lawson&gt; · Revisar en editor'));assert.ok(html.includes('Editar este circuito'));
-  assert.match(html,/<button type="submit" class="primary-button" disabled>/);
+  assert.match(html,/<button type="button" class="primary-button" data-setup-next disabled>/);
   savePlayground(storage,options);assert.equal(loadPlayground(storage).trackId,id);
 });
 test('corrupted saved records do not hide healthy circuits or overwrite their draft',()=>{

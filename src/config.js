@@ -29,16 +29,52 @@ export const TRACKS = [
   },
 ];
 
+// Balanced at the same pace. These are game setups, not homologation figures.
+// Distances use the same metre scale as the wheel pivots in starter-vehicle-models.js.
 export const ORIGINAL_VEHICLES = [
-  { id: 'coda', name: 'Truck Classic', category: 'PICK-UP', description: 'El truck original: compacto, noble y fácil de recuperar.', color: '#e8ce7d',
-    speed: 0.94, grip: 1.04, acceleration: 1, turn: 1.04, response: 1.1, yawResponse: 1.1, drift: 0.65, looseGrip: 1,
-    stats: [3,5,2], unlock: 'Tu primera miniatura. Disponible desde el inicio.' },
-  { id: 'apex', name: 'Evo Rally', category: 'RALLY', description: 'Inspirado en el Lancer Evo: estable, ágil y con mucho agarre.', color: '#c44d43',
-    speed: 1.02, grip: 1, acceleration: 1.12, turn: 0.96, response: 0.95, yawResponse: 0.95, drift: 0.61, looseGrip: 1.7,
-    stats: [4,4,3], unlock: 'Consigue bronce en Curvas del Puerto.' },
-  { id: 'velo', name: 'Cobra 427', category: 'ROADSTER', description: 'Inspirado en el Shelby Cobra: capó largo, propulsión y carácter.', color: '#377daa',
-    speed: 1.18, grip: 0.83, acceleration: 1.18, turn: 0.94, response: 0.82, yawResponse: 0.7, drift: 0.76, looseGrip: 0.9,
-    stats: [5,2,5], unlock: 'Completa las tres pruebas de la Copa de Iniciación.' },
+  { id: 'coda', name: 'Truck Classic', category: 'PICK-UP · FR', description: 'Pick-up clásica: dirección progresiva, frenada segura y derrape fácil de recoger. Balancea más y cede velocidad en curvas largas.', color: '#c9a45d',
+    speed: .99, grip: 1.03, acceleration: 1, turn: 1.04, response: 1.1, yawResponse: 1.05, drift: .55, looseGrip: 1.32,
+    bodyWidth: 1.6, stats: [3,5,3], unlock: 'Tu primera miniatura. Disponible desde el inicio.',
+    handling: { mass: 1420, frontWeight: .55, wheelbase: 2.05, track: 1.33, cgHeight: .51,
+      drive: 'RWD', engineForce: 17400, brakeForce: 20200, brakeBias: .68, frontGrip: 1.04, rearGrip: 1.08,
+      steeringRate: 10.5, releaseRate: 12, yawRate: 5.7, speedSensitivity: .15,
+      driftEntry: 4.8, driftBuild: 3.5, recovery: 3.8, rearSlip: .52, cornerDrag: .045,
+      springFrequency: 1.65, dampingRatio: .83, rollStiffness: 1.05, pitchStiffness: 1.1, suspensionTravel: .095 },
+    character: { strength: 'Recuperación y frenada previsibles', compromise: 'Más balanceo y menor velocidad en apoyo', technique: 'Frena antes, entra suave y deja que se asiente.' } },
+  { id: 'apex', name: 'Evo Rally', category: 'RALLY · AWD', description: 'Sedán de rally inspirado en el Lancer Evolution: respuesta precisa y tracción integral. Entra limpio; forzarlo abre la trayectoria.', color: '#a92831',
+    speed: 1.01, grip: 1.07, acceleration: 1.1, turn: 1, response: 1.2, yawResponse: 1.16, drift: .48, looseGrip: 1.48,
+    bodyWidth: 1.64, stats: [3,5,2], unlock: 'Consigue bronce en Curvas del Puerto.',
+    handling: { mass: 1360, frontWeight: .59, wheelbase: 2.22, track: 1.36, cgHeight: .36,
+      drive: 'AWD', engineForce: 18800, brakeForce: 17300, brakeBias: .65, frontGrip: 1.08, rearGrip: 1.14,
+      steeringRate: 12, releaseRate: 13.5, yawRate: 6.2, speedSensitivity: .20,
+      driftEntry: 6.4, driftBuild: 3.7, recovery: 4.5, rearSlip: .40, cornerDrag: .028,
+      springFrequency: 2.2, dampingRatio: .88, rollStiffness: 1.65, pitchStiffness: 1.6, suspensionTravel: .065 },
+    character: { strength: 'Salida de curva y terreno suelto', compromise: 'Subviraje si entras demasiado rápido', technique: 'Recorta la entrada y aprovecha su tracción al salir.' } },
+  { id: 'velo', name: 'Cobra 427', category: 'ROADSTER · FR', description: 'Roadster inspirado en el Cobra 427: ligero, capó largo y propulsión. Más punta y giro con el gas; exige un contravolante fino.', color: '#225c8d',
+    speed: 1.07, grip: .98, acceleration: 1.08, turn: .98, response: 1.06, yawResponse: .96, drift: .62, looseGrip: 1.08,
+    bodyWidth: 1.64, stats: [4,3,5], unlock: 'Completa las tres pruebas de la Copa de Iniciación.',
+    handling: { mass: 1080, frontWeight: .48, wheelbase: 2.02, track: 1.34, cgHeight: .29,
+      drive: 'RWD', engineForce: 14100, brakeForce: 12800, brakeBias: .61, frontGrip: 1.06, rearGrip: .95,
+      steeringRate: 11.2, releaseRate: 12.5, yawRate: 5.2, speedSensitivity: .12,
+      driftEntry: 4.6, driftBuild: 4.5, recovery: 3.1, rearSlip: .61, cornerDrag: .018,
+      springFrequency: 2.05, dampingRatio: .78, rollStiffness: 1.55, pitchStiffness: 1.45, suspensionTravel: .055 },
+    character: { strength: 'Velocidad punta y rotación en curva', compromise: 'Trasera sensible y menos agarre fuera del asfalto', technique: 'Anticipa el contravolante y evita mantener el giro a fondo.' } },
+];
+
+// Only completed reference bodies enter the playable catalog.
+const sportBase=ORIGINAL_VEHICLES[2],suvBase=ORIGINAL_VEHICLES[0];
+ORIGINAL_VEHICLES.push(
+  {...sportBase,id:'c7-sport',name:'Stingray GT',category:'SPORTS · FR',color:'#1167a4',description:'Coupé deportivo inspirado en el Corvette C7: capó bajo, aletas anchas y habitáculo retrasado.',
+    speed:1.06,grip:1.04,stats:[4,4,3],unlock:'Disponible en pruebas libres.',bodyWidth:1.66,
+    handling:{...sportBase.handling,mass:1320,frontWeight:.51,wheelbase:2.28,track:1.355,engineForce:17300,brakeForce:17000,rearGrip:1.06,rearSlip:.48,rollStiffness:1.8},
+    character:{strength:'Punta y apoyo en asfalto',compromise:'Menos cómodo sobre terreno suelto',technique:'Busca una entrada limpia y abre dirección al salir.'}}
+);
+// Keep the brief available without routing an unimplemented body into gameplay.
+export const VEHICLE_PROTOTYPES = [
+  {...suvBase,id:'stelvio-suv',name:'Stelvio Sport',category:'SUV · AWD',color:'#80212c',description:'SUV deportivo inspirado en el Stelvio: techo arqueado, cintura alta y postura ancha.',
+    speed:1,grip:1.04,looseGrip:1.42,stats:[3,4,3],unlock:'Disponible en pruebas libres.',bodyWidth:1.72,
+    handling:{...suvBase.handling,mass:1610,frontWeight:.53,wheelbase:2.29,track:1.43,drive:'AWD',engineForce:21000,brakeForce:21300,cgHeight:.48,rollStiffness:1.35},
+    character:{strength:'Tracción y estabilidad en condiciones mixtas',compromise:'Más peso y balanceo',technique:'Apóyalo antes de pedir todo el giro.'}}
 ];
 
 export const VEHICLES = [...ORIGINAL_VEHICLES, ...NEW_VEHICLES];

@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "axes": "+Y up, +Z forward",
+  "source": "src/starter-vehicle-models.js",
+  "license": "Original procedural geometry, MIT; no third-party meshes or manufacturer insignia",
+  "vehicles": [
+    {
+      "id": "coda",
+      "name": "Truck Classic",
+      "file": "coda.glb",
+      "bytes": 3597160,
+      "triangles": 37152,
+      "primitives": 33,
+      "materials": [
+        "exterior-paint",
+        "black-trim",
+        "windows",
+        "chrome",
+        "taillights",
+        "headlights",
+        "indicators",
+        "interior",
+        "rims",
+        "rubber",
+        "brake-discs"
+      ],
+      "dimensions": [
+        1.784,
+        1.37,
+        3.497
+      ],
+      "inspiration": "Pick-up americana de los años 70 · cabina sencilla y caja corta",
+      "qa": "PASS; native geometry and reimported GLB"
+    },
+    {
+      "id": "apex",
+      "name": "Evo Rally",
+      "file": "apex.glb",
+      "bytes": 3852796,
+      "triangles": 39804,
+      "primitives": 34,
+      "materials": [
+        "exterior-paint",
+        "black-trim",
+        "windows",
+        "headlights",
+        "taillights",
+        "chrome",
+        "brake-discs",
+        "secondary-paint",
+        "interior",
+        "rims",
+        "rubber",
+        "brake-calipers"
+      ],
+      "dimensions": [
+        1.71,
+        1.21,
+        3.882
+      ],
+      "inspiration": "Sedán de homologación de finales de los 90 · Evolution VI",
+      "qa": "PASS; native geometry and reimported GLB"
+    },
+    {
+      "id": "velo",
+      "name": "Cobra 427",
+      "file": "velo.glb",
+      "bytes": 4040524,
+      "triangles": 41750,
+      "primitives": 35,
+      "materials": [
+        "exterior-paint",
+        "black-trim",
+        "interior",
+        "chrome",
+        "headlights",
+        "indicators",
+        "taillights",
+        "windows",
+        "rims",
+        "brake-discs",
+        "secondary-paint",
+        "rubber"
+      ],
+      "dimensions": [
+        1.7249,
+        0.98,
+        3.5601
+      ],
+      "inspiration": "Roadster británico con V8 de los años 60 · Cobra 427",
+      "qa": "PASS; native geometry and reimported GLB"
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+/* Studio collection and ordered race preparation. Primary viewport: 390 × 780. */
+:root{--studio-bg:#151c23;--studio-panel:#242d36;--studio-ink:#f5f6fa;--studio-muted:#b6c4d4;--studio-line:#b6c4d442}
+.icon-back{transform:rotate(180deg)}
+#garage-overlay #garage-content{position:relative;grid-template-rows:44px max-content minmax(0,1fr) max-content max-content;padding:env(safe-area-inset-top,0px) 0 0;background:var(--studio-bg);backdrop-filter:none;color:var(--studio-ink)}
+#garage-content .club-garage-topbar{min-height:44px;padding:0 14px;background:var(--studio-bg)}
+#garage-content .club-garage-topbar>.icon-button{margin-left:auto}
+#garage-content .club-wordmark>small{font-size:7px;max-width:190px;letter-spacing:1.5px;white-space:nowrap;font-weight:400}
+#garage-content .studio-category{padding:10px 14px;background:var(--studio-bg)}
+.studio-category h1{font:600 30px/1.15 'Barlow Condensed',sans-serif;margin:0 0 12px;letter-spacing:0}
+.studio-category-field{display:flex;position:relative;align-items:center;gap:10px;border:1px solid #a2b1c175;border-radius:4px;background:#242d36}
+.studio-category-field label{flex:1;min-width:0}
+#garage-content .studio-category-field select{width:100%;height:42px;min-height:42px;appearance:none;border:0;border-radius:4px;background:transparent;padding:0 0 0 12px;font:600 19px 'Barlow Condensed',sans-serif;cursor:pointer;color:var(--studio-ink)}
+.studio-category-field>span{pointer-events:none;font:400 12px/1.2 'DM Sans',sans-serif;white-space:nowrap;color:var(--studio-muted)}
+.studio-category-field>.club-icon{width:18px;height:18px;margin-right:10px;pointer-events:none}
+.studio-category-field select:focus-visible{outline-offset:2px}
+#garage-content .studio-body{display:flex;flex-direction:column;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;contain:paint}
+#garage-content .studio-showroom{position:relative;flex:1 0 190px;overflow:hidden;min-height:190px;background:#26313d url('/assets/prl/club/studio-backdrop.webp') center/cover no-repeat}
+#garage-content #garage-stage{position:absolute;inset:0 0 40px;min-height:0}
+.studio-showroom canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+#garage-content .studio-arrow{position:absolute;bottom:72px;width:44px;height:44px;min-height:44px;display:grid;place-items:center;background:#222b34bd;border:1px solid #c6ddf12b;border-radius:4px;padding:10px;z-index:2;backdrop-filter:blur(6px)}
+.studio-arrow .club-icon{width:24px;height:24px}
+.studio-previous{left:13px}.studio-previous .club-icon{transform:rotate(180deg)}.studio-next{right:13px}
+#garage-content .studio-arrow:disabled{opacity:.25;cursor:default}
+#garage-content .studio-arrow:hover:not(:disabled){background:#536476a6}
+.studio-position{position:absolute;bottom:8px;left:70px;right:70px;text-align:center;color:var(--studio-muted);pointer-events:none}
+.studio-position>span{display:block;font:500 19px/1.1 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:1px;color:var(--prl-blue)}
+.studio-position>small{display:block;font:400 11px/1.4 'DM Sans',sans-serif;margin-top:5px;color:var(--studio-muted)}
+.studio-position>.club-icon{width:22px;height:18px;margin:5px auto 0;opacity:.7}
+.studio-loading{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:12px;color:var(--studio-muted);pointer-events:none}
+#garage-content .studio-detail{flex:0 0 auto;padding:13px 16px 9px;border-top:1px solid var(--studio-line);background:var(--studio-bg);min-height:max-content}
+.studio-detail h2{font:600 31px/1.1 'Barlow Condensed',sans-serif;letter-spacing:0;margin:0;color:var(--studio-ink)}
+#garage-content .studio-detail>p{margin:5px 0 14px;font:400 13px/1.3 'DM Sans',sans-serif;color:var(--prl-blue)}
+.studio-stats{display:grid;gap:9px}
+.studio-stats>div{display:grid;grid-template-columns:24px minmax(0,1fr);gap:16px;align-items:center;font:400 13px/1.2 'DM Sans',sans-serif}
+.studio-stats .club-icon{width:21px;height:21px;opacity:.8}
+.studio-stats meter{appearance:none;display:block;width:100%;height:9px;border:0;background:#afc5d52e;border-radius:2px}
+.studio-stats meter::-webkit-meter-bar{background:#afc5d52e;border:0;border-radius:2px;height:9px}
+.studio-stats meter::-webkit-meter-optimum-value{background:var(--prl-blue);border-radius:2px}
+.studio-stats meter::-moz-meter-bar{background:var(--prl-blue);border-radius:2px}
+#garage-content .studio-actions{position:relative;z-index:3;padding:13px 14px 10px;display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:10px;background:var(--studio-bg);border-top:1px solid var(--studio-line)}
+#garage-content .studio-actions>.primary-button{width:100%;min-width:0;min-height:48px;padding:10px 15px;background:var(--prl-pink);color:#131b24;border:0;border-radius:4px;font:600 24px/1.1 'Barlow Condensed',sans-serif;gap:12px}
+.studio-actions>.primary-button>span{flex:1;text-align:left}
+#garage-content .studio-facts{min-height:48px;display:flex;align-items:center;justify-content:center;gap:5px;background:transparent;color:var(--studio-muted);font:400 13px 'DM Sans',sans-serif;border:0}
+.studio-facts .club-icon{width:22px;height:22px}
+#garage-content .club-navigation{min-height:calc(62px + env(safe-area-inset-bottom,0px));background:var(--studio-bg)}
+#garage-content .club-navigation>button{min-height:62px;font-size:12px}
+#garage-content .studio-panel,.race-car-facts{position:absolute;z-index:8;inset:50% 0 calc(62px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;min-height:0;background:#1c252ff5;border:1px solid #8da1b66b;border-radius:8px 8px 0 0;box-shadow:0 -14px 80px #0009;backdrop-filter:blur(18px);padding:16px;color:var(--studio-ink)}
+.studio-panel>header,.race-car-facts>header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-bottom:12px;border-bottom:1px solid var(--studio-line);gap:12px}
+.studio-panel h2,.race-car-facts h2{font:600 28px/1.1 'Barlow Condensed',sans-serif;margin:4px 0 0}
+.studio-panel small,.race-car-facts small{font-size:12px;color:var(--studio-muted)}
+.studio-panel-body{flex:1;min-height:0;overflow:auto;padding:12px 0;overscroll-behavior:contain;font-size:14px;line-height:1.6}
+#garage-content .studio-panel .vehicle-workshop{margin:0;padding:0;border:0}
+#garage-content .studio-panel .vehicle-workshop>summary{display:none}
+#garage-content .studio-panel .workshop-fields{margin:0 0 16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#garage-content .studio-panel .workshop-fields label{font:400 12px/1.4 'DM Sans',sans-serif;min-width:0}
+#garage-content .studio-panel .workshop-fields :is(input,select){display:block;width:100%;min-height:44px;height:44px;margin-top:6px;font-size:13px}
+#garage-content .studio-panel .vehicle-download{font-size:12px;min-height:44px}
+#garage-content .studio-panel .trail-ready{display:none}
+#garage-content .studio-panel>.primary-button{background:var(--prl-pink);color:#131b24;min-height:46px;flex-shrink:0;font:600 22px 'Barlow Condensed',sans-serif}
+#garage-content .studio-panel .driving-character>summary{min-height:44px;cursor:pointer}
+#garage-content .studio-panel .driving-character[open] p{color:var(--studio-muted)}
+.studio-note{font-size:13px;color:var(--studio-muted)}
+/* Full-screen preparation: the footer stays reachable while each step scrolls. */
+#club-setup.club-setup{inset:0;padding:0;align-items:stretch;background:var(--studio-bg);backdrop-filter:none;z-index:20;color:var(--studio-ink)}
+body:has(#club-setup:not(.hidden)) header.topbar{visibility:hidden}
+#club-setup .race-setup-screen{position:relative;display:flex;flex-direction:column;width:100%;height:100dvh;max-height:none;border:0;border-radius:0;background:var(--studio-bg);padding-top:env(safe-area-inset-top,0px)}
+.race-setup-header{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 14px;flex-shrink:0}
+.race-setup-header>.icon-button{width:44px;min-width:44px;height:44px;padding:10px;background:transparent;border:0}
+.race-setup-header .club-wordmark>small{display:none}
+.race-setup-header .club-wordmark>b{font-size:34px}
+.race-setup-header h1{font:600 23px/1.1 'Barlow Condensed',sans-serif;letter-spacing:0;border-left:1px solid var(--studio-line);padding-left:12px;margin:0}
+.race-setup-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #acbbcf80;margin:0 14px 12px;border-radius:4px;overflow:hidden;flex-shrink:0}
+.race-setup-progress>button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:5px 4px;font:500 17px/1 'Barlow Condensed',sans-serif;color:#c2cedc;background:#252e37;border-radius:0}
+.race-setup-progress>button+button{border-left:1px solid #acbbcf66}
+.race-setup-progress>button[aria-current=step]{background:var(--prl-blue);color:#151c23}
+.race-setup-progress>button:disabled{opacity:.5;cursor:default}
+.race-setup-progress .club-icon{width:17px;height:17px}
+.race-setup-progress>button[aria-current=step] .club-icon{filter:none}
+.setup-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.setup-field{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:center;min-width:0;color:var(--studio-muted);font:500 12px/1.3 'DM Sans',sans-serif}
+.setup-field-caption .club-icon{width:22px;height:22px;opacity:.8}
+.setup-field select{min-width:0;width:100%;min-height:46px;padding:8px 10px;border:1px solid #a2b1c153;border-radius:4px;background:var(--studio-panel);color:var(--studio-ink);font:500 15px/1.25 'DM Sans',sans-serif;color-scheme:dark}
+.setup-recap{display:flex;align-items:center;gap:9px;flex-shrink:0;margin:0 14px;padding:12px 0;border-block:1px solid var(--studio-line);font:400 12px/1.45 'DM Sans',sans-serif;color:var(--prl-blue)}
+.setup-recap .club-icon{width:21px;height:21px}
+.setup-circuit{display:flex;flex-direction:column}
+.setup-circuit-selector{padding:8px 14px 0;flex-shrink:0}
+.setup-map-panel{display:grid;place-items:center;flex:1;min-height:230px;padding:18px 16px;background:#151c23}
+.setup-map-svg{position:relative;width:100%;height:100%;min-height:0;color:#f5f6fa}
+.setup-map-svg svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+.setup-map-svg .circuit-start{fill:var(--prl-pink)}
+.setup-track-facts{display:grid;grid-template-columns:1fr auto;gap:17px 24px;margin:0 16px;padding:14px 0 12px;border-block:1px solid var(--studio-line);flex-shrink:0}
+.setup-track-facts>div{min-width:0;display:flex;align-items:center;gap:12px}.setup-track-facts .setup-track-location{grid-column:1/-1}
+.setup-track-facts .club-icon{width:23px;height:23px;opacity:.8}
+.setup-track-facts>div:last-child>.club-icon{width:32px;height:32px;opacity:1}
+.setup-track-facts small{display:block;font:400 11px/1.35 'DM Sans',sans-serif;color:var(--studio-muted);margin-bottom:4px}
+.setup-track-facts strong{font:500 26px/1.1 'Barlow Condensed',sans-serif;color:var(--prl-blue)}
+.setup-track-facts strong>span{font-size:15px}.setup-track-facts .setup-track-location>strong{font:400 13px/1.35 'DM Sans',sans-serif;color:var(--studio-ink)}
+.setup-editor-link{display:flex;align-items:center;gap:10px;min-height:44px;margin:8px 14px;padding:6px 0;background:transparent;color:var(--prl-blue);font-size:12px;text-align:left}
+.setup-editor-link>.club-icon:last-child{width:16px;height:16px;margin-left:auto}
+.setup-category{padding:17px 14px 10px}
+.setup-category .setup-field{font:600 23px/1.1 'Barlow Condensed',sans-serif;color:var(--studio-ink)}
+.setup-category .setup-field select{margin-top:5px;font:600 21px 'Barlow Condensed',sans-serif;min-height:48px;border-color:var(--prl-blue)}
+.setup-category p,.setup-help{font:400 12px/1.5 'DM Sans',sans-serif;color:var(--studio-muted);margin:8px 0}
+.setup-category>p,.setup-help{display:none}
+.setup-rules[data-session=practice] :is(.setup-field-laps,.setup-field-count,.setup-field-difficulty,.setup-field-interaction,.setup-field-fieldLevels){display:none}
+.setup-rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px;padding:10px 14px}
+.setup-help{margin-inline:14px}
+.setup-advanced,.setup-guide{margin:12px 14px;border-block:1px solid var(--studio-line)}
+.setup-advanced>summary,.setup-guide>summary{display:flex;justify-content:space-between;align-items:center;min-height:48px;cursor:pointer;font-size:13px;color:var(--prl-blue)}
+.setup-advanced .setup-rules-grid{padding-inline:0;padding-bottom:16px}
+.setup-guide p{font-size:12px;line-height:1.6;color:var(--studio-muted)}
+.setup-guide li{font-size:13px;padding:8px 0}
+.setup-circuit-tools{flex-shrink:0;margin:0 14px;border-bottom:1px solid var(--studio-line)}
+.setup-circuit-tools>summary{min-height:44px;display:flex;align-items:center;justify-content:space-between;font:400 12px 'DM Sans',sans-serif;color:var(--studio-muted);cursor:pointer;list-style:none}
+.setup-circuit-tools>summary .club-icon{width:16px;height:16px}
+.setup-circuit-tools>.setup-editor-link{margin-inline:0}
+.setup-circuit-tools>.setup-guide{margin:0;border-top:0}
+.setup-cars{flex:1;min-height:0;display:flex;flex-direction:column}
+.race-cars-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;flex-shrink:0}
+.race-cars-heading h2{font:600 26px/1.1 'Barlow Condensed',sans-serif;letter-spacing:0;margin:0}
+.race-cars-heading>span{font:400 12px/1.2 'DM Sans',sans-serif;color:var(--prl-blue);white-space:nowrap}
+.race-cars-heading>span{display:flex;align-items:center;gap:7px}.race-cars-heading>span>.club-icon{width:20px;height:20px}
+.race-car-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start;overflow:auto;min-height:0;padding:0 12px 16px;overscroll-behavior:contain;scrollbar-width:thin}
+.race-car-card{position:relative;display:flex;flex-direction:column;min-width:0;min-height:146px;padding:0 10px 10px;background:#242d36;border:1px solid #8c9bad80;border-radius:5px;text-align:left;color:var(--studio-ink);overflow:hidden}
+.race-car-card[aria-pressed=true]{border:2px solid var(--prl-blue);padding:0 9px 9px;background:#293640}
+.race-card-art{position:relative;display:flex;align-items:center;justify-content:center;width:calc(100% + 20px);margin:0 -10px 3px;aspect-ratio:1.85;background:#2e3944 url('/assets/prl/club/studio-backdrop.webp') center/cover no-repeat;overflow:hidden}
+.race-card-art img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 5px #0004)}
+.race-card-art img[hidden]{display:none}
+.race-thumbnail-status{position:absolute;inset:0;display:grid;place-items:center;font:400 10px 'DM Sans',sans-serif;color:var(--studio-muted)}
+.race-thumbnail-status[hidden]{display:none}
+.race-car-card>strong{font:600 21px/1.2 'Barlow Condensed',sans-serif;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.race-car-card>small{font:400 11px/1.3 'DM Sans',sans-serif;color:var(--studio-muted);margin-top:4px}
+.race-car-card>small{display:flex;align-items:center;gap:8px;min-height:16px}
+.country-flag{display:inline-block;width:18px;height:14px;object-fit:cover;border-radius:1px;flex-shrink:0}
+.race-card-check{position:absolute;top:8px;right:8px;background:var(--prl-blue);border-radius:50%;padding:3px;z-index:2;display:grid;place-items:center}
+.race-card-check .club-icon{filter:none;width:17px;height:17px}
+.race-setup-footer{display:block;margin:0;flex-shrink:0;padding:12px 14px max(14px,env(safe-area-inset-bottom,0px));background:var(--studio-bg);border-top:1px solid var(--studio-line)}
+.race-setup-footer .primary-button{width:100%;min-height:48px;background:var(--prl-pink);color:#121b24;border-radius:4px;font:600 24px/1.1 'Barlow Condensed',sans-serif;padding:10px 16px}
+.race-car-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.race-car-summary small{display:block;font:400 12px 'DM Sans',sans-serif;color:var(--studio-muted)}
+.race-car-summary strong{display:block;margin-top:3px;font:600 22px/1.1 'Barlow Condensed',sans-serif}
+.race-car-summary button{display:flex;align-items:center;min-height:44px;gap:6px;background:transparent;color:var(--prl-blue);font-size:12px;padding:0}
+.race-car-summary .club-icon{width:18px;height:18px}
+.race-car-summary button{width:44px;justify-content:flex-end}.race-car-summary .club-icon{width:23px;height:23px}
+.setup-recap-icons{gap:12px;font-size:12px}
+.setup-recap-icons>span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.setup-recap-icons>span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.setup-recap-icons .club-icon{width:18px;height:18px}
+.setup-preferences-link .club-icon{width:23px!important;height:23px!important;margin:0!important}
+.club-navigation>button .club-icon,#garage-content .club-navigation>button .club-icon{width:29px;height:29px}
+.club-wordmark>small,#garage-content .club-wordmark>small{display:none}
+body[data-state=hub] .club-header-car{display:none}
+body[data-state=hub] .topbar .toolbar{margin-left:auto}
+.club-track-identity .eyebrow,.club-selected-car small,.club-mode>button small{display:none}
+.setup-error{font:400 12px/1.5 'DM Sans',sans-serif;color:#ffb6cf;margin:0 0 10px}
+.setup-warning{font:400 12px/1.5 'DM Sans',sans-serif;color:var(--studio-muted);margin:0 0 10px}
+.race-car-facts{inset:25% 14px 14px;z-index:10;font-size:14px}
+.race-car-facts>p{font-size:14px;line-height:1.6;color:var(--studio-muted)}
+.race-car-facts .studio-stats{margin-top:20px}
+:is(.race-setup-screen,.studio-panel) :is(button,select,summary,input):focus-visible{outline:2px solid var(--prl-blue);outline-offset:2px}
+@media (max-height:700px) and (orientation:portrait){
+  #garage-overlay #garage-content{grid-template-rows:44px max-content minmax(0,1fr) max-content max-content}
+  #garage-content .studio-category{padding-block:8px}.studio-category h1{font-size:27px;margin-bottom:8px}
+  .studio-detail h2{font-size:28px}#garage-content .studio-detail{padding:10px 14px 6px}#garage-content .studio-detail>p{margin-bottom:10px}
+  .studio-stats{gap:7px}.studio-stats>div{font-size:12px}
+  #garage-content .studio-actions{padding-top:8px}.studio-position>small{font-size:10px}
+  .race-car-card{min-height:143px}.race-setup-header{min-height:50px}.race-cars-heading{padding-block:10px}
+  .race-setup-footer{padding-block:9px}.race-car-summary{margin-bottom:8px}
+}
+@media (max-height:600px) and (orientation:portrait){
+  #garage-content .studio-detail>p{margin-bottom:6px}
+  .studio-detail .studio-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .studio-detail .studio-stats>div{grid-template-columns:20px minmax(0,1fr);gap:8px}
+}
+@media (min-width:701px) and (orientation:landscape){
+  #garage-overlay #garage-content{grid-template-columns:minmax(0,1fr) minmax(300px,30%);grid-template-rows:54px auto minmax(0,1fr) auto 64px}
+  #garage-content .studio-body{display:contents;contain:none}
+  #garage-content .club-garage-topbar,#garage-content .studio-category,#garage-content>.club-navigation{grid-column:1/-1}
+  #garage-content .studio-category{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;gap:20px}.studio-category h1{margin:0}.studio-category-field{min-width:360px}
+  #garage-content .studio-showroom{grid-row:3/5;grid-column:1;min-height:0}
+  #garage-content .studio-detail{grid-row:3;grid-column:2;min-height:0;overflow:auto;padding:24px;align-content:center;border-top:0;border-left:1px solid var(--studio-line)}
+  #garage-content .studio-actions{grid-row:4;grid-column:2;padding:16px 24px;border-left:1px solid var(--studio-line)}
+  #garage-content .studio-actions>.primary-button{font-size:22px;gap:10px}
+  #garage-content .studio-actions>.primary-button>.club-icon:last-child{display:none}
+  .studio-detail h2{font-size:38px}.studio-stats{gap:16px}
+  #garage-content .studio-panel{inset:90px 16px 80px auto;width:min(440px,40%);border-radius:6px}
+  #club-setup .race-setup-screen{max-width:1100px;margin:auto}
+  .setup-circuit{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,35%);grid-template-rows:auto 1fr auto;gap:0 16px}
+  .setup-map-panel{grid-column:1;grid-row:1/4;min-height:220px;padding:16px 24px}.setup-circuit-selector{grid-column:2;padding:12px 16px 8px}
+  .setup-track-facts{grid-column:2;align-self:center;margin:0 16px}.setup-circuit>.setup-circuit-tools{grid-column:2}
+  .setup-rules-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .race-car-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.race-car-card{min-height:170px}
+  .race-setup-footer .primary-button{max-width:360px;margin-left:auto}.race-car-summary{max-width:500px;float:left;width:50%;margin:0}
+  .race-car-facts{inset:20% max(14px,calc((100% - 500px)/2)) 30px}
+}
+@media (prefers-reduced-motion:reduce){.studio-arrow,.race-car-card{transition:none}}

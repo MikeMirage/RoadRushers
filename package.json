@@ -10,7 +10,9 @@
     "preview": "vite preview --host 127.0.0.1",
     "preview:mobile": "vite preview --host 0.0.0.0",
     "test": "node --test tests/*.test.js",
+    "vehicles:benchmark": "node scripts/starter-vehicle-benchmark.mjs",
     "models:qa": "node scripts/vehicle-qa.mjs",
+    "models:export-base": "node scripts/export-starter-vehicles.mjs",
     "models:export": "node scripts/export-vehicles.mjs"
   },
   "dependencies": {

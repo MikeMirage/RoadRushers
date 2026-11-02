@@ -1,9 +1,11 @@
+import { generateCircuitDressing,dressingSourceKey,addCircuitInfrastructure,normalizeDressingOptions } from './circuit-dressing.js';
+import { buildCircuitDressing,circuitAsphaltMaterial } from './circuit-dressing-view.js';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { PIECE_CATALOG,KIT_PRESETS,compileLayout,kitConfig,samplePiece,MAX_TRACK_PIECES,mirrorPiece } from './track-pieces.js';
 import { Circuit } from './circuit.js';
-import { roadRibbon,trackStructures } from './road-geometry.js';
+import { roadRibbon,trackStructures,trackCurbs } from './road-geometry.js';
 import { buildEnvironment } from './environments.js';
 import { polishScenery } from './scenery-polish.js';
 import { enhanceLandscape } from './landscape-assets.js';
@@ -107,6 +109,12 @@ export class TrackWorkbench {
     this.host.querySelector('.editor-file-menu')?.removeAttribute('open');
     if(action==='close'){this.onClose();return;}
     if(action==='fit'){this.fit();return;}if(action==='focus'){this.fit(true);return;}if(action==='top'){this.fit(false,true);return;}
+    if(action==='generate-circuit'){
+      this.finish();if(!this.circuit)return;
+      this.mutate(doc=>{doc.circuitDressing=generateCircuitDressing(this.circuit,doc.circuitDressingOptions||doc.circuitDressing?.options);});
+      this.rebuildLandscape();return;
+    }
+    if(action==='remove-circuit'){this.mutate(doc=>{delete doc.circuitDressing;});this.rebuildLandscape();return;}
     if(action==='save'){this.finish();this.save();return;}
     if(action==='close-circuit'){
       this.finish();try{this.document.closeCircuit();this.focusSection=this.document.value.pieces.length-1;this.refresh({fit:true});this.save();}catch(error){this.error(error);}return;
@@ -114,7 +122,7 @@ export class TrackWorkbench {
     if(action==='export'){this.export();return;}
     if(action==='import'){this.$('editor-import-file').click();return;}
     if(action==='test'){this.finish();try{this.onTest(editorTrackConfig(this.document.value));}catch(error){this.error(error);}return;}
-    if(action==='new'){this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{doc.name='Mi circuito';doc.pieces=[];doc.props=[];delete doc.startHeight;},{fit:true,props:true});return;}
+    if(action==='new'){this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{doc.name='Mi circuito';doc.pieces=[];doc.props=[];delete doc.startHeight;delete doc.circuitDressing;},{fit:true,props:true});return;}
     if(action==='undo'||action==='redo'){this.finish();if(this.document[action]()){this.refresh({props:true});this.save();}return;}
     if(action==='cancel-place'){this.cancelPlacement();this.renderPanel();return;}
     if(action==='place-center'){this.placeAt(this.groundAt(this.controls.target.x,this.controls.target.z));return;}
@@ -142,14 +150,15 @@ export class TrackWorkbench {
   }
   async input(e,final){
     const input=e.target;
-    if(input.id==='editor-import-file'){if(final&&input.files[0]){try{const file=input.files[0];if(file.size>1024*1024)throw new Error('El archivo supera 1 MB.');const value=parseEditorFile(await file.text());this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{delete doc.startHeight;Object.assign(doc,value);},{fit:true,props:true});}catch(error){this.error(error);}input.value='';}return;}
+    if(input.id==='editor-import-file'){if(final&&input.files[0]){try{const file=input.files[0];if(file.size>1024*1024)throw new Error('El archivo supera 1 MB.');const value=parseEditorFile(await file.text());this.cancelPlacement();this.selectedProp=null;this.focusSection=null;this.mutate(doc=>{delete doc.startHeight;delete doc.circuitDressing;Object.assign(doc,value);},{fit:true,props:true});}catch(error){this.error(error);}input.value='';}return;}
     if(input.hasAttribute('data-editor-grid')){this.grid.visible=input.checked;return;}
     if(input.hasAttribute('data-editor-snap')){this.snap=input.checked;this.applySnap();return;}
     if(input.hasAttribute('data-editor-search')){this.search=input.value;const start=input.selectionStart;this.renderPanel();const next=this.host.querySelector('[data-editor-search]');next.focus();next.setSelectionRange(start,start);return;}
     if(input.hasAttribute('data-editor-family')){if(final){this.family=input.value;this.renderPanel();}return;}
-    if(input.hasAttribute('data-editor-preset')){if(final){const preset=KIT_PRESETS.find(p=>p.id===input.value);if(preset){this.cancelPlacement();this.focusSection=null;this.mutate(doc=>{doc.pieces=clone(preset.pieces);doc.name=preset.name;delete doc.startHeight;if(preset.environmentTheme)doc.environment=themePreset(preset.environmentTheme);},{fit:true});}}return;}
+    if(input.hasAttribute('data-editor-preset')){if(final){const preset=KIT_PRESETS.find(p=>p.id===input.value);if(preset){this.cancelPlacement();this.focusSection=null;this.mutate(doc=>{doc.pieces=clone(preset.pieces);doc.name=preset.name;delete doc.startHeight;delete doc.circuitDressing;if(preset.environmentTheme)doc.environment=themePreset(preset.environmentTheme);},{fit:true});}}return;}
     if(input.hasAttribute('data-editor-name')){this.document.begin();this.document.value.name=input.value.slice(0,60);if(final)this.finish();return;}
     const {editScope:scope,editKey:key}=input.dataset;if(!scope||!key)return;
+    if(scope==='dressing'){if(final)this.mutate(doc=>{doc.circuitDressingOptions=normalizeDressingOptions({...normalizeDressingOptions(doc.circuitDressingOptions||doc.circuitDressing?.options),[key]:input.type==='checkbox'?input.checked:Number(input.value)});if(doc.circuitDressing&&this.circuit)doc.circuitDressing=addCircuitInfrastructure(this.circuit,doc.circuitDressing,doc.circuitDressingOptions);});return;}
     if(!final&&input.tagName==='SELECT')return;
     if(input.type==='number'&&(input.value===''||input.validity.badInput||input.validity.rangeUnderflow||input.validity.rangeOverflow))return;
     const value=input.type==='checkbox'?input.checked:['range','number'].includes(input.type)?Number(input.value):input.value;
@@ -178,7 +187,7 @@ export class TrackWorkbench {
       }
       for(const sibling of this.host.querySelectorAll(`[data-edit-scope="${scope}"][data-edit-key="${key}"]`))if(sibling!==input)sibling.value=input.value;
       const readout=this.host.querySelector('[data-editor-sun]');if(readout){const s=solarPosition(this.document.value.environment);readout.textContent=`Azimut ${s.azimuth.toFixed(0)}° · Elevación ${s.elevation.toFixed(1)}°`;}
-      if(final){this.finish();if(scope==='piece')this.renderSequence();if(scope==='environment'){this.configureEnvironment(true);if(['theme','weather','solarMode','climate','quality'].includes(key))this.renderPanel();}if(scope==='prop'&&['grounded','y'].includes(key))this.renderPanel();this.status();}
+      if(final){this.finish();if(scope==='piece'||scope==='document'){this.renderSequence();this.renderPanel();}if(scope==='environment'){this.configureEnvironment(true);if(['theme','weather','solarMode','climate','quality'].includes(key))this.renderPanel();}if(scope==='prop'&&['grounded','y'].includes(key))this.renderPanel();this.status();}
     }catch(error){this.document.cancel();this.error(error);}
   }
   export(){this.finish();const blob=new Blob([JSON.stringify(this.document.value,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${this.document.value.name.replace(/[^a-zA-Z0-9_-]/g,'_')||'circuito'}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -219,11 +228,13 @@ export class TrackWorkbench {
   }
   placeAt(position){if(!this.placementType||this.document.value.props.length>=MAX_MANUAL_PROPS)return;this.finish();try{const id=this.document.addProp(this.placementType,position.toArray());this.selectedProp=id;this.cancelPlacement();this.transform.detach();this.layer.setRecords(this.document.value.props);this.selectProp(id);this.save();this.renderer.shadowMap.needsUpdate=true;}catch(error){this.error(error);}}
   rebuildCourse(){
-    this.courseDue=0;dispose(this.course);this.course=new THREE.Group();this.scene.add(this.course);this.roadMeshes=[];this.compiled=compileLayout(this.document.value.pieces,10,this.document.value.startHeight||0);this.circuit=this.document.value.pieces.length?new Circuit({...kitConfig(this.document.value.pieces,this.document.value.name),startHeight:this.document.value.startHeight||0,surface:this.document.value.environment.theme==='reunion'?'mud':'asphalt'}):null;
+    this.activeDressing=null;this.courseDue=0;dispose(this.course);this.course=new THREE.Group();this.scene.add(this.course);this.roadMeshes=[];this.compiled=compileLayout(this.document.value.pieces,10,this.document.value.startHeight||0);this.circuit=this.document.value.pieces.length?new Circuit({...kitConfig(this.document.value.pieces,this.document.value.name),startHeight:this.document.value.startHeight||0,surface:this.document.value.environment.theme==='reunion'?'mud':'asphalt'}):null;
     this.atmosphereCircuit=this.circuit||new Circuit(kitConfig(['straight-short']));
     if(this.circuit){const c=this.circuit;
-      for(const section of c.layout.sections){const surfaceId=c.surfaceAt((section.from+.01)/c.length),surface=SURFACES[surfaceId]||SURFACES.asphalt,material=new THREE.MeshStandardMaterial({color:surface.color,roughness:surface.roughness,side:THREE.DoubleSide});const mesh=roadRibbon(c,u=>-c.widthAt(u)/2,u=>c.widthAt(u)/2,.035,material,[section.from/c.length,section.to/c.length]);mesh.userData.sectionIndex=section.index;mesh.userData.baseColor=surface.color;mesh.userData.surface=surfaceId;mesh.receiveShadow=true;this.course.add(mesh);this.roadMeshes.push(mesh);}
-      const stripe=new THREE.MeshStandardMaterial({color:'#e8e4cb',side:THREE.DoubleSide,roughness:.8});this.course.add(roadRibbon(c,u=>-c.widthAt(u)/2+.3,u=>-c.widthAt(u)/2+.45,.065,stripe),roadRibbon(c,u=>c.widthAt(u)/2-.45,u=>c.widthAt(u)/2-.3,.065,stripe),trackStructures(c));
+      const recipe=this.document.value.circuitDressing;this.activeDressing=recipe?.sourceKey===dressingSourceKey(c.config)?recipe:null;
+      if(recipe&&!this.activeDressing)delete this.document.value.circuitDressing;
+      for(const section of c.layout.sections){const surfaceId=c.surfaceAt((section.from+.01)/c.length),surface=SURFACES[surfaceId]||SURFACES.asphalt,material=this.activeDressing&&surfaceId==='asphalt'?circuitAsphaltMaterial():new THREE.MeshStandardMaterial({color:surface.color,roughness:surface.roughness,side:THREE.DoubleSide});const mesh=roadRibbon(c,u=>-c.widthAt(u)/2,u=>c.widthAt(u)/2,.035,material,[section.from/c.length,section.to/c.length]);mesh.userData.sectionIndex=section.index;mesh.userData.baseColor=material.color.getHex();mesh.userData.surface=surfaceId;mesh.receiveShadow=true;this.course.add(mesh);this.roadMeshes.push(mesh);}
+      const stripe=new THREE.MeshStandardMaterial({color:'#e8e4cb',side:THREE.DoubleSide,roughness:.8});this.course.add(roadRibbon(c,u=>-c.widthAt(u)/2+.3,u=>-c.widthAt(u)/2+.45,.065,stripe),roadRibbon(c,u=>c.widthAt(u)/2-.45,u=>c.widthAt(u)/2-.3,.065,stripe),trackStructures(c),trackCurbs(c));
       for(const [u,color]of [[0,'#b4e87c'],[1,'#efa86e']]){const p=c.at(u),marker=new THREE.Mesh(new THREE.SphereGeometry(.65,12,8),new THREE.MeshBasicMaterial({color}));marker.position.set(p.x,p.y+.9,p.z);this.course.add(marker);}
     }
     this.recolorRoad();this.configureEnvironment(false);this.status();this.renderer.shadowMap.needsUpdate=true;
@@ -231,7 +242,16 @@ export class TrackWorkbench {
   recolorRoad(){for(const mesh of this.roadMeshes||[]){mesh.material.color.set(mesh.userData.sectionIndex===this.focusSection?'#9ac67b':mesh.userData.baseColor);}}
   rebuildLandscape(){
     this.landscapeDue=0;dispose(this.landscape);this.landscape=new THREE.Group();this.scene.add(this.landscape);
-    if(this.basicOnly){this.landscape.add(basicFloor(this.atmosphereCircuit));this.groundMeshes=[this.landscape.children[0]];return;}
+    if(this.basicOnly||this.activeDressing){
+      if(this.basicOnly){
+        this.renderer.shadowMap.enabled=Boolean(this.activeDressing);
+        this.renderer.toneMappingExposure=this.activeDressing?1.15:1;
+        this.ambient.intensity=this.activeDressing?2.6:1.5;
+        const box=new THREE.Box3().setFromPoints(this.atmosphereCircuit.samples),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()),span=Math.max(size.x,size.z)*.65+10;
+        this.sun.position.set(center.x-65,100,center.z+45);this.sun.target.position.copy(center);
+        Object.assign(this.sun.shadow.camera,{left:-span,right:span,top:span,bottom:-span,near:1,far:1000});this.sun.shadow.camera.updateProjectionMatrix();this.renderer.shadowMap.needsUpdate=true;
+      }
+      this.landscape.add(this.circuit&&this.activeDressing?buildCircuitDressing(this.circuit,this.activeDressing):basicFloor(this.atmosphereCircuit));this.groundMeshes=[];this.landscape.traverse(o=>{if(o.isMesh&&o.name==='club-ground')this.groundMeshes.push(o);});if(!this.groundMeshes.length)this.groundMeshes=[this.landscape.children[0]];return;}
     buildEnvironment(this.landscape,this.atmosphereCircuit,this.document.value.environment);polishScenery(this.landscape);this.groundMeshes=[];
     const landscape=this.landscape;void enhanceLandscape(landscape,this.atmosphereCircuit,this.document.value.environment,()=>this.landscape===landscape).then(changed=>{if(changed)this.renderer.shadowMap.needsUpdate=true;});
     this.landscape.traverse(o=>{if(o.isMesh&&['biome-ground','biome-water'].includes(o.material?.name))this.groundMeshes.push(o);});

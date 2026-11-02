@@ -5,12 +5,16 @@ export const GRAPHICS_PRESETS={
   high:{name:'Nitidez',maxRatio:2,minRatio:1.25,samples:4,effects:true,shadows:'high'},
 };
 export const DEFAULT_PREFERENCES={quality:'performance',resolution:'auto',samples:0,
-  targetFPS:120,effects:true,shadows:'medium',showMinimap:true,showSpeed:false,showStats:true,statsDetailed:false,touchMode:'buttons',sensitivity:1};
+  targetFPS:120,effects:true,shadows:'medium',showMinimap:true,showSpeed:true,showStats:true,statsDetailed:false,touchMode:'buttons',sensitivity:1,
+  soundEnabled:true,masterVolume:.8,musicVolume:.5,engineVolume:.8,effectsVolume:.8,ambientVolume:.6,uiVolume:.55};
 export function normalizePreferences(input={}){
   const p={...DEFAULT_PREFERENCES},choices={quality:Object.keys(GRAPHICS_PRESETS),resolution:['auto','1','1.5','2','native'],
     samples:[0,2,4],
     targetFPS:[60,120],effects:[true,false],shadows:['off','medium','high'],showMinimap:[true,false],showSpeed:[true,false],showStats:[true,false],statsDetailed:[true,false],touchMode:['buttons','trackpad'],sensitivity:[.7,1,1.4]};
-  for(const [key,values]of Object.entries(choices))if(values.includes(input?.[key]))p[key]=input[key];return p;
+  for(const [key,values]of Object.entries(choices))if(values.includes(input?.[key]))p[key]=input[key];
+  if(typeof input?.soundEnabled==='boolean')p.soundEnabled=input.soundEnabled;
+  for(const key of ['masterVolume','musicVolume','engineVolume','effectsVolume','ambientVolume','uiVolume'])if(typeof input?.[key]==='number'&&Number.isFinite(input[key]))p[key]=Math.round(Math.max(0,Math.min(1,input[key]))*100)/100;
+  return p;
 }
 export function loadPreferences(storage){
   try{

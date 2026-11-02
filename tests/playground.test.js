@@ -7,6 +7,7 @@ import { renderPlayground } from '../src/playground-ui.js';
 import { renderGarageDetail } from '../src/vehicle-collection-ui.js';
 import { kitConfig,KIT_PRESETS } from '../src/track-pieces.js';
 import { COMMUNITY_TRACKS } from '../src/community-tracks.js';
+import { availableEligibleVehicles } from '../src/vehicle-regulations.js';
 const memory=()=>{const values=new Map();return {values,getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)};};
 
 test('every car can be selected and driven in testing without changing saved championship progression',()=>{
@@ -42,7 +43,7 @@ test('preferences survive reload independently of career data and invalid input 
 test('the start screen exposes the complete test setup and no championship gates',()=>{
   const html=renderPlayground({...DEFAULT_PLAYGROUND,mode:'race'},playgroundTracks());
   for(const key of ['trackId','surface','weather','width','pace','camera','count','laps','difficulty','interaction'])assert.ok(html.includes(`data-playground="${key}"`));
-  assert.ok(html.includes(`${VEHICLES.length} coches disponibles`));assert.ok(!html.includes('data-event='));assert.ok(!html.includes('desbloque'));
+  assert.ok(html.includes(`${availableEligibleVehicles(VEHICLES).length} coches disponibles`));assert.ok(!html.includes('data-event='));assert.ok(!html.includes('desbloque'));
   assert.equal(resolvePlayground({...DEFAULT_PLAYGROUND,trackId:TRACKS[2].id,width:16}).error!==null,true);
 });
 

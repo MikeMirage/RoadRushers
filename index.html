@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#15191e" />
     <meta name="description" content="Elige coche y circuito, domina el drift y supera tu mejor vuelta en Pocket Racing League." />
     <title>PRL · Pocket Racing League</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,8 +13,9 @@
     <div class="vignette" aria-hidden="true"></div>
     <header class="topbar">
       <a class="brand" href="./" aria-label="Pocket Racing League, inicio">
-        <span class="prl-logo"><img src="/assets/prl/helmet.webp" alt="Pocket Racing League" width="1140" height="2016" /></span>
+        <span class="prl-logo" aria-label="Pocket Racing League"><b aria-hidden="true">P<span>R</span>L</b><small aria-hidden="true">POCKET RACING<br>LEAGUE</small></span>
       </a>
+      <span id="club-nav-car" class="club-header-car"><strong>Tu coche</strong><small>Tu miniatura</small></span>
       <nav class="toolbar" aria-label="Opciones de juego">
         <button id="hub-btn" class="toolbar-button" aria-label="Configurar prueba"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4H16M4 10H16M4 16H16M7 2V6M13 8V12M8 14V18" stroke="currentColor" stroke-width="1.4"/></svg><span>Pruebas</span></button>
         <button id="preferences-btn" class="toolbar-button" aria-label="Opciones de juego" title="Opciones de juego"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14M7 3v4m6 1v4m-6 1v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Opciones</span></button>
@@ -59,8 +60,8 @@
       <div id="toast" class="toast glass hidden" role="status"></div>
       <div id="countdown" class="countdown hidden" aria-live="assertive"></div>
 
-      <section id="pause-overlay" class="pause-overlay hidden" aria-label="Juego en pausa">
-        <div class="pause-card glass"><span class="eyebrow">UN RESPIRO</span><h2>En boxes.</h2><p>La pista te espera.</p><button id="resume-btn" class="primary-button">Continuar <span>↗</span></button><button id="pause-preferences-btn" class="text-button">Opciones de juego</button><button id="restart-pause-btn" class="text-button">Reiniciar vuelta</button><button id="end-session-btn" class="text-button">Finalizar y ver tiempos</button><button id="pause-hub-btn" class="text-button">Cambiar configuración</button></div>
+      <section id="pause-overlay" class="pause-overlay hidden" role="dialog" aria-modal="true" aria-label="Juego en pausa">
+        <div class="pause-card glass"><span class="eyebrow">UN RESPIRO</span><h2>En boxes.</h2><p>La pista te espera.</p><button id="resume-btn" class="primary-button">Continuar <span>↗</span></button><details class="pause-audio"><summary>Sonido y volumen</summary><div id="pause-audio-settings"></div></details><button id="pause-preferences-btn" class="text-button">Opciones de juego</button><button id="restart-pause-btn" class="text-button">Reiniciar vuelta</button><button id="end-session-btn" class="text-button">Finalizar y ver tiempos</button><button id="pause-hub-btn" class="text-button">Cambiar configuración</button></div>
       </section>
 
       <footer class="bottom-bar">

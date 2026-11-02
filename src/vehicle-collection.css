@@ -31,3 +31,11 @@
 .vehicle-workshop input:focus-visible,.vehicle-workshop select:focus-visible,.collection-batches button:focus-visible{outline:2px solid #e2f1ad;outline-offset:2px}
 @media(max-height:760px) and (min-width:761px){.collection-viewport{height:clamp(210px,43vh,350px)}.collection-layout{align-items:start}.collection-detail h3{font-size:33px}.collection-batches{margin-top:11px}.collection-roster{max-height:104px}.collection-detail{max-height:calc(100vh - 175px)}}
 @media(max-width:760px){.collection-batches{margin-top:13px}.collection-batches button{flex:0 0 127px}.collection-layout{display:flex}.collection-viewport{height:345px}.collection-roster{grid-template-columns:repeat(2,minmax(0,1fr));max-height:228px;overflow:auto}.collection-detail{display:flex;max-height:none;overflow:visible}.collection-car strong{font-size:17px}.vehicle-workshop{margin-top:15px}.workshop-fields{grid-template-columns:1fr 1fr;gap:12px}.workshop-fields label{font-size:10px}.workshop-fields select,.workshop-fields input[type=color]{height:34px}.wrap-upload{font-size:11px}.wrap-upload input{font-size:10px}.vehicle-workshop>small,.trail-ready{font-size:9px}.collection-detail .vehicle-stats{margin:17px 0}.garage-modal .modal-heading h2{font-size:30px}.collection-count{font-size:17px}.collection-count small{font-size:11px}}
+
+.driving-character{border-top:1px solid var(--line,#ffffff26);padding-top:12px;margin:14px 0;font-size:12px;line-height:1.5}
+.driving-specs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.driving-specs span{border:1px solid #ffffff26;border-radius:3px;padding:3px 7px;font-size:10px}
+.driving-character p{margin:7px 0;color:inherit;opacity:.85}
+.driving-character strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;opacity:.65}
+.driving-character .driving-tip{font-style:italic;opacity:.7}
+.driving-character a{font-size:11px;color:inherit;text-underline-offset:3px}
