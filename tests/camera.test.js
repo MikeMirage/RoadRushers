@@ -36,6 +36,37 @@ test('the trailing camera follows movement rather than the nose during a slide',
   assert.ok(a.position.y > 15, 'third person must also leave more room for drift');
 });
 
+test('raised third person stays behind the direction of travel with a steeper view and visible road ahead',()=>{
+  for(const aspect of [9/16,16/9]){
+    const high=new CameraRig().update(1/60,drive,'chase-high',true,aspect),normal=new CameraRig().update(1/60,drive,'chase',true,aspect);
+    const offset=high.position.clone().sub(high.look),regular=normal.position.clone().sub(normal.look);
+    assert.ok(offset.y/Math.hypot(offset.x,offset.z)>1.4);
+    assert.ok(offset.y>regular.y*1.8);
+    assert.ok(offset.z<0&&high.look.z>drive.z);
+    const slide=new CameraRig().update(1/60,{...drive,heading:2.4},'chase-high',true,aspect);
+    assert.ok(slide.position.distanceTo(high.position)<1e-9);
+    const reverse=new CameraRig().update(1/60,{...drive,vz:-16},'chase-high',true,aspect);
+    assert.ok(reverse.position.z>reverse.look.z&&reverse.look.z<drive.z);
+  }
+});
+
+test('raised third person keeps centered framing through turns, jumps, respawns and camera transitions',()=>{
+  for(const aspect of [320/844,9/16,16/9,844/390])for(const dt of [1/120,1/30,.25]){
+    const rig=new CameraRig().update(dt,drive,'chase'),pose={...drive};
+    for(let i=0;i<160;i++){
+      const angle=i*.11;
+      pose.vx=Math.sin(angle)*55;pose.vz=Math.cos(angle)*55;
+      pose.x+=pose.vx*dt;pose.z+=pose.vz*dt;pose.y=8+Math.sin(i*.13)*8;
+      if(i===80){pose.x+=300;pose.z-=200;}
+      const mode=i%60<40?'chase-high':'topdown-1.4';
+      rig.update(dt,pose,mode,false,aspect);
+      const point=carOnScreen(rig,pose,aspect);
+      assert.ok(Math.abs(point.x)<=.160001&&Math.abs(point.y)<=.160001,`${mode} at ${aspect}: ${point.toArray()}`);
+      assert.ok(point.z>-1&&point.z<1);
+    }
+  }
+});
+
 test('overhead tracking does not accumulate translation or elevation lag', () => {
   const rig = new CameraRig().update(1 / 60, { ...drive, vx: 0, vz: 0 });
   const pose={...drive,x:120,y:18,z:-80,vx:0,vz:0};

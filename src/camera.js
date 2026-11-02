@@ -69,7 +69,7 @@ export class CameraRig {
   }
 
   updateOverhead(dt,drive,mode,reset,aspect,circuit){
-    const initialize=reset||!this.initialized,velocity=this.velocity.set(drive.vx,0,drive.vz),speed=velocity.length();
+    const initialize=reset||!this.initialized,velocity=this.velocity.set(drive.vx,0,drive.vz),speed=velocity.length(),raisedChase=mode==='chase-high';
     this.car.set(drive.x,(drive.y||0)+.5,drive.z);
     const distance=Math.min(12,speed*.45);
     this.desiredLead.copy(velocity).multiplyScalar(speed>.01?distance/speed:0);
@@ -89,13 +89,16 @@ export class CameraRig {
       this.travelHeading+=turn*(1-Math.exp(-1.8*dt));
     }
     const zoom=Math.max(1,Math.sqrt(1/Math.max(.3,aspect)));
-    this.offset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/cameraView(mode).zoom);
+    if(raisedChase)this.offset.set(-Math.sin(this.travelHeading)*24,36,-Math.cos(this.travelHeading)*24).multiplyScalar(zoom);
+    else this.offset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/cameraView(mode).zoom);
     if(initialize)this.smoothedOffset.copy(this.offset);
     else this.smoothedOffset.copy(this.position).sub(this.look).lerp(this.offset,1-Math.exp(-3.5*dt));
-    this.fov=initialize?45:MathUtils.damp(this.fov,45,4,dt);
+    const fov=raisedChase?48:45;
+    this.fov=initialize?fov:MathUtils.damp(this.fov,fov,4,dt);
     // The three zooms share their target; the closest one sets the safe lead.
-    this.framingOffset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/1.4);
-    this.limitLead(this.framedLead.copy(this.lookAhead),this.framingOffset,45,aspect);
+    if(raisedChase)this.framingOffset.copy(this.offset);
+    else this.framingOffset.copy(OVERHEAD_OFFSET).multiplyScalar(zoom/1.4);
+    this.limitLead(this.framedLead.copy(this.lookAhead),this.framingOffset,fov,aspect);
     this.limitLead(this.framedLead,this.smoothedOffset,this.fov,aspect);
     this.focus.copy(this.car).add(this.framedLead);this.look.copy(this.focus);
     // Follow translation and elevation immediately. Only anticipation and zoom lag.
