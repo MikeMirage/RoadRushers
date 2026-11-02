@@ -1,0 +1,22 @@
+{
+  "frontSteerRadians": [
+    0.3499999940395355,
+    0.3499999940395355
+  ],
+  "wheelSpinRadians": [
+    1.5700000524520874,
+    1.5700000524520874,
+    1.5700000524520874,
+    1.5700000524520874
+  ],
+  "bodyHeightMeters": -0.019999999552965164,
+  "wheelCenterDriftMeters": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pass": true,
+  "sourceMeshes": 1058,
+  "sourceObjects": 1073
+}

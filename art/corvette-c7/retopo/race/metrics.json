@@ -1,0 +1,7 @@
+{
+  "level": "race",
+  "method": "Voxel proxy + QuadriFlow topology reconstruction + analytic arch cleanup; resampled authored wheels",
+  "proxyFaces": 114674,
+  "bodyTriangles": 5756,
+  "triangles": 9404
+}

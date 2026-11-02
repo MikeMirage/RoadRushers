@@ -1,0 +1,15 @@
+{
+  "sourceHeight": 1.3590657711029053,
+  "sourceAxles": [
+    1.257925033569336,
+    -1.3424835205078125
+  ],
+  "targetWheelbase": 2.71,
+  "bodyWidthScale": 0.9492822300625711,
+  "sectionGrid": [
+    89,
+    72
+  ],
+  "missingRays": 0,
+  "method": "Symmetric convex cross-section envelope from continuous source; three low-frequency binomial passes; analytic arch cuts"
+}

@@ -1,0 +1,14 @@
+{
+  "level": "race",
+  "triangles": 10440,
+  "bodyTriangles": 6156,
+  "correctionTriangles": 636,
+  "corrections": [
+    "analytic arch Boolean",
+    "curved windshield",
+    "side glass",
+    "rounded mirrors",
+    "grille cavity",
+    "four hollow exhaust tips"
+  ]
+}

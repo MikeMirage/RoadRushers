@@ -12,6 +12,7 @@ import { roadRibbon as ribbon,trackStructures,trackCurbs } from './road-geometry
 import { RivalFleet } from './rival-fleet.js';
 import { GhostView } from './ghost-view.js';
 import { basicFloor,disposeSceneGroup } from './basic-scene.js';
+import { createPlayerMarker,RivalNameTags } from './race-identifiers.js';
 import { GameplayRenderer } from './gameplay-renderer.js';
 import { LocalOcclusion,markPlayerOccluder } from './local-occlusion.js';
 
@@ -31,6 +32,7 @@ export class World {
     this.renderer.toneMappingExposure = 1.15;
     this.renderer.domElement.setAttribute('aria-label', 'Circuito de carreras 3D');
     container.appendChild(this.renderer.domElement);
+    this.rivalNames=new RivalNameTags(container);
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 700);
     this.hemisphere=new THREE.HemisphereLight(0xe2f5ff, 0x768254, 2.6);this.scene.add(this.hemisphere);
@@ -67,8 +69,7 @@ export class World {
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(1.6, 32), new THREE.MeshBasicMaterial({ color: 0x162a22, transparent: true, opacity: 0.15, depthWrite: false }));
     shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.025; shadow.scale.y = 1.25;
     this.car.add(shadow);this.contactShadow=shadow;
-    this.underpassMarker=new THREE.Mesh(new THREE.RingGeometry(1.7,1.9,32),new THREE.MeshBasicMaterial({color:0xd9ff80,depthTest:false,depthWrite:false,transparent:true,opacity:.85}));
-    this.underpassMarker.rotation.x=-Math.PI/2;this.underpassMarker.renderOrder=30;this.underpassMarker.visible=false;this.scene.add(this.underpassMarker);
+    this.underpassMarker=createPlayerMarker();this.scene.add(this.underpassMarker);
   }
 
   setVehicle(vehicle) {
@@ -103,6 +104,7 @@ export class World {
   setRivals(session) {
     if(session&&this.fleet?.session===session)return;
     this.fleet?.dispose();this.fleet=session?new RivalFleet(this.scene,session,this.brakeEffects.glow.material.map):null;
+    this.rivalNames.setSession(session);
     this.shadowReady=false;
   }
 
@@ -225,7 +227,13 @@ export class World {
       this.contactShadow.position.y=(drive.groundY??drive.y??0)-(drive.y||0)+.025;
       this.contactShadow.material.opacity=.15/Math.max(1,1+((drive.y||0)-(drive.groundY??drive.y??0))*.55);
     }
-    this.underpassMarker.visible=Boolean(this.fleet);if(this.underpassMarker.visible)this.underpassMarker.position.set(drive.x,(drive.y||0)+.2,drive.z);
+    this.underpassMarker.visible=Boolean(this.fleet)&&drive.roadSupported!==false;
+    if(this.underpassMarker.visible){
+      const road=this.circuit.at(drive.progress||0);
+      this.underpassMarker.position.set(drive.x,(drive.groundY??drive.y??0)+.045,drive.z);
+      this.underpassMarker.rotation.set(-Math.PI/2-road.pitch,road.heading,road.bank||0,'YZX');
+      this.underpassMarker.rotateZ(drive.heading-road.heading);
+    }
     const rig=this.cameraRig.update(dt,drive,cameraMode,!this.cameraReady,this.camera.aspect,this.circuit);
     this.camera.position.copy(rig.position);this.camera.lookAt(rig.look);
     if(this.camera.fov!==rig.fov){this.camera.fov=rig.fov;this.camera.updateProjectionMatrix();}
@@ -236,6 +244,7 @@ export class World {
     if(this.effectsEnabled)this.driftEffects?.update(animateWeather?dt:0,drive,running,this.circuit.surfaceAt(drive.progress||0,this.surfaceId));
     this.brakeEffects.update(drive,this.circuit,running);
     this.fleet?.update(dt,alpha,running,this.camera,this.renderer.domElement.clientHeight);
+    this.rivalNames.update(this.camera,this.renderer.domElement.clientWidth,this.renderer.domElement.clientHeight,alpha);
     this.occlusion?.update(dt,drive,this.camera,this.renderer);
     this.updateShadows(dt,drive,running);
     this.renderPipeline.render(dt);

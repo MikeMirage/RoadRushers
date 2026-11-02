@@ -1,0 +1,31 @@
+{
+  "level": "race",
+  "resolution": 1024,
+  "lowTriangles": 6792,
+  "highTriangles": 70585,
+  "normalConvention": "OpenGL tangent",
+  "zeroAreaUV": 0,
+  "bake": {
+    "ok": true,
+    "device": "CPU",
+    "extrusion": 0.065,
+    "res": 1024,
+    "maps": {
+      "normal": "//../../bakes/race/body/T_Body_N.png",
+      "ao": "//../../bakes/race/body/T_Body_AO.png",
+      "roughness": "//../../bakes/race/body/T_Body_R.png",
+      "metallic": "//../../bakes/race/body/T_Body_M.png",
+      "basecolor": "//../../bakes/race/body/T_Body_BC.png",
+      "orm": "//../../bakes/race/body/T_Body_ORM.png"
+    }
+  },
+  "maskBake": {
+    "ok": true,
+    "device": "CPU",
+    "extrusion": 0.065,
+    "res": 1024,
+    "maps": {
+      "basecolor": "//../../bakes/race/body/T_BodyMask_BC.png"
+    }
+  }
+}

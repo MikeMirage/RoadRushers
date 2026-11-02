@@ -46,6 +46,12 @@ test('the start screen exposes the complete test setup and no championship gates
   assert.ok(html.includes(`${availableEligibleVehicles(VEHICLES).length} coches disponibles`));assert.ok(!html.includes('data-event='));assert.ok(!html.includes('desbloque'));
   assert.equal(resolvePlayground({...DEFAULT_PLAYGROUND,trackId:TRACKS[2].id,width:16}).error!==null,true);
 });
+test('the home screen enters ordered preparation and leaves the session mode to rules',()=>{
+  const html=renderPlayground(DEFAULT_PLAYGROUND,playgroundTracks());
+  assert.ok(html.includes('home-studio'));assert.ok(html.includes('>Jugar '));
+  assert.ok(!html.includes('data-play-mode='));assert.ok(html.includes('data-playground="mode"'));
+  assert.ok(html.includes('data-play-action="tracks"'));assert.ok(html.includes('data-play-action="garage"'));
+});
 
 test('saved visual themes always resolve to basic while driving and race settings survive',()=>{
  const storage=memory();storage.setItem(PLAYGROUND_KEY,JSON.stringify({version:1,options:{...DEFAULT_PLAYGROUND,theme:'tokyo',weather:'rain',vehicleId:'velo',count:8,mode:'race'}}));

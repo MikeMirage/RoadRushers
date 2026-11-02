@@ -1,0 +1,53 @@
+{
+  "savedAt": "2026-11-02T09:31:59.584Z",
+  "notes": {
+    "menu-lounge": {
+      "rating": "approve",
+      "text": ""
+    },
+    "coastal-velocity": {
+      "rating": "adjust",
+      "text": "demasiado disonante\n"
+    },
+    "neon-surge": {
+      "rating": "approve",
+      "text": ""
+    },
+    "v8-steady": {
+      "rating": "approve",
+      "text": ""
+    },
+    "tire-scrub": {
+      "rating": "approve",
+      "text": ""
+    },
+    "gravel-roll": {
+      "rating": "approve",
+      "text": ""
+    },
+    "guardrail-a": {
+      "rating": "approve",
+      "text": ""
+    },
+    "guardrail-b": {
+      "rating": "approve",
+      "text": ""
+    },
+    "ui-navigate": {
+      "rating": "approve",
+      "text": ""
+    },
+    "ui-confirm": {
+      "rating": "approve",
+      "text": ""
+    },
+    "ui-back": {
+      "rating": "approve",
+      "text": ""
+    },
+    "ui-notify": {
+      "rating": "approve",
+      "text": ""
+    }
+  }
+}

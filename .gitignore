@@ -1,4 +1,5 @@
 node_modules/
+node_modules
 dist/
 .DS_Store
 artifacts/
@@ -22,5 +23,6 @@ reference/
 /tools/prl-production-local/
 /tools/prl-supervision/
 
-# Also ignore dependency links used by isolated validation.
-node_modules
+# Local Python caches.
+__pycache__/
+*.py[cod]

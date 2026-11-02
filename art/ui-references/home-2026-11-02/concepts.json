@@ -1,0 +1,46 @@
+{
+  "createdOn": "2026-11-02",
+  "status": "awaiting_visual_selection",
+  "product": "Pocket Racing League",
+  "scope": [
+    "Home with full game title and race/challenge content",
+    "Quick race entry",
+    "Race selection",
+    "Unlocked-car 3D garage collection",
+    "Real local player profile separate from settings"
+  ],
+  "constraints": [
+    "Mobile, gamepad and PC keyboard usability",
+    "No pixelated full-screen backdrop or isolated selected car as the home hero",
+    "No invented online competition, economy or player progress"
+  ],
+  "displayOrder": [
+    {
+      "option": 1,
+      "internalDirection": "Paddock de competición",
+      "image": "/Users/miquelgelabert/.codex/generated_images/01a19919-79ff-7953-b4a6-07994e11b668/exec-ae898b3f-23bb-443e-b0f8-0f45c3165873.png"
+    },
+    {
+      "option": 2,
+      "internalDirection": "La próxima mejor vuelta",
+      "image": "/Users/miquelgelabert/.codex/generated_images/01a19919-79ff-7953-b4a6-07994e11b668/exec-1823de7c-4f39-4dd0-8c0d-18147ee3c2a3.png"
+    },
+    {
+      "option": 3,
+      "internalDirection": "Club de pilotos",
+      "image": "/Users/miquelgelabert/.codex/generated_images/01a19919-79ff-7953-b4a6-07994e11b668/exec-1723642a-da12-47b2-813b-d8b022543527.png"
+    }
+  ],
+  "references": [
+    "/Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers/art/ui-references/home-2026-11-02/current-home.jpg",
+    "/Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers/artifacts/mobile-ux-2026-11-02/10-car-selection-390x844.jpg",
+    "/Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers/art/ui-references/gran-turismo/01-eventos-circuito.png"
+  ],
+  "sharedGenerationBrief": "Use case: ui-mockup. Redesign the attached Pocket Racing League game's home into a premium, attractive racing-game hub. Create a realistic, production-quality UI concept, not an illustration of a phone. Target dimensions: 390 x 844, portrait mobile app content only; no device bezel, browser chrome, OS status bar or home indicator. Reference image 1 is the OLD HOME TO REPLACE: do NOT retain its pixelated coastal backdrop, its floating standalone selected 3D car or its setup-form composition. Reference image 2 provides the existing PRL brand language (navy, pale racing blue, hot pink), Barlow Condensed / DM Sans-like typography, and miniature car art. Reference image 3 is inspiration ONLY for event-led motorsport navigation, not its logos, currency, statistics, UI density or exact composition. This must be clearly Pocket Racing League, not Gran Turismo. Main screen MUST prominently say exactly 'POCKET RACING LEAGUE'. It is a HOME from which a player can go to quick race, select races, see their unlocked 3D garage collection and their real player profile. Profile means driver progress and personal records, never settings. Show a separate small gear icon for settings. Persistent bottom navigation: 'Inicio', 'Carreras', 'Garaje', 'Perfil', with visible labels, Inicio selected. All navigation and primary actions have minimum 44-pixel touch regions and obvious focus-ready shapes for gamepad/keyboard. No hover-dependent controls. Spanish copy. Focus on one main action, a featured race banner, and one or two supporting challenge areas; space generously and allow content to continue below the fold. Do not cram a feature inventory. Strong, professionally art-directed motorsport imagery, sharp 3D racing/event illustrations, high quality clean rendering; tasteful borders, no nested cards, no gratuitous dashboards or metric grids. Body type 14-16px and no more than two typefaces. No invented currencies, XP levels, online standings, purchase prompts, season countdowns, fake player numbers, real manufacturer logos or live-event claims. Existing game race classes include P1 compact/classic, P2 sport/rally, P3 high performance; available examples include Suzuka GP compacto and Cobra 427. Banners may show race cars IN THEIR EVENT SCENE, but no large isolated selected-car model filling the home. Propose content as actionable local race and personal-best challenges. No dates or time-sensitive event claims. Produce ONE coherent home screen, one concept only.",
+  "implementationNotes": [
+    "Reuse existing local records and P1/P2/P3 categories",
+    "Model unlock state explicitly; current testing catalog is not a progression system",
+    "A garage visit should show the unlocked collection, not just the current car",
+    "Profile must have its own content instead of redirecting to preferences"
+  ]
+}

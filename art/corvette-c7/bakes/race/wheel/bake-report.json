@@ -1,0 +1,32 @@
+{
+  "level": "race",
+  "resolution": 512,
+  "lowTriangles": 912,
+  "highTriangles": 15628,
+  "normalConvention": "OpenGL tangent",
+  "method": "Cycles selected-to-active; caliper exploded +2m X; role attribute retained",
+  "zeroAreaUV": 0,
+  "bake": {
+    "ok": true,
+    "device": "CPU",
+    "extrusion": 0.024,
+    "res": 512,
+    "maps": {
+      "normal": "//../../bakes/race/wheel/T_Wheel_N.png",
+      "ao": "//../../bakes/race/wheel/T_Wheel_AO.png",
+      "roughness": "//../../bakes/race/wheel/T_Wheel_R.png",
+      "metallic": "//../../bakes/race/wheel/T_Wheel_M.png",
+      "basecolor": "//../../bakes/race/wheel/T_Wheel_BC.png",
+      "orm": "//../../bakes/race/wheel/T_Wheel_ORM.png"
+    }
+  },
+  "maskBake": {
+    "ok": true,
+    "device": "CPU",
+    "extrusion": 0.024,
+    "res": 512,
+    "maps": {
+      "basecolor": "//../../bakes/race/wheel/T_WheelMask_BC.png"
+    }
+  }
+}

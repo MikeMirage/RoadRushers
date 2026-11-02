@@ -45,3 +45,20 @@ async function mount(){
 document.querySelector('#stop').addEventListener('click',()=>{document.querySelectorAll('audio').forEach(x=>{x.pause();x.currentTime=0;});status.textContent='Audio detenido';led.classList.remove('on');});
 volume.addEventListener('input',()=>{document.querySelector('#volume-value').textContent=`${Math.round(Number(volume.value)*100)}%`;document.querySelectorAll('audio').forEach(x=>x.volume=Number(volume.value));});
 mount().then(()=>{if(Object.keys(notes).length)sync();}).catch(error=>{status.textContent=error.message;});
+
+
+async function mountSuno(){
+  const response=await fetch('./audio/suno/catalogue.json',{cache:'no-store'});if(!response.ok)throw Error('No se ha podido cargar la biblioteca Suno');
+  const songs=await response.json();
+  for(const song of songs){
+    const card=document.createElement('article');card.className='card';
+    const duration=`${Math.floor(song.duration/60)}:${String(Math.round(song.duration%60)).padStart(2,'0')}`;
+    card.innerHTML=`<div class="card-top"><span class="number">SUNO · ${escape(song.variant)}</span><span class="badge">SELECCIONADA POR TI</span></div><h3>${escape(song.title)} · ${escape(song.variant)}</h3><p>${escape(song.use)}${song.duration<45?' · Tema corto, incluido también en una lista con otros temas.':''}</p><div class="meta">${duration} · ${song.normalization.outputLUFS.toFixed(1)} LUFS</div><audio controls preload="none" src=".${encodeURI(song.file)}" aria-label="Escuchar ${escape(song.title)} ${escape(song.variant)}"></audio>`;
+    const player=card.querySelector('audio');player.volume=Number(volume.value);
+    player.addEventListener('play',()=>{document.querySelectorAll('audio').forEach(other=>{if(other!==player)other.pause();});document.querySelectorAll('.playing').forEach(other=>other.classList.remove('playing'));card.classList.add('playing');status.textContent=`Escuchando · ${song.title} · ${song.variant}`;led.classList.add('on');});
+    player.addEventListener('pause',()=>{card.classList.remove('playing');if(![...document.querySelectorAll('audio')].some(other=>!other.paused)){status.textContent='Audio detenido';led.classList.remove('on');}});
+    player.addEventListener('error',()=>{status.textContent=`No se ha podido cargar ${song.title} ${song.variant}`;});
+    document.querySelector('#suno-grid').append(card);
+  }
+}
+mountSuno().catch(error=>{status.textContent=error.message;});

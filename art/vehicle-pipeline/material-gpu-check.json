@@ -1,0 +1,98 @@
+{
+  "pass": true,
+  "checks": [
+    "paint mask preserves other regions",
+    "brake emission only in mask",
+    "clone uniforms independent",
+    "instanced colors independent",
+    "instanced brakes independent",
+    "unmasked trim identical",
+    "wheel and tire depth shaders compile; tire options preserve rim tint",
+    "ghost tire profile shader compiles"
+  ],
+  "single": {
+    "red": [
+      [
+        186,
+        35,
+        35
+      ],
+      [
+        157,
+        157,
+        157
+      ],
+      [
+        157,
+        157,
+        157
+      ]
+    ],
+    "blue": [
+      [
+        35,
+        35,
+        186
+      ],
+      [
+        157,
+        157,
+        157
+      ],
+      [
+        157,
+        157,
+        157
+      ]
+    ],
+    "brake": [
+      [
+        35,
+        35,
+        186
+      ],
+      [
+        255,
+        160,
+        158
+      ],
+      [
+        157,
+        157,
+        157
+      ]
+    ]
+  },
+  "instances": [
+    [
+      182,
+      32,
+      32
+    ],
+    [
+      157,
+      157,
+      157
+    ],
+    [
+      157,
+      157,
+      157
+    ],
+    [
+      32,
+      32,
+      182
+    ],
+    [
+      255,
+      160,
+      158
+    ],
+    [
+      157,
+      157,
+      157
+    ]
+  ]
+}

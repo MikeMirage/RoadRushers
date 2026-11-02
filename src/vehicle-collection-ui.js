@@ -25,7 +25,26 @@ export function renderGarage(career,selectedId,{testing=false}={}){
 
 export function renderStudioDetail(selectedId){
   const v=VEHICLES.find(v=>v.id===selectedId)||VEHICLES[0];
-  return `<h2>${v.name}</h2><p class="studio-car-era">${v.era?`${v.era.replace('s','')}`:v.category}</p><div class="studio-stats">${['Velocidad','Control','Derrape'].map((label,i)=>`<div title="${label}"><span>${clubIcon(['gauge','steering-wheel','tire'][i])}<span class="sr-only">${label}</span></span><meter min="0" max="5" value="${v.stats[i]}" aria-label="${label}: ${v.stats[i]} de 5">${v.stats[i]} / 5</meter></div>`).join('')}</div>`;
+  return `<h2>${v.name}</h2><p class="studio-car-era">${v.era?`${v.era.replace('s','')}`:v.category}</p><div class="studio-stats">${['Velocidad','Control','Derrape'].map((label,i)=>`<div title="${label} · De serie"><span>${clubIcon(['gauge','steering-wheel','tire'][i])}<span class="sr-only">${label}</span></span><meter min="0" max="10" value="${v.stats[i]}" aria-label="${label}: ${v.stats[i]} de 10">${v.stats[i]} / 10</meter><output class="studio-stat-value" aria-hidden="true">${v.stats[i].toFixed(1)}<small>/10</small></output></div>`).join('')}</div>`;
+}
+
+const detailTweens=new WeakMap();
+export function updateStudioDetail(host,selectedId,{animate=false}={}){
+  const v=VEHICLES.find(v=>v.id===selectedId)||VEHICLES[0];
+  cancelAnimationFrame(detailTweens.get(host));
+  const meters=[...host.querySelectorAll('meter')],outputs=[...host.querySelectorAll('.studio-stat-value')],startValues=meters.map(m=>m.value);
+  host.setAttribute('aria-busy',String(animate));
+  host.querySelector('h2').textContent=v.name;
+  host.querySelector('.studio-car-era').textContent=v.era?v.era.replace('s',''):v.category;
+  meters.forEach((meter,i)=>{meter.setAttribute('aria-label',`${['Velocidad','Control','Derrape'][i]}: ${v.stats[i]} de 10`);meter.textContent=`${v.stats[i]} / 10`;});
+  const paint=t=>meters.forEach((meter,i)=>{const value=startValues[i]+(v.stats[i]-startValues[i])*t;meter.value=value;outputs[i].firstChild.nodeValue=value.toFixed(1);});
+  if(!animate){paint(1);return;}
+  const start=performance.now();
+  const frame=now=>{
+    if(!host.isConnected)return;const t=Math.min(1,(now-start)/280);paint(1-(1-t)**3);
+    if(t<1)detailTweens.set(host,requestAnimationFrame(frame));else{detailTweens.delete(host);host.setAttribute('aria-busy','false');}
+  };
+  detailTweens.set(host,requestAnimationFrame(frame));
 }
 
 export function renderStudioPanel(selectedId,mode,cfg){
@@ -61,5 +80,5 @@ function drivingCharacter(v){
 export function renderGarageDetail(career,selectedId,mode,cfg,{testing=false,confirmInFooter=false}={}){
   const v=VEHICLES.find(v=>v.id===selectedId)||VEHICLES[0],available=testing||v.prototype||career.unlocked.includes(v.id),index=VEHICLES.indexOf(v);
   const choose=confirmInFooter?'':renderGarageConfirm(career,selectedId,{testing});
-  return `<div class="detail-category" style="--car-color:${v.color}"><i></i>${v.prototype?VEHICLE_BATCHES.find(b=>b.id===v.batch)?.name||v.category:v.category}<span>${String(index+1).padStart(2,'0')} / ${String(VEHICLES.length).padStart(2,'0')}</span></div><h3>${v.name}</h3><p class="detail-description">${v.description}</p><div class="vehicle-stats" style="--car-color:${v.color}">${['Velocidad','Control','Derrape'].map((label,i)=>`<div><span>${label}</span><i><b style="width:${v.stats[i]*20}%"></b></i></div>`).join('')}</div>${drivingCharacter(v)}<div class="collection-ownership ${available?'owned':''}"><span>${testing?'✓ DISPONIBLE PARA PRUEBAS':v.prototype?'◇ EDICIÓN DE TALLER':available?'✓ EN TU COLECCIÓN':'◇ PRÓXIMO DESBLOQUEO'}</span><p>${testing?'Elige el coche y compáralo con la misma configuración.':v.unlock}</p></div>${mode==='overview'?`${testing?choose:''}<button class="${testing?'text-button':'primary-button'}" data-garage-view="detail">Ver en detalle <span>↗</span></button>`:`${choose}${PRODUCTION_VEHICLES[v.id]?productionWorkshop(v,cfg??loadCustomization(v)):v.prototype?workshop(v,cfg??loadCustomization(v)):'<span class="detail-note">Serie base revisada · Pintura de fábrica.</span>'}`}<span class="detail-note">${testing?'Selección libre · Configuración conservada':mode==='overview'?(v.prototype?'Diez siluetas, una época que descubrir.':'Los tres coches oficiales de la copa.'):available?'Entrenamiento libre · Récords por coche':'Puedes girarlo y explorarlo antes de ganarlo.'}</span>`;
+  return `<div class="detail-category" style="--car-color:${v.color}"><i></i>${v.prototype?VEHICLE_BATCHES.find(b=>b.id===v.batch)?.name||v.category:v.category}<span>${String(index+1).padStart(2,'0')} / ${String(VEHICLES.length).padStart(2,'0')}</span></div><h3>${v.name}</h3><p class="detail-description">${v.description}</p><div class="vehicle-stats" style="--car-color:${v.color}">${['Velocidad','Control','Derrape'].map((label,i)=>`<div><span>${label}</span><i><b style="width:${v.stats[i]*10}%"></b></i></div>`).join('')}</div>${drivingCharacter(v)}<div class="collection-ownership ${available?'owned':''}"><span>${testing?'✓ DISPONIBLE PARA PRUEBAS':v.prototype?'◇ EDICIÓN DE TALLER':available?'✓ EN TU COLECCIÓN':'◇ PRÓXIMO DESBLOQUEO'}</span><p>${testing?'Elige el coche y compáralo con la misma configuración.':v.unlock}</p></div>${mode==='overview'?`${testing?choose:''}<button class="${testing?'text-button':'primary-button'}" data-garage-view="detail">Ver en detalle <span>↗</span></button>`:`${choose}${PRODUCTION_VEHICLES[v.id]?productionWorkshop(v,cfg??loadCustomization(v)):v.prototype?workshop(v,cfg??loadCustomization(v)):'<span class="detail-note">Serie base revisada · Pintura de fábrica.</span>'}`}<span class="detail-note">${testing?'Selección libre · Configuración conservada':mode==='overview'?(v.prototype?'Diez siluetas, una época que descubrir.':'Los tres coches oficiales de la copa.'):available?'Entrenamiento libre · Récords por coche':'Puedes girarlo y explorarlo antes de ganarlo.'}</span>`;
 }

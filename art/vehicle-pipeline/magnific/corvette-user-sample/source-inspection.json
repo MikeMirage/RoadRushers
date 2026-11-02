@@ -1,0 +1,29 @@
+{
+  "source": "/Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers/art/vehicle-pipeline/magnific/corvette-user-sample/source.glb",
+  "status": "candidate-high-source-not-game-ready",
+  "normalization": "Uniform length to 4.49m for visual comparison; not dimensional validation",
+  "sourceBounds": [
+    1.8744571208953857,
+    3.9644880294799805,
+    1.2000000476837158
+  ],
+  "parts": [
+    {
+      "name": "tripo_node_1c71b5c5-7ee6-4093-a5c3-aeb976412f94",
+      "triangles": 96498,
+      "vertices": 57074,
+      "uvLayers": 1,
+      "center": [
+        0.0,
+        0.0,
+        0.6795328855514526
+      ],
+      "dimensions": [
+        4.489999294281006,
+        2.1229248046875,
+        1.3590656518936157
+      ]
+    }
+  ],
+  "triangles": 96498
+}

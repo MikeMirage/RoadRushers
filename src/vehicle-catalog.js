@@ -1,3 +1,4 @@
+import { COLLECTION_PERFORMANCE,vehicleStats } from './vehicle-performance.js';
 /** Original RoadRushers miniatures. References describe silhouette, never badges or logos.
  * Dimensions use the existing toy scale: metres, +Y up, +Z forward.
  * Each entry has its own body stations, cabin, running gear and identifying details.
@@ -84,23 +85,17 @@ const rows = [
   ['seven','Club Seven','adventure','Lotus Seven / Caterham','1960s','seven','#4c8068',.83,1.51, .25,.27,[-.68,-.56,-.08,.17,1.08,.65], 'standalone','open,cycle-fenders,rollbar,vertical-grille,side-pipes',.93,.3],
 ];
 
-const handling = {
-  heritage: { speed:.95, grip:1.03, acceleration:1.03, turn:1.03, response:1.05, yawResponse:1, drift:.62, looseGrip:1.1, stats:[3,4,2] },
-  americana: { speed:1.1, grip:.9, acceleration:1.13, turn:.95, response:.9, yawResponse:.86, drift:.74, looseGrip:.95, stats:[4,3,5] },
-  drivers: { speed:1.06, grip:1.04, acceleration:1.12, turn:1, response:1, yawResponse:1, drift:.63, looseGrip:1.5, stats:[4,5,3] },
-  exotics: { speed:1.17, grip:.98, acceleration:1.17, turn:.97, response:.96, yawResponse:.92, drift:.69, looseGrip:.92, stats:[5,4,4] },
-  adventure: { speed:.98, grip:1.04, acceleration:1.02, turn:.98, response:.98, yawResponse:.95, drift:.6, looseGrip:1.6, stats:[3,4,2] },
-};
-
 export const NEW_VEHICLES = rows.map((r,index) => {
   const [id,name,batch,inspiration,era,shape,color,width,halfLength,clearance,tireWidth,cabin,lights,details,wheelbase,radius]=r;
   const features=details.split(','), batchIndex=VEHICLE_BATCHES.findIndex(b=>b.id===batch);
+  const performance=COLLECTION_PERFORMANCE[id];
+  if(!performance)throw new Error(`Missing collection driving profile: ${id}`);
   return {
     id,name,batch,batchIndex,number:index+1,inspiration,era,color,prototype:true,
     category:VEHICLE_BATCHES[batchIndex].name.toUpperCase(),
     description:`${name}: inspirado en ${inspiration}. ${features.includes('open')?'Habitáculo abierto':'Carrocería propia'} y proporciones de miniatura.`,
     unlock:'Edición de taller · disponible en entrenamiento libre.',
-    ...handling[batch],
+    ...performance,stats:vehicleStats(performance),
     design:{ shape,width,halfLength,clearance,tireWidth,cabin,lights,features,wheelbase,radius,stations:shapes[shape].map(s=>[...s]) },
     modelUrl:`models/collection/${id}.glb`,
   };

@@ -1,0 +1,213 @@
+Trabaja como artista técnico sénior especializado en vehículos para videojuegos y optimización de Three.js/WebGL móvil.
+
+Tu tarea es CREAR E INTEGRAR las versiones optimizadas de cinco vehículos, con fidelidad visual a las referencias del usuario. No te limites a elaborar un plan ni a reducir polígonos automáticamente.
+
+OBJETIVO
+
+Conseguir coches reconocibles, bien proporcionados y con superficies limpias, usando:
+- Carrocería unificada y topología eficiente.
+- Cuatro ruedas independientes.
+- Detalle horneado desde modelos de alta resolución.
+- Materiales y texturas compactos.
+- Reflejos precalculados.
+- LOD adecuados para carrera y garaje.
+
+La calidad se juzga por la silueta, las proporciones y la continuidad de los reflejos, no por la cantidad de piezas o polígonos.
+
+CONTEXTO DEL PROYECTO
+
+Repositorio:
+ /Users/miquelgelabert/Library/CloudStorage/GoogleDrive-mgrconcept@gmail.com/Mi unidad/REPOS JUEGOS/RoadRushers
+
+Antes de editar:
+1. Lee las instrucciones aplicables del repositorio.
+2. Inspecciona git status y conserva los cambios existentes.
+3. Lee las skills pertinentes de Blender, optimización, materiales, baking, exportación y QA.
+4. Detecta la versión instalada de Blender y utiliza APIs compatibles.
+5. Comprueba los modelos y sus rutas de carga reales. Puede haber varias versiones del mismo coche.
+
+Auditorías disponibles:
+- artifacts/vehicle-polycounts.json
+- artifacts/vehicle-polycounts.csv
+- artifacts/vehicle-simplification-audit.json
+
+Los recuentos son una fotografía del estado anterior: vuelve a medir antes de decidir.
+
+Archivos relevantes:
+- src/vehicles.js
+- src/hero-vehicle-models.js
+- src/starter-vehicle-models.js
+- src/automotive-body.js
+- src/corvette-model.js
+- src/vehicle-pose.js
+- src/rival-fleet.js
+- src/garage.js
+- src/config.js
+- scripts/corvette-build.py
+- scripts/corvette-qa.py
+- scripts/corvette-runtime-check.mjs
+
+Existe un Corvette procedimental de aproximadamente 64.000 triángulos y otro GLB independiente de aproximadamente 119.000. Identifica cuál utiliza cada pantalla y evita mantener versiones divergentes por accidente.
+
+VEHÍCULOS Y REFERENCIAS
+
+Trabaja uno a uno, en este orden:
+
+1. Deportivo inspirado en Corvette C7.
+2. Cabrio inspirado en Cobra 427.
+3. Pick-up moderna de doble cabina inspirada en RAM.
+4. SUV inspirado en Stelvio de primera generación.
+5. Japanese Sports inspirado en el Lancer de la imagen aportada.
+
+Referencias locales:
+
+Corvette, cuatro vistas:
+ /var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-7cfc5a3d-a4f3-4f08-b20b-76ea6ab5f1f7.png
+
+Cobra:
+ /var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-192ad39a-c901-4cff-8622-80d77d0eb697.png
+
+RAM:
+ /var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-766d0bf8-56dc-4b0a-946e-06d0592cd429.png
+
+Lancer:
+ /var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-e4d0cfda-ab5a-498f-89b5-9e988f3e2c39.png
+
+Si alguna referencia temporal ya no existe, busca primero las copias guardadas en el proyecto. Para el Stelvio no se adjuntó una lámina específica: utiliza referencias verificables de la primera generación.
+
+Prioriza la forma visible en las imágenes frente a nombres de generación escritos de manera ambigua.
+
+No reproduzcas la decoración manga del Lancer: esta fase trata del modelo y su acabado de fábrica. Las skins vendrán después.
+
+PRESUPUESTOS
+
+Triángulos totales por coche, incluyendo ruedas y accesorios:
+
+- Corvette, carrera: 8.000–10.000.
+- Cobra, carrera: 8.000–10.000.
+- RAM, carrera: 8.000–10.000.
+- Stelvio, carrera: 8.000–10.000.
+- Lancer, carrera: 6.000–8.000.
+- Garaje cercano: aproximadamente 16.000–22.000.
+- LOD lejano: aproximadamente 2.000–4.000.
+
+Son objetivos de producción. Si una pequeña excepción mejora claramente una silueta importante, justifícala con imágenes y cifras.
+
+No sacrifiques la forma para alcanzar una cifra arbitraria. Tampoco conserves miles de polígonos en detalles invisibles.
+
+Arquitectura orientativa:
+- Una carrocería rígida principal.
+- Cuatro conjuntos de ruedas independientes.
+- Cristales separados únicamente cuando su material lo requiera.
+- Piezas adicionales solo por una necesidad visual o funcional concreta.
+- Objetivo de 6–9 primitivas renderizables por coche de carrera.
+
+Una malla con diez materiales sigue pudiendo generar diez llamadas de dibujo. Optimiza primitivas y materiales, además del número de objetos.
+
+QUÉ CONSERVAR EN GEOMETRÍA
+
+- Contorno exterior y curvatura principal.
+- Pasos de rueda y volumen de las aletas.
+- Pilares y aberturas que cambien la silueta.
+- Retrovisores, alerones, escapes y entradas grandes.
+- Habitáculo visible del Cobra.
+- Volumen suficiente en llantas para los ángulos de cámara relevantes.
+
+QUÉ HORNEAR
+
+- Juntas de puertas, capó y maletero.
+- Tornillería, ranuras y pequeños biseles.
+- Dibujo superficial de neumáticos.
+- Rejillas finas.
+- Detalle interno de ópticas.
+- Relieve pequeño de llantas y molduras.
+
+No sustituyas con normal maps elementos que necesiten profundidad, paralaje o silueta real.
+
+PIPELINE
+
+Para cada coche:
+
+1. Revisa las referencias desde frente, lado, atrás y arriba.
+2. Fija proporciones, batalla, vías, altura y posición de ruedas.
+3. Prepara o corrige un modelo fuente de alta resolución.
+4. Construye una versión de baja resolución diseñada para esas formas.
+5. Elimina caras ocultas, superficies duplicadas y densidad innecesaria.
+6. Prepara UV sin solapamientos involuntarios, con márgenes para mipmaps.
+7. Triangula de manera consistente antes del baking y de la exportación.
+8. Hornea mapas reales desde el modelo fuente.
+9. Verifica el resultado en Blender y en el renderer del juego.
+10. Integra y valida ese coche antes de continuar con el siguiente.
+
+No uses una decimación global como solución final si destruye aristas características o produce reflejos ondulados.
+
+MATERIALES Y TEXTURAS
+
+Utiliza normal maps tangentes OpenGL y espacios de color correctos:
+- Base Color y emisión: sRGB.
+- Normal y ORM: datos lineales.
+- ORM: oclusión, rugosidad y metalicidad.
+
+Usa atlas y máscaras para compartir materiales entre pintura, molduras y otros acabados compatibles. Conserva la posibilidad de cambiar el color de la pintura sin teñir neumáticos, cristales u ópticas.
+
+Considera máscaras de emisión para luces de freno, evitando separar cada piloto en otra primitiva.
+
+Empieza con texturas de 1K para carrera; usa 2K solo donde la vista cercana lo justifique. Mide memoria con mipmaps. No conviertas el ahorro geométrico en una carga excesiva de texturas.
+
+Utiliza compresión y decodificadores que el proyecto soporte realmente. No declares KTX2, Draco o Meshopt integrados sin probar su carga.
+
+Los reflejos deben funcionar mediante mapas de entorno prefiltrados compartidos, rugosidad y clearcoat razonables. Evita capturas de reflexión por coche cada frame.
+
+No hornees reflejos direccionales fuertes en el color de la carrocería: se quedarían pegados al coche al girar.
+
+INTEGRACIÓN
+
+- Conserva los contratos de pivotes, ejes, nombres y sockets utilizados por el juego.
+- La carrocería puede cabecear y balancear sin levantar artificialmente las ruedas.
+- Mantén dirección, giro de ruedas, luces de freno y efectos de derrape.
+- Conserva las instancias de los rivales y comparte geometrías y texturas.
+- Usa geometría indexada; comprueba vértices exportados y memoria real.
+- No modifiques la puesta a punto de conducción salvo que una corrección de integración lo exija.
+- No remodeles los otros 50 coches como ampliación del alcance.
+- No publiques, hagas push ni sobrescribas trabajo ajeno.
+
+LOD
+
+Elige el LOD por tamaño proyectado en pantalla, con histéresis para evitar cambios continuos. Ajusta los umbrales tras observar las cámaras reales.
+
+La carrera debe cargar la representación adecuada; el garaje puede utilizar más detalle. Evita cargar todos los modelos y todos sus LOD al iniciar si no son necesarios.
+
+VALIDACIÓN OBLIGATORIA
+
+Mide por coche y por LOD:
+- Triángulos y vértices.
+- Primitivas y materiales.
+- Memoria de geometría y texturas.
+- Tamaño de los archivos.
+- Dimensiones, pivotes y contacto de ruedas.
+
+Comprueba:
+- Normales, UV, tangentes y ausencia de z-fighting.
+- Silueta comparada con la referencia.
+- Reflejos continuos, sin pinzamientos ni abolladuras artificiales.
+- Baking sin proyecciones de piezas vecinas.
+- Luces, dirección y suspensión en movimiento.
+- Garaje y carrera con rivales.
+- Carga del GLB exportado, no solo del modelo fuente.
+- Pruebas pertinentes del proyecto y compilación.
+
+Realiza capturas comparables con cámara e iluminación constantes: frente, lado, atrás, tres cuartos y cámara de gameplay.
+
+ENTREGA
+
+Deja:
+- Fuentes editables.
+- Modelos optimizados y LOD.
+- Texturas horneadas.
+- Scripts reproducibles de exportación y medición.
+- Integración funcional en el juego.
+- Comparativa visual y tabla antes/después.
+
+Distingue los resultados medidos de las estimaciones. No presentes una reducción de triángulos como mejora equivalente de FPS.
+
+Avanza autónomamente con decisiones reversibles. Comunica avances breves y no pidas confirmación para pasos técnicos rutinarios. Completa los cinco coches secuencialmente; si aparece un bloqueo real, explica exactamente qué queda pendiente.

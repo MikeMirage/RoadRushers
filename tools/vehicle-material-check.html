@@ -1,0 +1,56 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Vehicle atlas shader validation</title>
+<style>body{font:16px monospace;background:#171c22;color:#eef3f7;padding:24px}canvas{image-rendering:pixelated;width:768px;height:128px;max-width:100%}pre{white-space:pre-wrap}</style>
+<h1>Vehicle atlas: GPU checks</h1><pre id="result">Running…</pre>
+<script type="module">
+import * as T from 'three';
+import {GhostView} from '../src/ghost-view.js';
+import {createVehicleMaterial,customizeVehicleMaterial,setVehicleMaterialBrake,cloneVehicleMaterial,createVehicleDepthMaterial} from '../src/vehicle-material.js';
+const result=document.querySelector('#result');
+try{
+ const renderer=new T.WebGLRenderer();renderer.setSize(192,32);renderer.outputColorSpace=T.LinearSRGBColorSpace;renderer.toneMapping=T.NoToneMapping;document.body.append(renderer.domElement);
+ const errors=[];renderer.debug.onShaderError=(gl,program,vs,fs)=>errors.push(gl.getProgramInfoLog(program)+'\n'+gl.getShaderInfoLog(fs));
+ function texture(pixels){const t=new T.DataTexture(new Uint8Array(pixels),pixels.length/4,1);t.minFilter=t.magFilter=T.NearestFilter;t.needsUpdate=true;return t;}
+ const baseColor=texture([255,255,255,255,255,255,255,255,255,255,255,255]);
+ const mask=texture([255,0,0,255,0,255,0,255,0,0,255,255]);
+ const orm=texture([255,128,0,255,255,128,0,255,255,128,0,255]);
+ const normal=texture([128,128,255,255,128,128,255,255,128,128,255,255]);
+ const material=createVehicleMaterial({baseColor,mask,orm,normal});
+ const scene=new T.Scene();scene.add(new T.AmbientLight(0xffffff,2));
+ renderer.shadowMap.enabled=true;const light=new T.DirectionalLight(0xffffff,.01);light.position.set(0,0,2);light.castShadow=true;Object.assign(light.shadow.camera,{near:.1,far:10,left:-2,right:2,top:2,bottom:-2});scene.add(light);
+ const camera=new T.OrthographicCamera(-1,1,.5,-.5,.1,10);camera.position.z=2;camera.updateMatrixWorld();
+ const quad=new T.Mesh(new T.PlaneGeometry(2,1),material);quad.castShadow=true;scene.add(quad);
+ const target=new T.WebGLRenderTarget(192,32);const buffer=new Uint8Array(192*32*4);
+ function render(){renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.readRenderTargetPixels(target,0,0,192,32,buffer);renderer.setRenderTarget(null);renderer.render(scene,camera);return [32,96,160].map(x=>Array.from(buffer.slice((16*192+x)*4,(16*192+x)*4+3)));}
+ const same=(a,b)=>a.every((n,i)=>Math.abs(n-b[i])<=1),check=(condition,message)=>{if(!condition)throw new Error(message);};
+ customizeVehicleMaterial(material,{paint:'#ff0000'});const red=render();
+ customizeVehicleMaterial(material,{paint:'#0000ff'});const blue=render();
+ check(!same(red[0],blue[0]),'Paint region did not change');
+ check(same(red[1],blue[1])&&same(red[2],blue[2]),'Paint leaked into brake or glass regions');
+ setVehicleMaterialBrake(material,1);const brake=render();
+ check(!same(brake[1],blue[1]),'Masked brake emission missing');
+ check(same(brake[0],blue[0])&&same(brake[2],blue[2]),'Brake emission leaked outside mask');
+ const cloned=cloneVehicleMaterial(material);customizeVehicleMaterial(cloned,{paint:'#00ff00'});
+ check(material.userData.vehicleAtlas.uniforms.vehicleTint.value.b===1,'Clone shares mutable tint');
+ scene.remove(quad);
+ const geometry=new T.PlaneGeometry(1,1);geometry.setAttribute('aBrake',new T.InstancedBufferAttribute(new Float32Array([0,1]),1));
+ const instancedMaterial=cloneVehicleMaterial(material,{instanced:true});
+ const instances=new T.InstancedMesh(geometry,instancedMaterial,2);
+ instances.setMatrixAt(0,new T.Matrix4().makeTranslation(-.5,0,0));instances.setMatrixAt(1,new T.Matrix4().makeTranslation(.5,0,0));
+ instances.setColorAt(0,new T.Color('#ff0000'));instances.setColorAt(1,new T.Color('#0000ff'));scene.add(instances);render();
+ const pixel=x=>Array.from(buffer.slice((16*192+x)*4,(16*192+x)*4+3));
+ check(!same(pixel(16),pixel(112)),'Instance paint colors not independent');
+ check(!same(pixel(48),pixel(144)),'Instance brake attribute missing');
+ check(same(pixel(80),pixel(176)),'Instance colors or brakes tint unmasked trim');
+ const instanceSamples=[16,48,80,112,144,176].map(pixel);
+ scene.remove(instances);
+ const wheelMaterial=createVehicleMaterial({role:'wheel',baseColor,mask,orm,normal});
+ quad.material=wheelMaterial;quad.customDepthMaterial=createVehicleDepthMaterial(wheelMaterial);scene.add(quad);customizeVehicleMaterial(wheelMaterial,{tire:'street'});const street=render();
+ customizeVehicleMaterial(wheelMaterial,{tire:'slick'});const slick=render();
+ check(same(street[0],slick[0]),'Tire settings changed rim color');
+ scene.remove(quad);const ghostSource=new T.Group();ghostSource.add(quad);
+ const ghost=new GhostView(scene,{group:ghostSource,wheels:[],frontWheels:[]});ghost.group.visible=true;render();ghost.dispose();
+ check(ghost.wheelMaterials.size===1,'Ghost did not retain tire profile shader');
+ check(errors.length===0,errors.join('\n'));
+ result.textContent=JSON.stringify({pass:true,checks:['paint mask preserves other regions','brake emission only in mask','clone uniforms independent','instanced colors independent','instanced brakes independent','unmasked trim identical','wheel and tire depth shaders compile; tire options preserve rim tint','ghost tire profile shader compiles'],single:{red,blue,brake},instances:instanceSamples},null,2);
+}catch(error){result.textContent='FAIL\n'+error.stack;console.error(error);}
+</script></html>

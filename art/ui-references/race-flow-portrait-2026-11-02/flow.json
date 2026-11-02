@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-02",
+  "status": "visual-proposal",
+  "generator": "built-in image_gen",
+  "screenAspect": "1:2",
+  "steps": [
+    {
+      "id": "circuit",
+      "image": "01-circuito.png",
+      "cta": "Elegir reglas"
+    },
+    {
+      "id": "rules",
+      "image": "02-reglas.png",
+      "cta": "Elegir coche"
+    },
+    {
+      "id": "car",
+      "image": "03-coche.png",
+      "cta": "Salir a pista"
+    }
+  ],
+  "categoryModes": [
+    "unrestricted",
+    "origin",
+    "same-player-model",
+    "power-class"
+  ],
+  "powerThresholds": null,
+  "sameModelResolution": "The rival model is resolved only after the player chooses their car in step 3.",
+  "example": {
+    "track": "Curvas del Puerto",
+    "laps": 3,
+    "count": 8,
+    "difficulty": "Club",
+    "interaction": "contact",
+    "category": "Japanese origin",
+    "car": "Evo Rally"
+  }
+}

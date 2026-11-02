@@ -1,0 +1,16 @@
+{
+  "level": "race",
+  "triangles": 10440,
+  "primitives": 9,
+  "meshes": 9,
+  "materials": 2,
+  "externalImages": [
+    "textures/race/body-normal.png",
+    "textures/race/body-orm.png",
+    "textures/race/body-baseColor.png",
+    "textures/race/wheel-normal.png",
+    "textures/race/wheel-orm.png",
+    "textures/race/wheel-baseColor.png"
+  ],
+  "glbBytes": 570368
+}

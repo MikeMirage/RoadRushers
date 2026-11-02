@@ -1,0 +1,25 @@
+{
+  "pass": true,
+  "triangles": 120210,
+  "meshes": 43,
+  "materials": 14,
+  "optionalSportTriangles": 6144,
+  "dimensions": {
+    "width": 2.0999999046325684,
+    "height": 1.2394999563694,
+    "length": 4.489339113235474
+  },
+  "wheelbase": 2.71,
+  "source": "Original mesh authored from supplied C7 reference; rigid hierarchy rig.",
+  "fileBytes": 5104248,
+  "checks": [
+    "GLB load",
+    "rig bindings",
+    "steering and spin",
+    "body suspension preserves wheel centers",
+    "unit pivot scale",
+    "tire slots",
+    "material isolation",
+    "travel clamps"
+  ]
+}

@@ -12,6 +12,7 @@ import './vehicle-collection.css';
 import './track-kit.css';
 import './track-editor.css';
 import './race.css';
+import './race-identifiers.css';
 import './mobile-gameplay.css';
 import './results.css';
 import './ghost.css';
@@ -44,7 +45,7 @@ import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
 import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
 
-import { renderGarage,renderStudioDetail,renderStudioPanel } from './vehicle-collection-ui.js';
+import { renderGarage,updateStudioDetail,renderStudioPanel } from './vehicle-collection-ui.js';
 import { renderPlayground } from './playground-ui.js';
 import { loadPlayground,savePlayground,normalizePlayground,resolvePlayground,playgroundTracks } from './playground.js';
 import { carIllustration, preloadVehicles,vehicleAvailable } from './vehicles.js';
@@ -197,6 +198,7 @@ function updateTouchGuide(){
 function paintPreferences(){
   const host=$('preferences-content'),open=host.querySelector('.preferences-advanced')?.open,scroll=host.querySelector('.preferences-body')?.scrollTop||0;
   host.innerHTML=renderPreferences(preferences,preferencesTab,{soundEnabled:audio.enabled,profile:preferencesContext==='profile'});
+  if(preferencesTab==='audio'){const settings=host.querySelector('.audio-settings');settings.insertAdjacentHTML('afterbegin','<div class="pause-music"><span class="pause-music-label">BANDA SONORA</span><p id="pause-current-music" aria-live="polite" aria-atomic="true">Sin canción seleccionada</p><button type="button" id="pause-next-music" class="text-button">Siguiente canción <span aria-hidden="true">→</span></button><small>Recorre las 9 versiones de la biblioteca</small></div>' );settings.querySelector('#pause-next-music').addEventListener('click',()=>{audio.unlock();audio.nextMusic();updatePauseMusic();});updatePauseMusic();}
   const advanced=host.querySelector('.preferences-advanced');if(advanced&&open)advanced.open=true;
   host.querySelector('.preferences-body').scrollTop=scroll;updatePreferencesReadout();updateInputPrompts();
 }
@@ -246,14 +248,21 @@ function toggleSound(){
 function audioScene(){
   const screen=state==='finished'?'results':fullGarage()||workbench?.visible?'garage':state==='hub'?'menu':
     ['ready','countdown','running','paused'].includes(state)?'race':'loading';
-  return {screen,trackId:settings.track?.id,biome:settings.track?.biome};
+  return {screen,trackId:settings.track?.id,biome:settings.track?.biome,weather:settings.weather,mode:settings.mode};
+}
+function updatePauseMusic(){
+  const track=audio.currentMusic,label=track?`${track.title} · Versión ${track.variant}`:'Sin canción seleccionada',node=$('pause-current-music');
+  if(!node)return;
+  if(node.textContent!==label)node.textContent=label;
+  $('pause-next-music').disabled=!track;
 }
 function updateAudio(running=state==='running'){
-  if(!drive||!circuit){audio.update({speed:0,running:false,scene:audioScene()});return;}
+  if(!drive||!circuit){audio.update({speed:0,running:false,scene:audioScene()});updatePauseMusic();return;}
   const progress=drive.road?.progress||0,roadWidth=circuit.widthAt(progress),edgeGap=roadWidth/2-Math.abs(drive.road?.offset||0);
   audio.update({speed:drive.speed,slip:drive.slip,impact:drive.impact,landing:drive.landing,grounded:drive.grounded,
     surface:circuit.surfaceAt(progress,settings.surface),weather:settings.weather,wetness:settings.weather==='rain' ? .8 : settings.weather==='snow' ? .55 : 0,
     kerb:edgeGap<1.05&&edgeGap>.02,braking:drive.braking,throttle:inputDevice==='gamepad'&&gamepadState?gamepadState.throttle:1,running,scene:audioScene()});
+  updatePauseMusic();
 }
 
 function refreshPlayground(){
@@ -272,6 +281,7 @@ function syncPlaygroundScroll(){}
 function hubFocusMode(mode){$('playground-hub').querySelector(`[data-play-mode="${mode}"]`)?.focus({preventScroll:true});}
 function showSetup(step='circuit',focus=true){
   if(raceLaunching)return;
+  const previousStep=setupStep,wasOpen=setupOpen;
   if(!setupOpen)setupFocus=document.activeElement;
   setupStep=SETUP_STEPS.includes(step)?step:'circuit';setupOpen=true;
   if(setupStep==='car'){
@@ -281,6 +291,7 @@ function showSetup(step='circuit',focus=true){
   const sheet=$('club-setup');if(!sheet)return;
   sheet.outerHTML=renderRaceSetup(playgroundOptions,playgroundTracks(settings.track,storage),{step:setupStep,ready:state!=='loading'});
   $('club-setup').classList.remove('hidden');
+  if(!wasOpen||previousStep!==setupStep){$('club-setup').classList.add('animate-step');$('club-setup').style.setProperty('--step-offset',!wasOpen||SETUP_STEPS.indexOf(setupStep)>=SETUP_STEPS.indexOf(previousStep)?'12px':'-12px');}
   enhanceStyledSelects($('club-setup'));
   $('playground-form').inert=true;document.querySelector('#playground-hub>.club-navigation').inert=true;document.querySelector('header.topbar').inert=true;
   if(garageSurface==='home'){garage?.hide();garageSurface=null;}
@@ -433,9 +444,13 @@ async function inspectVehicle(id){
 }
 function updateGarage(){
   if(!fullGarage())return;
-  if(lastGarageVehicle!==garage.selectedId)$('garage-content').querySelector('.studio-body').scrollTop=0;
+  const changed=lastGarageVehicle!==garage.selectedId;
+  if(changed)$('garage-content').querySelector('.studio-body').scrollTop=0;
   lastGarageVehicle=garage.selectedId;
-  $('garage-detail').innerHTML=renderStudioDetail(garage.selectedId);
+  updateStudioDetail($('garage-detail'),garage.selectedId,{animate:changed&&!matchMedia('(prefers-reduced-motion: reduce)').matches});
+  if(changed&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    for(const node of $('garage-detail').querySelectorAll('h2,.studio-car-era')){node.getAnimations().forEach(a=>a.cancel());node.animate([{opacity:0,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.75,.2,1)'});}
+  }
   const category=$('garage-content').querySelector('[data-collection-category]');category.value=garage.page;
   const index=garage.pageVehicles.findIndex(v=>v.id===garage.selectedId),count=garage.pageVehicles.length;
   $('studio-category-count').innerHTML=`${clubIcon('car-profile')}${count}`;

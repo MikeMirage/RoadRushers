@@ -1,0 +1,812 @@
+{
+  "materialCount": 38,
+  "imageCount": 114,
+  "imageSizes": {
+    "256x256": 45,
+    "128x128": 30,
+    "64x64": 18,
+    "512x512": 15,
+    "1024x1024": 6
+  },
+  "rgba8MipBytesTotal": 73269096,
+  "images": [
+    {
+      "name": "tripo_part_12_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 16182,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_12_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 21082,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_12_metallic-tripo_part_12_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 72768,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_14_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 15286,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_14_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 20764,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_14_metallic-tripo_part_14_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 70710,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_20_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 12162,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_20_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8308,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_20_metallic-tripo_part_20_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 59701,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_25_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 4219,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_25_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 7496,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_25_metallic-tripo_part_25_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 21503,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_23_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 3214,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_23_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 5130,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_23_metallic-tripo_part_23_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 15957,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_29_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 3037,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_29_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 3925,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_29_metallic-tripo_part_29_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 20829,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_32_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1236,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_32_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1724,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_32_metallic-tripo_part_32_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 6451,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_35_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 863,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_35_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 2270,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_35_metallic-tripo_part_35_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 6744,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_8_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 23465,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_8_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 19428,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_8_metallic-tripo_part_8_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 73757,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_11_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8283,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_11_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 12446,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_11_metallic-tripo_part_11_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 72091,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_24_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 16920,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_24_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 11166,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_24_metallic-tripo_part_24_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 58499,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_18_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8056,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_18_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 14162,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_18_metallic-tripo_part_18_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 72308,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_22_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 10576,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_22_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8171,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_22_metallic-tripo_part_22_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 51043,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_31_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 2867,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_31_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 6048,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_31_metallic-tripo_part_31_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 18311,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_4_normal",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 59592,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_4_base_color",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 76760,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_4_metallic-tripo_part_4_roughness",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 330056,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_7_normal",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 59590,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_7_base_color",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 61186,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_7_metallic-tripo_part_7_roughness",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 212155,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_37_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 899,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_37_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1824,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_37_metallic-tripo_part_37_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 5010,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_3_normal",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 57667,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_3_base_color",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 76274,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_3_metallic-tripo_part_3_roughness",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 326474,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_6_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 13101,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_6_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8041,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_6_metallic-tripo_part_6_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 58675,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_0_normal",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 206590,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_0_base_color",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 219621,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_0_metallic-tripo_part_0_roughness",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 1074368,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_1_normal",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 74961,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_1_base_color",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 81558,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_1_metallic-tripo_part_1_roughness",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 269264,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_10_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 6861,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_10_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 12233,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_10_metallic-tripo_part_10_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 72062,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_13_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 2192,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_13_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 5188,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_13_metallic-tripo_part_13_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 20017,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_15_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 2459,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_15_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 7386,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_15_metallic-tripo_part_15_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 21380,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_16_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 4416,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_16_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 8288,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_16_metallic-tripo_part_16_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 21735,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_17_normal",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 150638,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_17_base_color",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 181562,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_17_metallic-tripo_part_17_roughness",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 942403,
+      "rgba8MipBytes": 5592404
+    },
+    {
+      "name": "tripo_part_21_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 8193,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_21_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 9319,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_21_metallic-tripo_part_21_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 64967,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_26_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 16185,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_26_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 21153,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_26_metallic-tripo_part_26_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 71751,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_28_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 3641,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_28_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 7394,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_28_metallic-tripo_part_28_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 22183,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_30_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 2903,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_30_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 6173,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_30_metallic-tripo_part_30_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 18628,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_34_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1213,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_34_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 2003,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_34_metallic-tripo_part_34_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 6244,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_19_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 14197,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_19_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 16149,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_19_metallic-tripo_part_19_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 55271,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_2_normal",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 66538,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_2_base_color",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 77421,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_2_metallic-tripo_part_2_roughness",
+      "width": 512,
+      "height": 512,
+      "fileBytes": 295604,
+      "rgba8MipBytes": 1398100
+    },
+    {
+      "name": "tripo_part_27_normal",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 3543,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_27_base_color",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 7565,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_27_metallic-tripo_part_27_roughness",
+      "width": 128,
+      "height": 128,
+      "fileBytes": 21834,
+      "rgba8MipBytes": 87380
+    },
+    {
+      "name": "tripo_part_33_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1118,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_33_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 1847,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_33_metallic-tripo_part_33_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 6327,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_36_normal",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 803,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_36_base_color",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 2105,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_36_metallic-tripo_part_36_roughness",
+      "width": 64,
+      "height": 64,
+      "fileBytes": 5955,
+      "rgba8MipBytes": 21844
+    },
+    {
+      "name": "tripo_part_5_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 13109,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_5_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 24690,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_5_metallic-tripo_part_5_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 94972,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_9_normal",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 14087,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_9_base_color",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 15210,
+      "rgba8MipBytes": 349524
+    },
+    {
+      "name": "tripo_part_9_metallic-tripo_part_9_roughness",
+      "width": 256,
+      "height": 256,
+      "fileBytes": 76629,
+      "rgba8MipBytes": 349524
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vehicle production review</title>
+<style>body{margin:0;background:#20252b;color:#eef2f7;font:14px system-ui}header{padding:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}label{display:flex;gap:6px;align-items:center}button,select{padding:8px}#stage{height:65vh}canvas{display:block}pre{margin:16px;white-space:pre-wrap}#error{color:#ff9f91}</style>
+<header><strong>Corvette · revisión de producción</strong><label>LOD<select id="quality"><option>garage</option><option>race</option><option>far</option></select></label><label>Pintura<input id="paint" type="color" value="#045d91"></label><label>Neumático<select id="tire"><option>street</option><option>sport</option><option>slick</option></select></label><label>Dirección<input id="steer" type="range" min="-.4" max=".4" step=".01" value="0"></label><label>Altura<input id="ride" type="range" min="-.04" max=".05" step=".001" value="0"></label><label><input id="roll" type="checkbox">Rodar</label><label><input id="brake" type="checkbox">Frenos</label><label><input id="wire" type="checkbox">Malla</label><button id="checks">Verificar exportación y rig</button></header>
+<header id="views"><button data-view="quarter">Tres cuartos</button><button data-view="front">Frente</button><button data-view="side">Lado</button><button data-view="rear">Atrás</button><button data-view="top">Planta</button></header><div id="stage"></div><pre id="status">Cargando los tres LOD para revisión…</pre><pre id="error"></pre>
+<script type="module">
+import * as T from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {preloadVehicleAsset,createVehicleAsset,createVehicleAssetWithLOD} from '../src/vehicle-assets.js';
+import {animateVehicle} from '../src/vehicle-pose.js';
+import {setBrakeLights} from '../src/vehicles.js';
+const $=id=>document.getElementById(id),asset='corvette-c7';
+const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.outputColorSpace=T.SRGBColorSpace;$('stage').append(renderer.domElement);
+const errors=[];renderer.debug.onShaderError=(gl,p,v,f)=>{errors.push(gl.getProgramInfoLog(p)+'\n'+gl.getShaderInfoLog(f));$('error').textContent=errors.join('\n');};
+const scene=new T.Scene();scene.background=new T.Color('#b6bdc0');
+const room=new RoomEnvironment(),pmrem=new T.PMREMGenerator(renderer),env=pmrem.fromScene(room,.04);scene.environment=env.texture;room.dispose();pmrem.dispose();
+scene.add(new T.HemisphereLight('#dfefff','#667079',1.2));const light=new T.DirectionalLight('#fff6e8',2.5);light.position.set(3,7,5);scene.add(light);
+const floor=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshStandardMaterial({color:'#a4aab0',roughness:.6}));floor.rotation.x=-Math.PI/2;floor.position.y=-.015;scene.add(floor);
+const camera=new T.PerspectiveCamera(35,1,.05,200);camera.position.set(5.8,2.6,7);const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,.62,0);controls.update();
+new ResizeObserver(()=>{const r=$('stage').getBoundingClientRect();renderer.setSize(r.width,r.height);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();}).observe($('stage'));
+const views={quarter:[5.8,2.6,7],front:[0,1,8],side:[8,1,0],rear:[0,1,-8],top:[.001,9,.001]};
+$('views').addEventListener('click',e=>{if(e.target.dataset.view){camera.position.set(...views[e.target.dataset.view]);controls.target.set(0,.62,0);controls.update();}});
+let models,current,last=0;
+const cfg=()=>({paint:$('paint').value,tire:$('tire').value,rideHeight:Number($('ride').value)});
+function stats(model){let triangles=0,primitives=0;const materials=new Set();model.group.traverseVisible(o=>{if(o.isMesh){triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;primitives++;materials.add(o.material);}});return {quality:model.quality,triangles,primitives,materials:materials.size};}
+function refresh(){if(!models)return;for(const m of Object.values(models)){m.group.visible=m.quality===$('quality').value;m.setCustomization(cfg());m.group.traverse(o=>{if(o.isMesh)o.material.wireframe=$('wire').checked;});}current=models[$('quality').value];$('status').textContent=JSON.stringify(stats(current),null,2);}
+for(const id of ['quality','paint','tire','ride','wire'])$(id).addEventListener('input',refresh);
+async function checks(){
+ const passed=[];function check(ok,label){if(!ok)throw new Error(label);passed.push(label);}
+ for(const [quality,m]of Object.entries(models)){
+  check(m.wheels.length===4&&m.frontWheels.length===2,quality+': wheel rig');
+  const centers=m.wheels.map(w=>w.getWorldPosition(new T.Vector3()));
+  m.bodyRig.position.y+=.03;m.group.updateMatrixWorld(true);
+  check(m.wheels.every((w,i)=>w.getWorldPosition(new T.Vector3()).distanceTo(centers[i])<1e-6),quality+': body suspension leaves wheel contacts fixed');m.bodyRig.position.y-=.03;
+  for(const role of ['body','wheel']){
+   const mat=m.materials[role];check(mat.map?.colorSpace===T.SRGBColorSpace&&mat.normalMap?.colorSpace===T.NoColorSpace&&mat.roughnessMap?.colorSpace===T.NoColorSpace,quality+'/'+role+': color spaces');
+  }
+ }
+ const copy=createVehicleAsset(asset,'race',{scale:1}),original=models.race;
+ const a=[],b=[];original.group.traverse(o=>{if(o.isMesh)a.push(o);});copy.group.traverse(o=>{if(o.isMesh)b.push(o);});
+ check(a.every((o,i)=>o.geometry===b[i].geometry),'instances share geometry');
+ check(original.materials.body.map===copy.materials.body.map,'instances share texture');
+ let disposed=0;const onDispose=()=>disposed++;for(const o of a)o.geometry.addEventListener('dispose',onDispose);
+ copy.dispose();check(disposed===0,'disposing clone retains shared geometry');for(const o of a)o.geometry.removeEventListener('dispose',onDispose);
+ const lod=createVehicleAssetWithLOD(asset,{scale:1});lod.wheels[0].rotation.x=2.7;lod.frontWheels[0].rotation.y=.2;lod.setQuality('far');
+ check(Math.abs(lod.wheels[0].rotation.x-2.7)<1e-6&&Math.abs(lod.frontWheels[0].rotation.y-.2)<1e-6,'LOD preserves wheel/steering pose');lod.dispose();
+ await renderer.compileAsync(scene,camera);check(errors.length===0,'GPU shaders compile');
+ $('status').textContent=JSON.stringify({pass:true,checks:passed,models:Object.values(models).map(stats)},null,2);
+}
+$('checks').addEventListener('click',()=>checks().catch(e=>$('error').textContent=e.stack));
+try{await preloadVehicleAsset(asset,['garage','race','far']);models=Object.fromEntries(['garage','race','far'].map(q=>[q,createVehicleAsset(asset,q,{scale:1})]));for(const m of Object.values(models))scene.add(m.group);refresh();await checks();}catch(e){$('error').textContent=e.stack;}
+renderer.setAnimationLoop(t=>{const dt=Math.min(.05,(t-last)/1000);last=t;if(current){animateVehicle(current,{steeringAngle:Number($('steer').value),speed:2,steer:0,heave:0},dt,$('roll').checked);setBrakeLights(current.brakeMaterials,$('brake').checked?1:0);}controls.update();renderer.render(scene,camera);});
+</script></html>

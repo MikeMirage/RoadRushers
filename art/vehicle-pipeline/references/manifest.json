@@ -1,0 +1,30 @@
+[
+  {
+    "id": "corvette-c7",
+    "source": "/var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-7cfc5a3d-a4f3-4f08-b20b-76ea6ab5f1f7.png",
+    "file": "art/vehicle-pipeline/references/corvette-c7.png",
+    "sha256": "2e624ac294f3827455b1fb3ed741869696782c362ae53092021db6ec05a9a490",
+    "provenance": "User-provided visual reference; not a production texture"
+  },
+  {
+    "id": "cobra-427",
+    "source": "/var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-192ad39a-c901-4cff-8622-80d77d0eb697.png",
+    "file": "art/vehicle-pipeline/references/cobra-427.png",
+    "sha256": "4bd1e9e7a0c492a32660bdc75a1bf8dc90b8ba46dab5042e6cf8116aa1dc8e4c",
+    "provenance": "User-provided visual reference; not a production texture"
+  },
+  {
+    "id": "ram-crew",
+    "source": "/var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-766d0bf8-56dc-4b0a-946e-06d0592cd429.png",
+    "file": "art/vehicle-pipeline/references/ram-crew.png",
+    "sha256": "be9ce39a6bbf4769c6e7623493882d7f35f53a6191040ffbd89432393857040d",
+    "provenance": "User-provided visual reference; not a production texture"
+  },
+  {
+    "id": "lancer",
+    "source": "/var/folders/jb/0zgcmtqj6gsf9t_hhvdfwm0m0000gn/T/codex-clipboard-e4d0cfda-ab5a-498f-89b5-9e988f3e2c39.png",
+    "file": "art/vehicle-pipeline/references/lancer.png",
+    "sha256": "8bf0e4e754d9465675f92c548ad18b4d30c1ad7d242c8186aebaaab0f650b7b3",
+    "provenance": "User-provided visual reference; not a production texture"
+  }
+]

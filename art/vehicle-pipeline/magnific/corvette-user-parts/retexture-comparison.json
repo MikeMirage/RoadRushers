@@ -1,0 +1,1362 @@
+{
+  "source.glb": {
+    "triangles": 95866,
+    "drawVertices": 67651,
+    "primitives": 38,
+    "meshDefinitions": 38,
+    "renderedMeshInstances": 38,
+    "geometryBufferBytes": 2740028,
+    "fileBytes": 2774564,
+    "nonIndexedPrimitives": 0,
+    "extensions": [],
+    "nodes": [
+      {
+        "name": "tripo_part_0",
+        "mesh": 0
+      },
+      {
+        "name": "tripo_part_1",
+        "mesh": 1
+      },
+      {
+        "name": "tripo_part_2",
+        "mesh": 2
+      },
+      {
+        "name": "tripo_part_3",
+        "mesh": 3
+      },
+      {
+        "name": "tripo_part_4",
+        "mesh": 4
+      },
+      {
+        "name": "tripo_part_5",
+        "mesh": 5
+      },
+      {
+        "name": "tripo_part_6",
+        "mesh": 6
+      },
+      {
+        "name": "tripo_part_7",
+        "mesh": 7
+      },
+      {
+        "name": "tripo_part_8",
+        "mesh": 8
+      },
+      {
+        "name": "tripo_part_9",
+        "mesh": 9
+      },
+      {
+        "name": "tripo_part_10",
+        "mesh": 10
+      },
+      {
+        "name": "tripo_part_11",
+        "mesh": 11
+      },
+      {
+        "name": "tripo_part_12",
+        "mesh": 12
+      },
+      {
+        "name": "tripo_part_13",
+        "mesh": 13
+      },
+      {
+        "name": "tripo_part_14",
+        "mesh": 14
+      },
+      {
+        "name": "tripo_part_15",
+        "mesh": 15
+      },
+      {
+        "name": "tripo_part_16",
+        "mesh": 16
+      },
+      {
+        "name": "tripo_part_17",
+        "mesh": 17
+      },
+      {
+        "name": "tripo_part_18",
+        "mesh": 18
+      },
+      {
+        "name": "tripo_part_19",
+        "mesh": 19
+      },
+      {
+        "name": "tripo_part_20",
+        "mesh": 20
+      },
+      {
+        "name": "tripo_part_21",
+        "mesh": 21
+      },
+      {
+        "name": "tripo_part_22",
+        "mesh": 22
+      },
+      {
+        "name": "tripo_part_23",
+        "mesh": 23
+      },
+      {
+        "name": "tripo_part_24",
+        "mesh": 24
+      },
+      {
+        "name": "tripo_part_25",
+        "mesh": 25
+      },
+      {
+        "name": "tripo_part_26",
+        "mesh": 26
+      },
+      {
+        "name": "tripo_part_27",
+        "mesh": 27
+      },
+      {
+        "name": "tripo_part_28",
+        "mesh": 28
+      },
+      {
+        "name": "tripo_part_29",
+        "mesh": 29
+      },
+      {
+        "name": "tripo_part_30",
+        "mesh": 30
+      },
+      {
+        "name": "tripo_part_31",
+        "mesh": 31
+      },
+      {
+        "name": "tripo_part_32",
+        "mesh": 32
+      },
+      {
+        "name": "tripo_part_33",
+        "mesh": 33
+      },
+      {
+        "name": "tripo_part_34",
+        "mesh": 34
+      },
+      {
+        "name": "tripo_part_35",
+        "mesh": 35
+      },
+      {
+        "name": "tripo_part_36",
+        "mesh": 36
+      },
+      {
+        "name": "tripo_part_37",
+        "mesh": 37
+      }
+    ]
+  },
+  "textured-pbr.glb": {
+    "triangles": 95826,
+    "drawVertices": 67576,
+    "primitives": 38,
+    "materials": [
+      {
+        "doubleSided": true,
+        "name": "tripo_part_12_material",
+        "normalTexture": {
+          "index": 0
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 1
+          },
+          "metallicRoughnessTexture": {
+            "index": 2
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_14_material",
+        "normalTexture": {
+          "index": 3
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 4
+          },
+          "metallicRoughnessTexture": {
+            "index": 5
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_20_material",
+        "normalTexture": {
+          "index": 6
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 7
+          },
+          "metallicRoughnessTexture": {
+            "index": 8
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_25_material",
+        "normalTexture": {
+          "index": 9
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 10
+          },
+          "metallicRoughnessTexture": {
+            "index": 11
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_23_material",
+        "normalTexture": {
+          "index": 12
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 13
+          },
+          "metallicRoughnessTexture": {
+            "index": 14
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_29_material",
+        "normalTexture": {
+          "index": 15
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 16
+          },
+          "metallicRoughnessTexture": {
+            "index": 17
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_32_material",
+        "normalTexture": {
+          "index": 18
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 19
+          },
+          "metallicRoughnessTexture": {
+            "index": 20
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_35_material",
+        "normalTexture": {
+          "index": 21
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 22
+          },
+          "metallicRoughnessTexture": {
+            "index": 23
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_8_material",
+        "normalTexture": {
+          "index": 24
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 25
+          },
+          "metallicRoughnessTexture": {
+            "index": 26
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_11_material",
+        "normalTexture": {
+          "index": 27
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 28
+          },
+          "metallicRoughnessTexture": {
+            "index": 29
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_24_material",
+        "normalTexture": {
+          "index": 30
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 31
+          },
+          "metallicRoughnessTexture": {
+            "index": 32
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_18_material",
+        "normalTexture": {
+          "index": 33
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 34
+          },
+          "metallicRoughnessTexture": {
+            "index": 35
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_22_material",
+        "normalTexture": {
+          "index": 36
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 37
+          },
+          "metallicRoughnessTexture": {
+            "index": 38
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_31_material",
+        "normalTexture": {
+          "index": 39
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 40
+          },
+          "metallicRoughnessTexture": {
+            "index": 41
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_4_material",
+        "normalTexture": {
+          "index": 42
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 43
+          },
+          "metallicRoughnessTexture": {
+            "index": 44
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_7_material",
+        "normalTexture": {
+          "index": 45
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 46
+          },
+          "metallicRoughnessTexture": {
+            "index": 47
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_37_material",
+        "normalTexture": {
+          "index": 48
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 49
+          },
+          "metallicRoughnessTexture": {
+            "index": 50
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_3_material",
+        "normalTexture": {
+          "index": 51
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 52
+          },
+          "metallicRoughnessTexture": {
+            "index": 53
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_6_material",
+        "normalTexture": {
+          "index": 54
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 55
+          },
+          "metallicRoughnessTexture": {
+            "index": 56
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_0_material",
+        "normalTexture": {
+          "index": 57
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 58
+          },
+          "metallicRoughnessTexture": {
+            "index": 59
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_1_material",
+        "normalTexture": {
+          "index": 60
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 61
+          },
+          "metallicRoughnessTexture": {
+            "index": 62
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_10_material",
+        "normalTexture": {
+          "index": 63
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 64
+          },
+          "metallicRoughnessTexture": {
+            "index": 65
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_13_material",
+        "normalTexture": {
+          "index": 66
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 67
+          },
+          "metallicRoughnessTexture": {
+            "index": 68
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_15_material",
+        "normalTexture": {
+          "index": 69
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 70
+          },
+          "metallicRoughnessTexture": {
+            "index": 71
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_16_material",
+        "normalTexture": {
+          "index": 72
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 73
+          },
+          "metallicRoughnessTexture": {
+            "index": 74
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_17_material",
+        "normalTexture": {
+          "index": 75
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 76
+          },
+          "metallicRoughnessTexture": {
+            "index": 77
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_21_material",
+        "normalTexture": {
+          "index": 78
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 79
+          },
+          "metallicRoughnessTexture": {
+            "index": 80
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_26_material",
+        "normalTexture": {
+          "index": 81
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 82
+          },
+          "metallicRoughnessTexture": {
+            "index": 83
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_28_material",
+        "normalTexture": {
+          "index": 84
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 85
+          },
+          "metallicRoughnessTexture": {
+            "index": 86
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_30_material",
+        "normalTexture": {
+          "index": 87
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 88
+          },
+          "metallicRoughnessTexture": {
+            "index": 89
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_34_material",
+        "normalTexture": {
+          "index": 90
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 91
+          },
+          "metallicRoughnessTexture": {
+            "index": 92
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_19_material",
+        "normalTexture": {
+          "index": 93
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 94
+          },
+          "metallicRoughnessTexture": {
+            "index": 95
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_2_material",
+        "normalTexture": {
+          "index": 96
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 97
+          },
+          "metallicRoughnessTexture": {
+            "index": 98
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_27_material",
+        "normalTexture": {
+          "index": 99
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 100
+          },
+          "metallicRoughnessTexture": {
+            "index": 101
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_33_material",
+        "normalTexture": {
+          "index": 102
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 103
+          },
+          "metallicRoughnessTexture": {
+            "index": 104
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_36_material",
+        "normalTexture": {
+          "index": 105
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 106
+          },
+          "metallicRoughnessTexture": {
+            "index": 107
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_5_material",
+        "normalTexture": {
+          "index": 108
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 109
+          },
+          "metallicRoughnessTexture": {
+            "index": 110
+          }
+        }
+      },
+      {
+        "doubleSided": true,
+        "name": "tripo_part_9_material",
+        "normalTexture": {
+          "index": 111
+        },
+        "pbrMetallicRoughness": {
+          "baseColorTexture": {
+            "index": 112
+          },
+          "metallicRoughnessTexture": {
+            "index": 113
+          }
+        }
+      }
+    ],
+    "meshDefinitions": 38,
+    "renderedMeshInstances": 38,
+    "geometryBufferBytes": 2737388,
+    "fileBytes": 9493312,
+    "nonIndexedPrimitives": 0,
+    "images": [
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_12_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_12_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_12_metallic-tripo_part_12_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_14_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_14_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_14_metallic-tripo_part_14_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_20_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_20_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_20_metallic-tripo_part_20_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_25_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_25_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_25_metallic-tripo_part_25_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_23_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_23_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_23_metallic-tripo_part_23_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_29_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_29_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_29_metallic-tripo_part_29_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_32_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_32_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_32_metallic-tripo_part_32_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_35_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_35_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_35_metallic-tripo_part_35_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_8_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_8_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_8_metallic-tripo_part_8_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_11_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_11_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_11_metallic-tripo_part_11_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_24_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_24_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_24_metallic-tripo_part_24_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_18_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_18_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_18_metallic-tripo_part_18_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_22_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_22_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_22_metallic-tripo_part_22_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_31_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_31_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_31_metallic-tripo_part_31_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_4_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_4_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_4_metallic-tripo_part_4_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_7_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_7_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_7_metallic-tripo_part_7_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_37_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_37_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_37_metallic-tripo_part_37_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_3_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_3_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_3_metallic-tripo_part_3_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_6_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_6_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_6_metallic-tripo_part_6_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_0_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_0_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_0_metallic-tripo_part_0_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_1_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_1_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_1_metallic-tripo_part_1_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_10_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_10_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_10_metallic-tripo_part_10_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_13_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_13_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_13_metallic-tripo_part_13_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_15_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_15_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_15_metallic-tripo_part_15_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_16_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_16_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_16_metallic-tripo_part_16_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_17_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_17_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_17_metallic-tripo_part_17_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_21_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_21_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_21_metallic-tripo_part_21_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_26_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_26_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_26_metallic-tripo_part_26_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_28_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_28_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_28_metallic-tripo_part_28_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_30_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_30_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_30_metallic-tripo_part_30_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_34_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_34_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_34_metallic-tripo_part_34_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_19_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_19_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_19_metallic-tripo_part_19_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_2_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_2_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_2_metallic-tripo_part_2_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_27_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_27_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_27_metallic-tripo_part_27_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_33_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_33_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_33_metallic-tripo_part_33_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_36_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_36_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_36_metallic-tripo_part_36_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_5_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_5_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_5_metallic-tripo_part_5_roughness"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_9_normal"
+      },
+      {
+        "mimeType": "image/jpeg",
+        "name": "tripo_part_9_base_color"
+      },
+      {
+        "mimeType": "image/png",
+        "name": "tripo_part_9_metallic-tripo_part_9_roughness"
+      }
+    ],
+    "extensions": [],
+    "nodes": [
+      {
+        "name": "tripo_part_12",
+        "mesh": 0
+      },
+      {
+        "name": "tripo_part_14",
+        "mesh": 1
+      },
+      {
+        "name": "tripo_part_20",
+        "mesh": 2
+      },
+      {
+        "name": "tripo_part_25",
+        "mesh": 3
+      },
+      {
+        "name": "tripo_part_23",
+        "mesh": 4
+      },
+      {
+        "name": "tripo_part_29",
+        "mesh": 5
+      },
+      {
+        "name": "tripo_part_32",
+        "mesh": 6
+      },
+      {
+        "name": "tripo_part_35",
+        "mesh": 7
+      },
+      {
+        "name": "tripo_part_8",
+        "mesh": 8
+      },
+      {
+        "name": "tripo_part_11",
+        "mesh": 9
+      },
+      {
+        "name": "tripo_part_24",
+        "mesh": 10
+      },
+      {
+        "name": "tripo_part_18",
+        "mesh": 11
+      },
+      {
+        "name": "tripo_part_22",
+        "mesh": 12
+      },
+      {
+        "name": "tripo_part_31",
+        "mesh": 13
+      },
+      {
+        "name": "tripo_part_4",
+        "mesh": 14
+      },
+      {
+        "name": "tripo_part_7",
+        "mesh": 15
+      },
+      {
+        "name": "tripo_part_37",
+        "mesh": 16
+      },
+      {
+        "name": "tripo_part_3",
+        "mesh": 17
+      },
+      {
+        "name": "tripo_part_6",
+        "mesh": 18
+      },
+      {
+        "name": "tripo_part_0",
+        "mesh": 19
+      },
+      {
+        "name": "tripo_part_1",
+        "mesh": 20
+      },
+      {
+        "name": "tripo_part_10",
+        "mesh": 21
+      },
+      {
+        "name": "tripo_part_13",
+        "mesh": 22
+      },
+      {
+        "name": "tripo_part_15",
+        "mesh": 23
+      },
+      {
+        "name": "tripo_part_16",
+        "mesh": 24
+      },
+      {
+        "name": "tripo_part_17",
+        "mesh": 25
+      },
+      {
+        "name": "tripo_part_21",
+        "mesh": 26
+      },
+      {
+        "name": "tripo_part_26",
+        "mesh": 27
+      },
+      {
+        "name": "tripo_part_28",
+        "mesh": 28
+      },
+      {
+        "name": "tripo_part_30",
+        "mesh": 29
+      },
+      {
+        "name": "tripo_part_34",
+        "mesh": 30
+      },
+      {
+        "name": "tripo_part_19",
+        "mesh": 31
+      },
+      {
+        "name": "tripo_part_2",
+        "mesh": 32
+      },
+      {
+        "name": "tripo_part_27",
+        "mesh": 33
+      },
+      {
+        "name": "tripo_part_33",
+        "mesh": 34
+      },
+      {
+        "name": "tripo_part_36",
+        "mesh": 35
+      },
+      {
+        "name": "tripo_part_5",
+        "mesh": 36
+      },
+      {
+        "name": "tripo_part_9",
+        "mesh": 37
+      }
+    ]
+  }
+}

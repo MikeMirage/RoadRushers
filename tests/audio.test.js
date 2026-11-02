@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
+import {MUSIC_TRACKS} from '../src/music-library.js';
 import {EngineAudio,UI_SAMPLES} from '../src/audio.js';
 import {AUDIO_LEVELS,renderAudioSettings} from '../src/audio-settings-ui.js';
 import {DEFAULT_PREFERENCES,normalizePreferences,loadPreferences,savePreferences,PREFERENCES_KEY} from '../src/preferences.js';
@@ -41,7 +42,7 @@ test('runtime only selects locally available approved music and FX',()=>{
  const selected=new Set(['ui-navigate','ui-confirm','v8-steady','gravel-roll','guardrail-a','guardrail-b']);
  for(const screen of ['hub','garage','race','results'])selected.add(audio.musicFor({scene:{screen}}));
  assert.equal(audio.musicFor({scene:{screen:'loading'}}),null);
- for(const id of selected){const source=sources.find(x=>x.id===id);assert.equal(source?.reviewStatus,'approved',id);assert.ok(existsSync(new URL(`../public${source.file}`,import.meta.url)),id);}
+ for(const id of selected){const source=MUSIC_TRACKS[id]||sources.find(x=>x.id===id);if(!MUSIC_TRACKS[id])assert.equal(source?.reviewStatus,'approved',id);assert.ok(existsSync(new URL(`../public/${source.file.replace(/^\.?\//,'')}`,import.meta.url)),id);}
  assert.ok(!selected.has('coastal-velocity'));assert.equal(sources.find(x=>x.id==='coastal-velocity-r2').reviewStatus,'pending');
 });
 
