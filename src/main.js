@@ -38,6 +38,8 @@ import { EngineAudio } from './audio.js';
 import {renderAudioSettings,AUDIO_LEVELS} from './audio-settings-ui.js';
 import './audio-settings.css';
 import './pause-menu.css';
+import './test-pilot.css';
+import {TestPilot,testPilotEnabled,testSessionStorage} from './test-pilot.js';
 import { PerformanceStats, AdaptiveResolution } from './performance.js';
 import { FixedStepClock, FIXED_STEP } from './timing.js';
 import { GhostRecords, GhostRecorder, sampleGhost } from './ghost.js';
@@ -61,8 +63,11 @@ initStyledSelects();
 const icons = {
   camera: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 4L5.5 6H3.5A1.5 1.5 0 002 7.5v7A1.5 1.5 0 003.5 16h13a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0016.5 6H14l-1-2H7Z" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10.5" r="3" stroke="currentColor" stroke-width="1.3"/></svg>',
 };
+const testingWithAI=testPilotEnabled(location.search);
+let testPilot=null;
 let storage;
 try { storage = localStorage; } catch { storage = null; }
+if(testingWithAI){storage=testSessionStorage(storage);const badge=document.createElement('div');badge.id='test-pilot-status';badge.textContent='PRUEBA IA · SIN GUARDAR';badge.setAttribute('role','status');document.body.append(badge);}
 const playgroundOptions=loadPlayground(storage);
 const linkedTrack=new URLSearchParams(location.search).get('track');
 if(linkedTrack&&playgroundTracks(undefined,storage).some(track=>track.id===linkedTrack))Object.assign(playgroundOptions,{trackId:linkedTrack,width:'original'});
@@ -123,6 +128,7 @@ function updateInputPrompts(){
   const menuHint=inputDevice==='gamepad'?`${confirm} Confirmar · ${back} Volver · ${ps?'L1 / R1':'LB / RB'} Cambiar categoría`:'← → Seleccionar · Enter Confirmar · Esc Volver';
   for(const node of document.querySelectorAll('.gamepad-context-hint'))node.textContent=menuHint;
   for(const node of document.querySelectorAll('.controller-status'))node.textContent=inputDevice==='gamepad'?(ps?'DualSense / PlayStation':'Mando estándar'):inputDevice==='touch'?'Controles táctiles':'Teclado y ratón · Mando: pulsa un botón';
+  if(testingWithAI){inputPrompts.textContent='Prueba IA · Esc: pausa · C: cámara';return;}
   inputPrompts.textContent=inputDevice==='gamepad'?'Stick Girar · R2 / RT Acelerar · L2 / LT Frenar · Options / Menu Pausa':inputDevice==='mouse'?'Mantén clic izquierdo y mueve para girar · Clic derecho: freno':inputDevice==='touch'?'':'← → / A D Girar · ↓ / S Frenar · Esc Pausa';
 }
 function setInputDevice(device,family){const changed=device!==inputDevice||family&&family!==padFamily;if(family)padFamily=family;if(!changed)return;inputDevice=device;updateInputPrompts();}
@@ -517,17 +523,19 @@ function makeSession(rebuild) {
   drive=race?race.player.drive:new DriveModel(circuit,settings.vehicle);laps=new LapTracker();finishedTime=null;world.setRivals(race);
   timingContext=resultContext(settings,circuit);
   resetGhost();world.setGhost(!race);
+  testPilot=testingWithAI?new TestPilot(circuit):null;
   world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();readBest();updateOptions();setState('ready');updateHUD();drawMap();
 }
 function toast(message,announce=true){if(announce)audio.ui('notify');$('toast').textContent=message;$('toast').classList.remove('hidden');toastTime=3.2;}
 function start(){if(state!=='ready')return;setState('countdown');countdown=3;$('countdown').textContent='3';audio.countdown(3);}
-function reset(startAgain=true){if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;resetGhost();readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
+function reset(startAgain=true){testPilot?.reset();if(!drive||state==='loading'||state==='hub')return;stopResultCalculation();if(race)race.reset();else drive.reset(circuit);laps.reset();finishedTime=null;resetGhost();readBest();world.cameraReady=false;world.resetDrivingEffects();simulationClock.reset();setState('ready');updateHUD();drawMap();if(startAgain)start();}
 
 function resetGhost(){
   ghostRecorder=new GhostRecorder(drive);
   ghostLap=race?null:ghostRecords.get(timingContext);
 }
 function recordGhost(elapsed,crossing){
+  if(testingWithAI)return;
   const recorded=ghostRecorder.step(elapsed,drive,crossing);
   if(recorded&&ghostRecords.recordLap(timingContext,recorded)&&!race)ghostLap=recorded;
 }
@@ -569,6 +577,7 @@ function showTimingResults(complete){
   $('result-content').querySelector('h2').focus({preventScroll:true});calculateRanking(activeReport);
 }
 function finish(lap){
+  if(testingWithAI&&!race){toast(`Vuelta de prueba IA · ${formatTime(lap)}`);return;}
   if(race){showTimingResults(true);return;}
   resultRecords.recordLap(timingContext,lap);
   const newRecord=best==null||lap<best;
@@ -586,12 +595,12 @@ function updateHUD(){
   $('speed-fill').style.width=`${Math.min(100,drive.speed/(SURFACES[surface].speed*settings.vehicle.speed*PACES[settings.pace].speed)*100)}%`;
   $('last-time').textContent=laps.last?`Última: ${formatTime(laps.last)}`:'Primera vuelta pendiente';
   $('ghost-status').hidden=Boolean(race);
-  $('ghost-status').textContent=ghostLap?`◇ TU FANTASMA · ${formatTime(ghostLap.duration)}`:'◇ FANTASMA: COMPLETA UNA VUELTA';
-  $('ghost-status').title=ghostLap?(ghostRecords.saveAvailable?'Tu mejor vuelta guardada en este navegador.':'Fantasma disponible durante esta sesión; no se ha podido guardar.'):'Tu primera vuelta completa creará el fantasma automáticamente.';
+  $('ghost-status').textContent=testingWithAI?'PRUEBA IA · SIN RÉCORDS':ghostLap?`◇ TU FANTASMA · ${formatTime(ghostLap.duration)}`:'◇ FANTASMA: COMPLETA UNA VUELTA';
+  $('ghost-status').title=testingWithAI?'La IA conduce esta prueba sin guardar récords ni fantasmas.':ghostLap?(ghostRecords.saveAvailable?'Tu mejor vuelta guardada en este navegador.':'Fantasma disponible durante esta sesión; no se ha podido guardar.'):'Tu primera vuelta completa creará el fantasma automáticamente.';
   const wrongWay=race?race.player.tracker.wrongWay:laps.wrongWay;
   const status=$('driving-status');status.classList.toggle('warning',wrongWay||drive.impact>.15);
   status.classList.toggle('braking',drive.braking&&drive.grounded);
-  $('drive-mode-label').textContent=drive.braking?'FRENO':'AUTO';
+  $('drive-mode-label').textContent=testingWithAI?'IA':drive.braking?'FRENO':'AUTO';
   const underpass=circuit.layout?.crossings.some(c=>drive.y<c.upperY-3&&Math.hypot(drive.x-c.x,drive.z-c.z)<circuit.config.width*.9);
   $('status-text').textContent=wrongWay?'SENTIDO CONTRARIO':!drive.grounded?'EN EL AIRE':drive.braking?'FRENANDO':drive.impact>.15?'ABRE LA TRAZADA':underpass?'PASO INFERIOR':drive.slip>.3?'DERRAPANDO':drive.y>4?'TRAMO ELEVADO':`${SURFACES[surface].name.toUpperCase()} · EN PISTA`;
 }
@@ -751,15 +760,16 @@ function frame(now){
   if(state==='running'){
     const input=inputDevice==='gamepad'&&gamepadState?{steer:gamepadState.steer,brake:gamepadState.brake>.05?gamepadState.brake:0,throttle:gamepadState.throttle}:readDrivingInput(keys,pointers),steps=simulationClock.advance(dt);
     for(let i=0;i<steps;i++){
+      const drivingInput=testPilot?testPilot.input(FIXED_STEP,drive,{race,surface:settings.surface,weather:settings.weather,pace:settings.pace}):input;
       if(race){
-        const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,input,settings.surface,settings.weather,settings.pace);
+        const previous=race.player.tracker.lapTimes.length,done=race.step(FIXED_STEP,drivingInput,settings.surface,settings.weather,settings.pace);
         const completed=race.player.tracker.lapTimes.length>previous;
         recordGhost(race.elapsed,completed?race.player.tracker.lapStartedAt:null);
         if(completed)resultRecords.recordLap(timingContext,race.player.tracker.lapTimes.at(-1));
         if(done){finish(race.player.finishTime);break;}
       }
       else{
-        drive.step(FIXED_STEP,input.steer,settings.surface,settings.weather,settings.pace,input.brake,input.throttle??1);
+        drive.step(FIXED_STEP,drivingInput.steer,settings.surface,settings.weather,settings.pace,drivingInput.brake,drivingInput.throttle??1);
         if(drive.respawned){laps.rewind(drive.road.progress);toast('No has alcanzado la recepción · Reintenta el salto con más velocidad');}
         const lap=laps.step(FIXED_STEP,drive.road.progress);
         recordGhost(laps.elapsed,lap?laps.lapStartedAt:null);

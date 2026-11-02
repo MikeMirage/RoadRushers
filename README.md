@@ -196,3 +196,7 @@ Abrir [el garaje Corvette](http://127.0.0.1:5174/corvette-garage.html) con `npm 
 El garaje, la preparación de carrera y la pausa deben poder completarse con táctil, teclado y mando. Mantener acciones principales de al menos 44 px, foco visible y recuperable, selección y vuelta sin ratón, desplazamiento interno accesible y coche completo en vertical, horizontal y pantallas pequeñas. No depender de hover o gestos sin alternativa visible.
 
 La dirección táctil debe liberar entradas al pausar, cancelar un gesto o girar la pantalla; dos dedos frenan. Teclado y mando conservan sus indicaciones y navegación sin trampas de foco. Una prueba con mando en el navegador no certifica ejecución en una consola: iOS/Android y hardware de consola requieren validación física propia.
+
+## Pruebas de nivel con piloto IA
+
+Para las revisiones automáticas de interfaz o nivel, abrir el juego con `?autopilot=1` y preparar la sesión habitual. La IA de carreras controla dirección y freno mediante la física normal, también en entrenamiento; no se teletransporta el coche. Pausa, opciones y reinicio siguen disponibles. La etiqueta «PRUEBA IA · SIN GUARDAR» identifica estas sesiones: preferencias y resultados de la prueba permanecen en memoria, sin sobrescribir los guardados del jugador. Quitar el parámetro vuelve a la conducción normal. Este modo permite observar el trazado; no sustituye una prueba manual de los controles táctiles, teclado o mando.
