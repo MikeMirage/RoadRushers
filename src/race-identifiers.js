@@ -39,6 +39,7 @@ export class RivalNameTags{
     for(const label of candidates){
       if(occupied.length>=8)break;
       const half=Math.min(42,label.racer.name.length*3.1+6),rect={left:label.x-half,right:label.x+half,top:label.y-18,bottom:label.y+2};
+      if(rect.left<4||rect.right>width-4)continue;
       if(occupied.some(r=>rect.left<r.right+3&&rect.right>r.left-3&&rect.top<r.bottom+3&&rect.bottom>r.top-3))continue;
       occupied.push(rect);label.element.hidden=false;
       label.element.style.transform=`translate3d(${label.x.toFixed(1)}px,${label.y.toFixed(1)}px,0) translate(-50%,-100%)`;
