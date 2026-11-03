@@ -1,3 +1,4 @@
+import {edgeRadius} from './edge-contact.js';
 import { DriveModel } from './physics.js';
 import { Circuit } from './circuit.js';
 import { RivalDriver,RaceGuide,aiLevel,gridLevels } from './race-driver.js';
@@ -73,7 +74,7 @@ export function resolveCarContacts(racers,circuit,iterations=3) {
     for(const car of [a,b]){
       car.road=circuit.nearest(car.x,car.z,{progress:car.road.progress,y:car.y});
       if(car.road.supported===false||car.activeGap&&car.y>car.road.y+1){car.speed=Math.hypot(car.vx,car.vz);continue;}
-      const limit=circuit.widthAt(car.road.progress)/2-.7,offset=clamp(car.road.offset,-limit,limit);
+      const limit=Math.max(.15,circuit.widthAt(car.road.progress)/2-edgeRadius(car)),offset=clamp(car.road.offset,-limit,limit);
       if(offset!==car.road.offset){car.x=car.road.x+car.road.nx*offset;car.z=car.road.z+car.road.nz*offset;car.road.offset=offset;}
       if(Math.abs(offset)>=limit-.002){const outward=(car.vx*car.road.nx+car.vz*car.road.nz)*Math.sign(offset);if(outward>0){car.vx-=car.road.nx*Math.sign(offset)*outward;car.vz-=car.road.nz*Math.sign(offset)*outward;}}
       if(car.grounded)car.y=car.road.y;

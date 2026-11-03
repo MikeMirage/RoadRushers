@@ -39,7 +39,7 @@ test('mute and background visibility override the master without changing channe
 
 test('runtime only selects locally available approved music and FX',()=>{
  const audio=new EngineAudio(),sources=JSON.parse(readFileSync(new URL('../public/audio/magnific-v2/sources.json',import.meta.url)));
- const selected=new Set(['ui-navigate','ui-confirm','v8-steady','gravel-roll','guardrail-a','guardrail-b']);
+ const selected=new Set(['ui-navigate','ui-confirm','v8-steady','gravel-roll']);
  for(const screen of ['hub','garage','race','results'])selected.add(audio.musicFor({scene:{screen}}));
  assert.equal(audio.musicFor({scene:{screen:'loading'}}),null);
  for(const id of selected){const source=MUSIC_TRACKS[id]||sources.find(x=>x.id===id);if(!MUSIC_TRACKS[id])assert.equal(source?.reviewStatus,'approved',id);assert.ok(existsSync(new URL(`../public/${source.file.replace(/^\.?\//,'')}`,import.meta.url)),id);}

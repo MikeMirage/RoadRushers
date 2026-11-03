@@ -1,5 +1,5 @@
 export const RESULTS_KEY='roadrushers.results.v1';
-export const PHYSICS_VERSION='drive-120hz-v2-150kph';
+export const PHYSICS_VERSION='drive-120hz-v3-legacy-speed';
 export const centiseconds=time=>Math.floor(time*100+1e-7);
 export const validTime=t=>typeof t==='number'&&Number.isFinite(t)&&t>0&&t<=86400;
 export function fingerprint(value){let hash=2166136261;for(const c of JSON.stringify(value)){hash^=c.charCodeAt(0);hash=Math.imul(hash,16777619);}return (hash>>>0).toString(36);}

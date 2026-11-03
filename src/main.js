@@ -297,7 +297,7 @@ function updatePauseMusic(){
 function updateAudio(running=state==='running'){
   if(!drive||!circuit){audio.update({speed:0,running:false,scene:audioScene()});updatePauseMusic();return;}
   const progress=drive.road?.progress||0,roadWidth=circuit.widthAt(progress),edgeGap=roadWidth/2-Math.abs(drive.road?.offset||0);
-  audio.update({speed:drive.speed,slip:drive.slip,impact:drive.impact,landing:drive.landing,grounded:drive.grounded,
+  audio.update({speed:drive.speed,slip:drive.slip,impact:drive.impact,edgeHitId:drive.edgeHitId,edgeImpact:drive.edgeImpact,edgeScrape:drive.edgeScrape,edgePan:drive.edgePan,edgeTouching:drive.edgeTouching,landing:drive.landing,grounded:drive.grounded,
     surface:circuit.surfaceAt(progress,settings.surface),weather:settings.weather,wetness:settings.weather==='rain' ? .8 : settings.weather==='snow' ? .55 : 0,
     kerb:edgeGap<1.05&&edgeGap>.02,braking:drive.braking,throttle:inputDevice==='gamepad'&&gamepadState?gamepadState.throttle:1,running,scene:audioScene()});
   updatePauseMusic();

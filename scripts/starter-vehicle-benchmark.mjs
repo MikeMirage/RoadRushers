@@ -46,8 +46,8 @@ export function measureLap(vehicle,track,surface='asphalt'){
   }
   return {track:track.id,surface,vehicle:vehicle.id,seconds:result?rounded(result):null,wallContactSeconds:rounded(impacts/120)};
 }
-// Long straights and 80 m bends exercise the revised 150 km/h cruise range.
-export const FAST_TEST_TRACK={id:'proving-fast',name:'Óvalo de ensayo',points:[[0,0],[360,0],[440,-80],[440,-200],[360,-280],[0,-280],[-80,-200],[-80,-80]],width:14,cornerSmoothing:3};
+// Original proving oval, paired with the restored cruise speeds.
+export const FAST_TEST_TRACK={id:'proving-fast',name:'Óvalo de ensayo',points:[[0,0],[180,0],[220,-40],[220,-100],[180,-140],[0,-140],[-40,-100],[-40,-40]],width:14,cornerSmoothing:3};
 export async function benchmark(){
   const vehicles=ORIGINAL_VEHICLES.map(measureVehicle),laps=[];
   for(const track of TRACKS)for(const surface of ['asphalt','gravel'])for(const v of ORIGINAL_VEHICLES)laps.push(measureLap(v,track,surface));

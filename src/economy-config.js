@@ -20,7 +20,7 @@ export const FREE_TRACKS=['puerto','aserradero','faro','kit-club-v1','gp-suzuka-
 /** Never mutate factory catalogue. Caps apply equally to player and rivals. */
 export function upgradedVehicle(vehicle,level=1,cap=5){
  const n=Math.max(1,Math.min(5,level,cap));
- const v={...vehicle,economyLevel:n,acceleration:vehicle.acceleration*(n>=2?1.015:1),speed:vehicle.speed*(n>=3?1.01:1),grip:vehicle.grip*(n>=4?1.015:1),response:vehicle.response*(n>=5?1.015:1)};
+ const v={...vehicle,economyLevel:n,acceleration:vehicle.acceleration*(n>=2?1.015:1),speed:vehicle.speed,grip:vehicle.grip*(n>=4?1.015:1),response:vehicle.response*(n>=5?1.015:1)};
  if(vehicle.handling)v.handling={...vehicle.handling,engineForce:vehicle.handling.engineForce*(n>=2?1.015:1),steeringRate:vehicle.handling.steeringRate*(n>=5?1.015:1)};
  return v;
 }

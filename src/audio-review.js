@@ -6,8 +6,9 @@ const catalogue=[
   ['v8-steady','V8 · escape en carga','FX','ElevenLabs SFX','Toma solicitada a régimen constante. Revisar combustión, estabilidad del régimen y unión del loop.'],
   ['tire-scrub-r4','Neumáticos · goma sobre asfalto · revisión','FX','ElevenLabs SFX','Nueva toma para sustituir el chirrido de tiza. Aquí se escucha aislada; en el juego lleva recorte de agudos y entra progresivamente con el derrape, solo en asfalto. Compara con la anterior.'],
   ['gravel-roll','Rodadura · grava','FX','ElevenLabs SFX','Textura granular y pequeñas piedras en el paso de rueda. Revisar cuerpo y sensación de velocidad.'],
-  ['guardrail-a','Guardarraíl · toma A','FX','ElevenLabs SFX','Impacto y cola de vibración metálica. Revisar el golpe inicial y su escala física.'],
-  ['guardrail-b','Guardarraíl · toma B','FX','ElevenLabs SFX','Segunda variación del impacto para comparar y evitar repeticiones idénticas.'],
+  ['contact-hit-a','Contacto · golpe de chasis A','FX','ElevenLabs SFX','Golpe compacto con cuerpo grave, cola corta y menos resonancia metálica. Comparación con el impacto anterior.'],
+  ['contact-hit-b','Contacto · golpe de chasis B','FX','ElevenLabs SFX','Segunda toma para variar los impactos. La intensidad y el lado del contacto controlan su volumen y posición en el juego.'],
+  ['edge-scrape','Contacto · roce lateral continuo','FX','ElevenLabs SFX','Fricción amortiguada de plástico y metal pintado. En el juego solo aparece al deslizar el coche contra el borde; no repite golpes.'],
 ];
 catalogue.push(
   ['ui-navigate','UI · navegación','FX','ElevenLabs SFX','Click táctil breve para mover el foco entre opciones.'],

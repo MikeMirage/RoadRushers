@@ -62,7 +62,8 @@
     "model": "elevenlabs-sfx-generation",
     "file": "/audio/magnific-v2/guardrail-a.mp3",
     "sourcePage": "https://www.magnific.com/app/creation/5jWPgOpKxe",
-    "reviewStatus": "approved"
+    "reviewStatus": "adjust",
+    "reviewNote": "El feedback posterior pide mejorar el sonido y la sensación del impacto; sustituido por golpe de chasis y roce continuo."
   },
   {
     "id": "guardrail-b",
@@ -71,7 +72,8 @@
     "model": "elevenlabs-sfx-generation",
     "file": "/audio/magnific-v2/guardrail-b.mp3",
     "sourcePage": "https://www.magnific.com/app/creation/jUD3O6KLD0",
-    "reviewStatus": "approved"
+    "reviewStatus": "adjust",
+    "reviewNote": "El feedback posterior pide mejorar el sonido y la sensación del impacto; sustituido por golpe de chasis y roce continuo."
   },
   {
     "id": "coastal-velocity-r2",
@@ -175,5 +177,43 @@
     "replaces": "tire-scrub",
     "credits": 40,
     "runtimeProcessing": "High-pass 100 Hz; broad -10 dB cut at 2700 Hz; low-pass 1250–1700 Hz; 35 ms loop edge blend. Maximum gain .14 before user controls."
+  },
+  {
+    "id": "contact-hit-a",
+    "creation": "UPoMKSYwny",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/contact-hit-a.wav",
+    "originalFile": "/audio/magnific-v2/contact-hit-a.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/UPoMKSYwny",
+    "reviewStatus": "pending",
+    "credits": 5,
+    "processing": "scripts/prepare-contact-audio.py · peak -3 dBFS; EQ, onset trim and short tail for impacts",
+    "replaces": "guardrail-a"
+  },
+  {
+    "id": "contact-hit-b",
+    "creation": "dtwjneWXSL",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/contact-hit-b.wav",
+    "originalFile": "/audio/magnific-v2/contact-hit-b.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/dtwjneWXSL",
+    "reviewStatus": "pending",
+    "credits": 5,
+    "processing": "scripts/prepare-contact-audio.py · peak -3 dBFS; EQ, onset trim and short tail for impacts",
+    "replaces": "guardrail-b"
+  },
+  {
+    "id": "edge-scrape",
+    "creation": "1lTGEgAr4r",
+    "kind": "sfx",
+    "model": "elevenlabs-sfx-generation",
+    "file": "/audio/magnific-v2/edge-scrape.wav",
+    "originalFile": "/audio/magnific-v2/edge-scrape.mp3",
+    "sourcePage": "https://www.magnific.com/app/creation/1lTGEgAr4r",
+    "reviewStatus": "pending",
+    "credits": 20,
+    "processing": "scripts/prepare-contact-audio.py · peak -3 dBFS; EQ, onset trim and short tail for impacts"
   }
 ]

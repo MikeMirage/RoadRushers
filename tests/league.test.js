@@ -87,3 +87,7 @@ test('upgrade changes real race handling and record signatures, including starte
 test('free recovery remains available during a paid event without losing or repaying entry',()=>{
  const l=new League(store());finish(l,l.begin('club-open','coda'));finish(l,l.begin('club-open','coda'));l.begin('club-open','coda');const wallet=l.state.credits;quick(l);assert.equal(l.state.run.eventId,'club-open');assert.equal(l.state.credits,wallet+140);l.begin('club-open','coda');assert.equal(l.state.credits,wallet+140);
 });
+
+test('economy levels preserve original top speed for every car and league cap',()=>{
+ for(const v of VEHICLES)for(let level=1;level<=5;level++)for(let cap=1;cap<=5;cap++)assert.equal(upgradedVehicle(v,level,cap).speed,v.speed);
+});

@@ -235,7 +235,7 @@ export class World {
       this.underpassMarker.rotateZ(drive.heading-road.heading);
     }
     const rig=this.cameraRig.update(dt,drive,cameraMode,!this.cameraReady,this.camera.aspect,this.circuit);
-    this.camera.position.copy(rig.position);this.camera.lookAt(rig.look);
+    this.camera.position.copy(rig.position).add(rig.contactOffset);this.camera.lookAt(rig.look.x+rig.contactOffset.x,rig.look.y+rig.contactOffset.y,rig.look.z+rig.contactOffset.z);
     if(this.camera.fov!==rig.fov){this.camera.fov=rig.fov;this.camera.updateProjectionMatrix();}
     this.cameraReady=true;
     this.camera.updateMatrixWorld();

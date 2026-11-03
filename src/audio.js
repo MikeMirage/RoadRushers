@@ -1,3 +1,4 @@
+import {ContactAudioEvents} from './contact-audio.js';
 import {MUSIC_TRACKS,MusicDirector,musicPresence} from './music-library.js';
 import {drivingMix,blendLoopEdges} from './driving-audio-mix.js';
 /** Sample mixer: approved Magnific music/FX plus lightweight environmental and UI layers. */
@@ -5,11 +6,11 @@ const clamp=v=>Math.max(0,Math.min(1,Number.isFinite(v)?v:0));
 const approach=(p,v,t,s=.07)=>p.setTargetAtTime(v,t,s);
 const ROOT='./audio/magnific-v2/';
 export const UI_SAMPLES={navigate:'ui-navigate',confirm:'ui-confirm-r3',back:'ui-back-r3'};
-const DRIVING_LOOPS=new Set(['v8-steady','tire-scrub-r4','gravel-roll']);
-const SIGNALS=new Set(['ui-confirm-r3','ui-back-r3','race-countdown-tick','race-start']);
+const DRIVING_LOOPS=new Set(['v8-steady','tire-scrub-r4','gravel-roll','edge-scrape']);
+const SIGNALS=new Set(['contact-hit-a','contact-hit-b','edge-scrape','ui-confirm-r3','ui-back-r3','race-countdown-tick','race-start']);
 export class EngineAudio {
   enabled=true;
-  constructor(){this.options={soundEnabled:true,masterVolume:.8,musicVolume:.5,engineVolume:.8,effectsVolume:.8,ambientVolume:.6,uiVolume:.55};this.buffers=new Map();this.loops=new Map();this.music=new Map();this.musicDirector=new MusicDirector();this.lastImpact=0;this.lastLanding=0;this.lastImpactAt=-Infinity;this.lastLandingAt=-Infinity;this.hitVariant=0;this.lastUI=-Infinity;this.hidden=false;}
+  constructor(){this.options={soundEnabled:true,masterVolume:.8,musicVolume:.5,engineVolume:.8,effectsVolume:.8,ambientVolume:.6,uiVolume:.55};this.buffers=new Map();this.loops=new Map();this.music=new Map();this.musicDirector=new MusicDirector();this.lastImpact=0;this.lastLanding=0;this.lastImpactAt=-Infinity;this.lastLandingAt=-Infinity;this.contactEvents=new ContactAudioEvents();this.activeImpacts=new Set();this.hitVariant=0;this.lastUI=-Infinity;this.hidden=false;}
   setOptions(options={}){Object.assign(this.options,options);this.enabled=this.options.soundEnabled!==false;this.applyLevels();}
   setHidden(hidden){this.hidden=hidden;this.applyLevels();if(hidden)for(const track of this.music.values())track.element.pause();}
   applyLevels(){if(!this.context)return;const t=this.context.currentTime,o=this.options;approach(this.master.gain,this.enabled&&!this.hidden?clamp(o.masterVolume):0,t);for(const [bus,key] of [[this.engineBus,'engineVolume'],[this.fxBus,'effectsVolume'],[this.ambientBus,'ambientVolume'],[this.uiBus,'uiVolume']])approach(bus.gain,clamp(o[key]),t);}
@@ -23,7 +24,7 @@ export class EngineAudio {
       this.master.connect(limiter);limiter.connect(c.destination);
       for(const name of ['engineBus','fxBus','ambientBus','uiBus','musicBus']){this[name]=c.createGain();this[name].connect(this.master);}
       this.makeAtmosphere();this.applyLevels();
-      for(const name of [...Object.values(UI_SAMPLES),'race-countdown-tick','race-start','v8-steady','tire-scrub-r4','gravel-roll','guardrail-a','guardrail-b'])this.load(name);
+      for(const name of [...Object.values(UI_SAMPLES),'race-countdown-tick','race-start','v8-steady','tire-scrub-r4','gravel-roll','contact-hit-a','contact-hit-b','edge-scrape'])this.load(name);
     }
     if(this.context.state==='suspended')this.context.resume().catch(()=>{});
     for(const track of this.music.values())track.blocked=false;
@@ -41,18 +42,26 @@ export class EngineAudio {
     const noise=c.createBufferSource();noise.buffer=b;noise.loop=true;noise.start();
     for(const [name,type,hz] of [['wind','lowpass',650],['road','bandpass',450],['rain','highpass',2000],['kerb','lowpass',170]]){const filter=c.createBiquadFilter();filter.type=type;filter.frequency.value=hz;filter.Q.value=.5;const gain=c.createGain();gain.gain.value=0;noise.connect(filter);filter.connect(gain);gain.connect(this.ambientBus);this[name]={filter,gain};}
   }
-  loop(name,bus,volume,rate=1,cutoff=2200){
+  loop(name,bus,volume,rate=1,cutoff=2200,pan=0){
     let voice=this.loops.get(name);const buffer=this.buffers.get(name);
     if(!voice&&buffer){
       const c=this.context,source=c.createBufferSource(),gain=c.createGain(),high=c.createBiquadFilter(),low=c.createBiquadFilter();
       source.buffer=buffer;source.loop=true;gain.gain.value=0;high.type='highpass';high.frequency.value=name==='v8-steady'?45:100;high.Q.value=.5;low.type='lowpass';low.frequency.value=cutoff;low.Q.value=.5;
       source.connect(high);
       if(name==='tire-scrub-r4'){const harsh=c.createBiquadFilter();harsh.type='peaking';harsh.frequency.value=2700;harsh.Q.value=.8;harsh.gain.value=-10;high.connect(harsh);harsh.connect(low);}else high.connect(low);
-      low.connect(gain);gain.connect(bus);source.start();voice={source,gain,low};this.loops.set(name,voice);
+      low.connect(gain);const panner=name==='edge-scrape'&&c.createStereoPanner?c.createStereoPanner():null;gain.connect(panner||bus);if(panner)panner.connect(bus);source.start();voice={source,gain,low,panner};this.loops.set(name,voice);
     }
-    if(voice){const t=this.context.currentTime;approach(voice.gain.gain,volume,t,volume<voice.gain.gain.value ? .11 : .07);approach(voice.source.playbackRate,rate,t,.18);approach(voice.low.frequency,cutoff,t,.12);}
+    if(voice){const t=this.context.currentTime;approach(voice.gain.gain,volume,t,volume<voice.gain.gain.value ? .11 : .07);approach(voice.source.playbackRate,rate,t,.18);approach(voice.low.frequency,cutoff,t,.12);if(voice.panner)approach(voice.panner.pan,pan,t,.07);}
   }
   oneShot(name,volume=1,bus=this.fxBus){const buffer=this.buffers.get(name);if(!buffer)return;const source=this.context.createBufferSource(),gain=this.context.createGain();source.buffer=buffer;gain.gain.value=volume;source.connect(gain);gain.connect(bus);source.start();source.onended=()=>{source.disconnect();gain.disconnect();};}
+  contactHit(strength,pan=0){
+    const name=this.hitVariant++%2?'contact-hit-b':'contact-hit-a',buffer=this.buffers.get(name);if(!buffer)return;
+    const c=this.context,source=c.createBufferSource(),low=c.createBiquadFilter(),gain=c.createGain(),panner=c.createStereoPanner?.();
+    source.buffer=buffer;low.type='lowpass';low.frequency.value=1500+strength*1800;low.Q.value=.5;gain.gain.value=.09+strength*.29;
+    source.connect(low);low.connect(gain);gain.connect(panner||this.fxBus);if(panner){panner.pan.value=pan;panner.connect(this.fxBus);}
+    if(this.activeImpacts.size>=3)this.activeImpacts.values().next().value.stop();
+    this.activeImpacts.add(source);source.onended=()=>{this.activeImpacts.delete(source);for(const node of [source,low,gain,panner])node?.disconnect();};source.start();
+  }
   get currentMusic(){return this.musicDirector.current;}
   setMusicScope(options={}){
     this.musicDirector.setScope(options);
@@ -110,13 +119,14 @@ export class EngineAudio {
     this.loop('v8-steady',this.engineBus,m.engine,m.engineRate,m.engineHz);
     this.loop('tire-scrub-r4',this.fxBus,m.tire,m.tireRate,m.tireHz);
     this.loop('gravel-roll',this.fxBus,m.loose,m.looseRate,m.looseHz);
+    this.loop('edge-scrape',this.fxBus,active?clamp(s.edgeScrape)*.085:0,.88+clamp((s.speed||0)/35)*.16,1200,s.edgePan||0);
     approach(this.wind.gain.gain,m.wind,t,.2);
     approach(this.road.gain.gain,m.road,t,.12);
     approach(this.road.filter.frequency,m.roadHz,t,.2);
     approach(this.rain.gain.gain,m.rain,t,.2);
     approach(this.kerb.gain.gain,m.kerb,t,.04);
     const hit=s.impact||0,landing=s.landing||0;
-    if(active&&hit>this.lastImpact+.16&&t-this.lastImpactAt>.18){this.oneShot(this.hitVariant++%2?'guardrail-b':'guardrail-a',.10+clamp(hit)*.20);this.lastImpactAt=t;}
+    const contact=this.contactEvents.update(s,active,t);if(contact)this.contactHit(contact.strength,contact.pan);
     if(active&&landing>this.lastLanding+.15&&t-this.lastLandingAt>.22){this.oneShot('landing-thump',.12+clamp(landing)*.15);this.lastLandingAt=t;}
     this.lastImpact=hit;this.lastLanding=landing;
   }

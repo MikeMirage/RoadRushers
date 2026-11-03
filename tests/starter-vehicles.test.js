@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Vector3,Box3 } from 'three';
-import { ORIGINAL_VEHICLES } from '../src/config.js';
+import { ORIGINAL_VEHICLES,SURFACES } from '../src/config.js';
 import { DriveModel } from '../src/physics.js';
 import { buildVehicle,setBrakeLights } from '../src/vehicles.js';
 import { animateVehicle } from '../src/vehicle-pose.js';
@@ -11,11 +11,12 @@ import { provingGround,runFor,measureVehicle,measureLap,FAST_TEST_TRACK } from '
 
 const metrics=ORIGINAL_VEHICLES.map(measureVehicle);
 
-test('starter cars reach a real 140–160 km/h and retain controllable steering',()=>{
+test('starter cars retain legacy cruise ceilings and controllable steering',()=>{
+  assert.deepEqual(Object.values(SURFACES).map(s=>s.speed),[21,18,19,16,16.5]);
   for(const vehicle of ORIGINAL_VEHICLES.slice(0,3)){
     const car=new DriveModel(provingGround,vehicle);runFor(car,30);
-    assert.ok(car.speed*3.6>=140&&car.speed*3.6<=160,`${vehicle.id}: ${car.speed*3.6} km/h`);
-    const z=car.z;runFor(car,1);assert.ok(car.z-z>=140/3.6,'cruise must move the simulation, not only the speedometer');
+    assert.ok(Math.abs(car.speed-21*vehicle.speed)<.1,`${vehicle.id}: ${car.speed*3.6} km/h`);
+    const z=car.z;runFor(car,1);assert.ok(car.z-z>=20,'cruise must move the simulation, not only the speedometer');
     runFor(car,.5,{steer:1});assert.ok(Math.abs(car.angularSpeed)>1,'full steering must still turn at cruise');
     runFor(car,.35,{steer:-1});assert.ok(car.angularSpeed>0,'countersteering must remain available');
   }

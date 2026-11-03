@@ -1,8 +1,9 @@
+import {resolveEdgeContact} from './edge-contact.js';
 import { SURFACES, WEATHER, PACES, VEHICLES } from './config.js';
 
 const damp = (a, b, rate, dt) => b + (a - b) * Math.exp(-rate * dt);
 const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
-const POSE_FIELDS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 'speed', 'steer', 'slip', 'impact', 'pitch', 'roll', 'landing', 'brake', 'bodyPitch', 'bodyRoll', 'heave', 'steeringAngle'];
+const POSE_FIELDS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 'speed', 'steer', 'slip', 'impact', 'pitch', 'roll', 'landing', 'brake', 'bodyPitch', 'bodyRoll', 'heave', 'steeringAngle', 'edgeImpact', 'edgeNormalX', 'edgeNormalZ'];
 export const START_PROGRESS = 0;
 const vehicleFrontLoad=vehicle=>vehicle.handling?.frontWeight??.5;
 
@@ -19,6 +20,7 @@ export class DriveModel {
     this.circuit = circuit;
     const start = circuit.at(progress,offset);
     Object.assign(this, { x: start.x, y:start.y||0, z: start.z, heading: start.heading, vx: 0, vy:0, vz: 0,
+      edgeTouching:false,edgeImpact:0,edgeHitId:0,edgeScrape:0,edgePan:0,edgeNormalX:0,edgeNormalZ:0,edgeCooldown:0,edgeClosingSpeed:0,
       grounded:true, airTime:0, pitch:0, roll:0, landing:0,activeGap:null,recoveries:0,respawned:false,recoveryRewind:0,
       braking:false, brake:0, bodyPitch:0, bodyRoll:0, heave:0, steeringAngle:0,
       pitchVelocity:0, rollVelocity:0, heaveVelocity:0, longitudinalAcceleration:0, lateralAcceleration:0,
@@ -49,24 +51,8 @@ export class DriveModel {
     this.distance += speed * dt;
     this.road = this.circuit.nearest(this.x, this.z, {progress:priorRoad.progress,y:this.y});
 
-    // Solid track edges: project the car inside and remove outward velocity.
-    const limit = this.circuit.widthAt(this.road.progress) / 2 - 0.7;
     this.impact = Math.max(0, this.impact - dt * 4);
-    if (this.road.supported!==false&&(!this.activeGap||this.y<this.road.y+1)&&Math.abs(this.road.offset) > limit) {
-      const sign = Math.sign(this.road.offset);
-      this.x = this.road.x + this.road.nx * limit * sign;
-      this.z = this.road.z + this.road.nz * limit * sign;
-      const outward = (this.vx * this.road.nx + this.vz * this.road.nz) * sign;
-      if (outward > 0) {
-        // Sliding contact: cancel the outward motion without bouncing every tick.
-        this.vx -= this.road.nx * sign * outward;
-        this.vz -= this.road.nz * sign * outward;
-        const friction = Math.exp(-1.8 * dt);
-        this.vx *= friction;
-        this.vz *= friction;
-        this.impact = Math.min(1, outward / 6);
-      }
-    }
+    resolveEdgeContact(this,dt);
     this.stepHeight(dt);
     this.speed = Math.hypot(this.vx, this.vz);
     // Measure the actual velocity after collisions, not a cosmetic body rotation.
@@ -101,8 +87,8 @@ export class DriveModel {
     const throttle=Math.max(0,Math.min(1,Number.isFinite(throttleInput)?throttleInput:1));
     const target = cruiseSpeed * (1 - Math.abs(this.steer) * 0.08)*throttle;
     if(this.grounded){
-      // Raising the cruise ceiling must not double the legacy cars' launch force.
-      if(!this.braking)forward = damp(forward, target, 1.45 * vehicle.acceleration * (21/41), dt);
+      // Original acceleration response paired with the restored cruise ceilings.
+      if(!this.braking)forward = damp(forward, target, 1.45 * vehicle.acceleration, dt);
       // Static holding avoids creeping backwards when braking at rest on a ramp.
       if(!this.braking||speed>.05)forward -= Math.sin(Math.atan(this.road.grade||0))*5*dt;
     }
@@ -239,6 +225,7 @@ export class DriveModel {
     this.renderPose.heading = this.previousPose.heading + wrap(this.heading - this.previousPose.heading) * t;
     this.renderPose.progress = this.road.progress;
     this.renderPose.grounded=this.grounded;this.renderPose.groundY=this.road.y;this.renderPose.airTime=this.airTime;
+    this.renderPose.edgeHitId=this.edgeHitId;
     this.renderPose.braking=this.braking;this.renderPose.roadSupported=this.road.supported!==false;
     return this.renderPose;
   }

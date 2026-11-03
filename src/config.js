@@ -90,13 +90,13 @@ export const CHAMPIONSHIP = {
   ],
 };
 
-// Physical cruise speeds in m/s. Normal asphalt puts the three starter cars at 146–158 km/h.
+// Legacy cruise ceilings restored for player/AI balance (2026-11-03), in m/s.
 export const SURFACES = {
-  asphalt: { name: 'Asfalto', color: '#41494a', grip: 9.5, speed: 41, roughness: 0.92, label: 'Preciso y estable', symbol: '▰' },
-  dirt: { name: 'Tierra', color: '#b47b4d', grip: 3.4, speed: 35.1, roughness: 1, label: 'Suelto y juguetón', symbol: '⁙' },
-  gravel: { name: 'Grava', color: '#8b9087', grip: 4.5, speed: 37.1, roughness: 1, label: 'Agarre intermedio', symbol: '⠿' },
-  ice: { name: 'Hielo', color: '#9bcbd3', grip: 1.25, speed: 31.2, roughness: 0.22, label: 'Anticipa cada curva', symbol: '◇' },
-  mud: { name: 'Barro', color: '#65513b', grip: 2.7, speed: 32.2, roughness: .4, label: 'Húmedo, lento y deslizante', symbol: '≋' },
+  asphalt: { name: 'Asfalto', color: '#41494a', grip: 9.5, speed: 21, roughness: 0.92, label: 'Preciso y estable', symbol: '▰' },
+  dirt: { name: 'Tierra', color: '#b47b4d', grip: 3.4, speed: 18, roughness: 1, label: 'Suelto y juguetón', symbol: '⁙' },
+  gravel: { name: 'Grava', color: '#8b9087', grip: 4.5, speed: 19, roughness: 1, label: 'Agarre intermedio', symbol: '⠿' },
+  ice: { name: 'Hielo', color: '#9bcbd3', grip: 1.25, speed: 16, roughness: 0.22, label: 'Anticipa cada curva', symbol: '◇' },
+  mud: { name: 'Barro', color: '#65513b', grip: 2.7, speed: 16.5, roughness: .4, label: 'Húmedo, lento y deslizante', symbol: '≋' },
 };
 
 export const WEATHER = {

@@ -17,10 +17,12 @@ export class CameraRig {
     this.delta = new Vector3(); this.offset = new Vector3(); this.desiredPosition = new Vector3();
     this.car=new Vector3();this.desiredLead=new Vector3();this.lookAhead=new Vector3();this.framedLead=new Vector3();
     this.smoothedOffset=new Vector3();this.framingOffset=new Vector3();this.rotation=new Matrix4();
+    this.contactOffset=new Vector3();this.contactVelocity=new Vector3();this.lastEdgeHitId=0;
     this.right=new Vector3();this.up=new Vector3();this.backward=new Vector3();
   }
 
   update(dt, drive, mode = 'topdown', reset = false, aspect = 16 / 9, circuit) {
+    this.updateContact(dt,drive,reset);
     if(mode!=='chase')return this.updateOverhead(dt,drive,mode,reset,aspect,circuit);
     const initialize = reset || !this.initialized;
     const velocity = this.velocity.set(drive.vx, 0, drive.vz);
@@ -54,6 +56,19 @@ export class CameraRig {
     this.initialized = true;
     this.mode=mode;
     return this;
+  }
+
+  updateContact(dt,drive,reset){
+    const event=drive.edgeHitId||0;
+    if(reset){this.contactOffset.set(0,0,0);this.contactVelocity.set(0,0,0);this.lastEdgeHitId=event;return;}
+    if(event>0&&event!==this.lastEdgeHitId){
+      const strength=MathUtils.clamp(drive.edgeImpact||0,0,1);
+      this.contactVelocity.x-=(drive.edgeNormalX||0)*strength*.85;this.contactVelocity.z-=(drive.edgeNormalZ||0)*strength*.85;this.contactVelocity.y+=strength*.16;
+    }
+    this.lastEdgeHitId=event;
+    const steps=Math.max(1,Math.ceil(Math.min(.25,dt)/.016)),h=Math.min(.25,Math.max(0,dt))/steps;
+    for(let i=0;i<steps;i++){this.contactVelocity.addScaledVector(this.contactOffset,-150*h).multiplyScalar(Math.exp(-18*h));this.contactOffset.addScaledVector(this.contactVelocity,h);}
+    this.contactOffset.clampLength(0,.10);
   }
 
   limitLead(lead,offset,fov,aspect){
